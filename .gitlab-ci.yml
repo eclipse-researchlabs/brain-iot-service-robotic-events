@@ -21,6 +21,11 @@ sfi-build:
   script:
     - mvn $MAVEN_CLI_OPTS package
 
+bus-test:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify
+
 sfi-deploy:
     stage: deploy
     script: 
