@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.paremus.brain.iot.example.orch.impl.ComponentImpl">
+  <property name="osgi.command.function" type="String" value="orch"/>
+  <property name="eu.brain.iot.behaviour.filter" type="String" value=""/>
+  <property name="eu.brain.iot.behaviour.name" type="String" value="Smart Orchestrator"/>
+  <property name="osgi.http.whiteboard.resource.prefix" type="String" value="static"/>
+  <property name="eu.brain.iot.behaviour.consumed" type="String">com.paremus.brain.iot.example.robotA.api.CheckValueReturn
+com.paremus.brain.iot.example.robotA.api.QueryStateValueReturn
+com.paremus.brain.iot.example.robotB.api.CheckValueReturnB
+com.paremus.brain.iot.example.robotB.api.QueryStateValueReturnB
+com.paremus.brain.iot.example.robotC.api.CheckValueReturnC
+com.paremus.brain.iot.example.robotC.api.QueryStateValueReturnC</property>
+  <property name="osgi.command.scope" type="String" value="Orchestrator"/>
+  <property name="eu.brain.iot.behaviour.description" type="String" value="Implements a remote Smart Orchestrator."/>
+  <property name="osgi.jaxrs.resource" type="Boolean" value="true"/>
+  <property name="eu.brain.iot.behaviour.author" type="String" value="UGA"/>
+  <property name="osgi.http.whiteboard.resource.pattern" type="String">/quickstart/*</property>
+  <service>
+    <provide interface="eu.brain.iot.eventing.api.SmartBehaviour"/>
+    <provide interface="com.paremus.brain.iot.example.orch.impl.ComponentImpl"/>
+  </service>
+  <reference name="eventBus" interface="eu.brain.iot.eventing.api.EventBus" field="eventBus"/>
+  <implementation class="com.paremus.brain.iot.example.orch.impl.ComponentImpl"/>
+</scr:component>

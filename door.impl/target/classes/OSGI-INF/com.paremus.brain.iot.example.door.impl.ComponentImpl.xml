@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="com.paremus.brain.iot.example.door.impl.ComponentImpl">
+  <property name="osgi.command.function" type="String" value="door"/>
+  <property name="eu.brain.iot.behaviour.filter" type="String" value=""/>
+  <property name="eu.brain.iot.behaviour.name" type="String" value="Smart Door"/>
+  <property name="eu.brain.iot.behaviour.consumed" type="String">com.paremus.brain.iot.example.orch.api.DoorOpen
+com.paremus.brain.iot.example.orch.api.DoorClose
+com.paremus.brain.iot.example.orch.api.InetRobot</property>
+  <property name="osgi.command.scope" type="String" value="DOOR"/>
+  <property name="eu.brain.iot.behaviour.description" type="String" value="Implements a remote Smart Door."/>
+  <property name="eu.brain.iot.behaviour.author" type="String" value="UGA"/>
+  <service>
+    <provide interface="eu.brain.iot.eventing.api.SmartBehaviour"/>
+    <provide interface="com.paremus.brain.iot.example.door.impl.ComponentImpl"/>
+  </service>
+  <implementation class="com.paremus.brain.iot.example.door.impl.ComponentImpl"/>
+</scr:component>
