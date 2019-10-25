@@ -46,7 +46,7 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
                         <dependency>
-            <groupId>com.paremus.brain.iot.example</groupId>
+            <groupId>eu.brain.iot.service.robotic</groupId>
             <artifactId>orch.api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

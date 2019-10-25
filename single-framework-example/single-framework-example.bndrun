@@ -7,8 +7,8 @@ index: target/index.xml;name="single-framework-example"
 
 -resolve.effective: active
 -runrequires: \
-	bnd.identity;id='com.paremus.brain.iot.example.door.impl',\
-	bnd.identity;id='com.paremus.brain.iot.example.orch.impl',\
-	bnd.identity;id='com.paremus.brain.iot.example.robotA.impl',\
-    bnd.identity;id='com.paremus.brain.iot.example.robotB.impl',\
-    bnd.identity;id='com.paremus.brain.iot.example.robotC.impl'
+	bnd.identity;id='eu.brain.iot.service.robotic.door.impl',\
+	bnd.identity;id='eu.brain.iot.service.robotic.orch.impl',\
+	bnd.identity;id='eu.brain.iot.service.robotic.robotA.impl',\
+    bnd.identity;id='eu.brain.iot.service.robotic.robotB.impl',\
+    bnd.identity;id='eu.brain.iot.service.robotic.robotC.impl'
