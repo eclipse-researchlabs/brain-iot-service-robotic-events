@@ -54,7 +54,8 @@ import org.lib.request.placecomponent.querystate.PlaceQueryState;
 		},service={SmartBehaviour.class, ComponentImpl.class}
 	)
 
-@SmartBehaviourDefinition(consumed = {writeGOTO.class,Cancel.class, PickCart.class,PlaceCART.class,QueryStateC.class,CheckMarkerC.class,InetRobot.class },    
+@SmartBehaviourDefinition(consumed = {writeGOTO.class,Cancel.class, PickCart.class,PlaceCART.class,QueryStateC.class,CheckMarkerC.class,InetRobot.class },  
+filter = "(timestamp=*)",  
 author = "UGA", name = "Smart RobotC",
 description = "Implements a remote Smart RobotC.")
 public class ComponentImpl implements SmartBehaviour<BrainIoTEvent>{

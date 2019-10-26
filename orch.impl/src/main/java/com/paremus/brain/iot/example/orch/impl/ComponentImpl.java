@@ -60,7 +60,9 @@ import org.osgi.service.jaxrs.whiteboard.propertytypes.JaxrsResource;
 @HttpWhiteboardResource(pattern="/quickstart/*", prefix="static")
 
 
-@SmartBehaviourDefinition(consumed = {CheckValueReturn.class, QueryStateValueReturn.class,CheckValueReturnB.class, QueryStateValueReturnB.class,CheckValueReturnC.class, QueryStateValueReturnC.class },    
+@SmartBehaviourDefinition(consumed = {CheckValueReturn.class, QueryStateValueReturn.class,CheckValueReturnB.class, QueryStateValueReturnB.class,CheckValueReturnC.class,
+QueryStateValueReturnC.class},
+filter = "(timestamp=*)",    
 author = "UGA", name = "Smart Orchestrator",
 description = "Implements a remote Smart Orchestrator.")
 public class ComponentImpl  implements SmartBehaviour<BrainIoTEvent>{

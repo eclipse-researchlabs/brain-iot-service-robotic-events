@@ -18,7 +18,8 @@ import eu.brain.iot.eventing.api.SmartBehaviour;
 		},service= {SmartBehaviour.class, ComponentImpl.class}
 	)
 
-@SmartBehaviourDefinition(consumed = {DoorOpen.class, DoorClose.class,InetRobot.class} ,    
+@SmartBehaviourDefinition(consumed = {DoorOpen.class, DoorClose.class,InetRobot.class},
+filter = "(timestamp=*)",
 author = "UGA", name = "Smart Door",
 description = "Implements a remote Smart Door.")
 
