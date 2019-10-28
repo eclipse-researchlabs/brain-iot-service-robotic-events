@@ -11,7 +11,8 @@ import task.*;
 
 @Task(time=1)
 public class Orchestrator extends Atom { 
-org.lib.Command Command = new org.lib.Command() ;
+final org.lib.Command Command;
+final String doorId;
 // data definition;
 
 Type<Integer> POSITION= new Type<Integer> (0); 
@@ -66,7 +67,10 @@ Type<Integer> CART3= new Type<Integer> (0);
 Type<Integer> LASTOPERATION= new Type<Integer> (0); 
 Type<Integer> LOAD= new Type<Integer> (0); 
 Type<Integer> DOORORCART= new Type<Integer> (0); 
-public Orchestrator( Type<Integer> robot_id){this.robot_id=robot_id; 
+public Orchestrator(Command command, String doorId, Type<Integer> robot_id){
+	this.Command = command;
+	this.doorId = doorId;
+	this.robot_id=robot_id; 
 start();
  }
 
@@ -277,7 +281,7 @@ p3.setAvailable(true);
  if( p3.isAvailable() ){
 p3.setAvailable(false);
  Command.writeGOTO( CPT.getVal() , UNLOAD.getVal() );
- Command.writeOpenDoor( );
+ Command.writeOpenDoor( doorId );
 
  // Deactivate previous states 
 S1.setVal(false);
@@ -349,7 +353,7 @@ p6.setAvailable(true);
 }
  if( p6.isAvailable() ){
 p6.setAvailable(false);
- Command.writeCloseDoor( );
+ Command.writeCloseDoor( doorId );
 DOORORCART.setVal(1 );
 MARKER.setVal( Command.checkMarkers( CPT.getVal() , DOORORCART.getVal() ) );
 
@@ -496,7 +500,7 @@ p12.setAvailable(true);
  if( p12.isAvailable() ){
 p12.setAvailable(false);
  Command.writeGOTO( CPT.getVal() , PLACECENTER.getVal() );
- Command.writeOpenDoor( );
+ Command.writeOpenDoor( doorId );
 
  // Deactivate previous states 
 S6.setVal(false);
@@ -569,7 +573,7 @@ p15.setAvailable(true);
  if( p15.isAvailable() ){
 p15.setAvailable(false);
  Command.writeGOTO( CPT.getVal() , PLACECENTER.getVal() );
- Command.writeOpenDoor( );
+ Command.writeOpenDoor( doorId );
 
  // Deactivate previous states 
 S8.setVal(false);
@@ -618,7 +622,7 @@ p17.setAvailable(true);
 }
  if( p17.isAvailable() ){
 p17.setAvailable(false);
- Command.writeCloseDoor( );
+ Command.writeCloseDoor( doorId );
 CPT.setVal(CPT.getVal() + 1 );
 
  // Deactivate previous states 
@@ -667,7 +671,7 @@ p19.setAvailable(true);
  if( p19.isAvailable() ){
 p19.setAvailable(false);
  Command.placeCART( CPT.getVal() , CART2.getVal() );
- Command.writeCloseDoor( );
+ Command.writeCloseDoor( doorId );
 CPT.setVal(CPT.getVal() + 1 );
 
  // Deactivate previous states 

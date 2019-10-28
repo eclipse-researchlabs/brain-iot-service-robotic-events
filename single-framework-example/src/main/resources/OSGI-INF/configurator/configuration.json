@@ -1,25 +1,27 @@
 {
-    // Comments are permitted in configuration files, but they should be
-    // minified if they are going to be used as strict JSON
-    
-    // Global Settings
+
     ":configurator:resource-version" : 1,
-    ":configurator:symbolic-name" : "com.paremus.brain.iot.example.single-framework-example.config",
+    ":configurator:symbolic-name" : "eu.brain.iot.service.robotic.single-framework-example.config",
     ":configurator:version" : "0.0.1-SNAPSHOT",
     
-    /*
-    // This defines a configuration
     
-    "my.configuration.pid": {
-           "fizz": "buzz", 
-           "foo": "bar"},
-    */
     
-    /*
-    // This defines a factory configuration
+    "eu.brain.iot.example.robot.Door": {
+    	"host": "10.8.0.50", 
+        "port": "8080",
+        "id": "ExampleDoor"},
     
-    "my.factory.configuration.pid~fizzbuzz": {
-           "fizz": "buzz", 
-           "foo": "bar"},
-    */
+    
+    "eu.brain.iot.example.robot.Robot~robotA": {
+           "host": "10.8.0.50", 
+           "port": "8080",
+           "id": 1},
+    "eu.brain.iot.example.robot.Robot~robotB": {
+           "host": "10.8.0.50", 
+           "port": "8080",
+           "id": 2},
+    "eu.brain.iot.example.robot.Robot~robotC": {
+          "host": "10.8.0.50", 
+          "port": "8080",
+          "id": 3}
 }

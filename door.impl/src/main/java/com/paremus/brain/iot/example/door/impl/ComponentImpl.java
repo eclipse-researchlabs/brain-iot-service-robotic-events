@@ -1,79 +1,145 @@
 package com.paremus.brain.iot.example.door.impl;
 
-import org.apache.felix.service.command.CommandProcessor;
-import org.osgi.service.component.annotations.Component;
+import static com.paremus.brain.iot.example.door.api.DoorStatus.State.CLOSED;
+import static com.paremus.brain.iot.example.door.api.DoorStatus.State.OPEN;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
-import com.paremus.brain.iot.example.orch.api.DoorClose;
-import com.paremus.brain.iot.example.orch.api.DoorOpen;
-import com.paremus.brain.iot.example.orch.api.InetRobot;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+import com.paremus.brain.iot.example.door.api.DoorStatus;
+import com.paremus.brain.iot.example.door.api.DoorStatus.State;
+import com.paremus.brain.iot.example.door.api.DoorStatusResponse;
 
 import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
-import eu.brain.iot.eventing.api.BrainIoTEvent;
+import eu.brain.iot.eventing.api.EventBus;
 import eu.brain.iot.eventing.api.SmartBehaviour;
 
-@Component(
-		property = {
-				CommandProcessor.COMMAND_SCOPE + "=DOOR", //
-				CommandProcessor.COMMAND_FUNCTION + "=door" //
-		},service= {SmartBehaviour.class, ComponentImpl.class}
-	)
+@Component(configurationPid="eu.brain.iot.example.robot.Door",
+		configurationPolicy=REQUIRE,
+		service = {})
 
-@SmartBehaviourDefinition(consumed = {DoorOpen.class, DoorClose.class,InetRobot.class},
-filter = "(timestamp=*)",
+@SmartBehaviourDefinition(consumed = {DoorStatus.class},
 author = "UGA", name = "Smart Door",
 description = "Implements a remote Smart Door.")
 
-public class ComponentImpl implements SmartBehaviour<BrainIoTEvent>{
+public class ComponentImpl implements SmartBehaviour<DoorStatus> {
 
-	public static DoorClose close ;	
-	
-	public static DoorOpen open ;
-	
-	public static InetRobot inetrobot;
-	
 	private Command cmd =new Command();
-	
-	  String IP ;
-	
-	  String PORT ;
-	
-	
-	public void notify(BrainIoTEvent event) {
-		if (event instanceof DoorOpen) {
-			 open = (DoorOpen) event;
-			synchronized (this) {
-				
-				cmd.writeOpenDoor(IP,PORT);
 
-			}
-			
-		}else {
-			if (event instanceof DoorClose) {
-				 close = (DoorClose) event;
-				synchronized (this) {
-
-					cmd.writeCloseDoor(IP,PORT);
-				}
-				
-			}else {
-				if (event instanceof InetRobot) {
-					inetrobot = (InetRobot) event;
-					synchronized (this) {
-						IP= inetrobot.ip;
-						PORT=inetrobot.port;
-						
-					}
-					
-				}else {
-					
-				
-				
-				System.out.println("Argh! Received an unknown event type " + event.getClass());
-				
-				}
-			}
-		}
+	@ObjectClassDefinition
+	public static @interface Config {
+		@AttributeDefinition(description="The IP of the door")
+		String host();
+		@AttributeDefinition(description="The Port of the door")
+		int port();
 		
+		@AttributeDefinition(description="The identifier for the door")
+		String id();
+	}
+	
+	@Reference
+	EventBus eventBus;
+	
+	private Config config;
+	
+	private ServiceRegistration<?> reg;
+	
+	private ExecutorService worker;
+	
+	private DoorDigitalTwin door = new DoorDigitalTwin();
+	
+	@Activate
+	void start(BundleContext context, Config config, Map<String, Object> props) {
+		this.config = config;
+		
+		worker = Executors.newSingleThreadExecutor();
+		
+		worker.execute(() -> {
+			cmd.writeCloseDoor(config.host(), config.port());
+			door.setOpen(false);
+		});
+		
+		Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
+			.filter(e -> !e.getKey().startsWith("."))
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
+		
+		serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter", 
+				String.format("(|(doorId=%s)(doorId=%s))", config.id(), DoorStatus.ALL_DOORS));
+		
+		reg = context.registerService(SmartBehaviour.class, this, serviceProps);
+	}
+	
+	@Deactivate
+	void stop() {
+		reg.unregister();
+		worker.shutdown();
+		try {
+			worker.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException ie) {
+			// Propagate the interrupt
+			Thread.currentThread().interrupt();
+		}
+	}
+	
+	
+	public void notify(DoorStatus event) {
+		
+		switch(event.targetState) {
+		case CLOSED:
+			worker.execute(() -> {
+				
+				if(door.isOpen()) {
+					cmd.writeCloseDoor(config.host(), config.port());
+					door.setOpen(false);
+				}
+				
+				sendResponse(CLOSED);
+			});
+			break;
+		case OPEN:
+			worker.execute(() -> {
+				
+				if(!door.isOpen()) {
+					cmd.writeOpenDoor(config.host(), config.port());
+					door.setOpen(true);
+				}
+				
+				sendResponse(OPEN);
+			});
+			break;
+		case QUERY:
+			worker.execute(() -> {
+				sendResponse(door.isOpen() ? OPEN : CLOSED);
+			});
+			break;
+		default:
+			System.out.println("Argh! Received an unknown status type " + event.targetState);
+			break;
+		
+		}
+	}
+
+	private void sendResponse(State state) {
+		DoorStatusResponse response = new DoorStatusResponse();
+		response.doorId = config.id();
+		response.state = state;
+		eventBus.deliver(response);
 	}
 	
 

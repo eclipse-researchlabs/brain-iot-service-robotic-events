@@ -298,14 +298,10 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
     </build>
   <modules>
    <module>single-framework-example</module>
+   <module>door.api</module>
    <module>door.impl</module>
      <module>orch.impl</module>
-     <module>orch.api</module>
-     <module>robotC.impl</module>
-     <module>robotC.api</module>
-     <module>robotB.impl</module>
-     <module>robotB.api</module>
-     <module>robotA.impl</module>
-     <module>robotA.api</module>
+     <module>robot.impl</module>
+     <module>robot.api</module>
   </modules>
 </project>
