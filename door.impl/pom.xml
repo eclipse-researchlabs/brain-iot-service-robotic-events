@@ -47,7 +47,7 @@
         </dependency>
                         <dependency>
             <groupId>eu.brain.iot.service.robotic</groupId>
-            <artifactId>orch.api</artifactId>
+            <artifactId>door.api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

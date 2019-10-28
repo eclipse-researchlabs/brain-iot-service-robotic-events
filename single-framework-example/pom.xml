@@ -32,23 +32,11 @@
         
                                     <dependency>
             <groupId>eu.brain.iot.service.robotic</groupId>
-            <artifactId>robotA.impl</artifactId>
+            <artifactId>robot.impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>runtime</scope>
         </dependency>     
         
-                                            <dependency>
-            <groupId>eu.brain.iot.service.robotic</groupId>
-            <artifactId>robotB.impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>    
-                                                <dependency>
-            <groupId>eu.brain.iot.service.robotic</groupId>
-            <artifactId>robotC.impl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>        
                             <dependency>
             	<groupId>org.apache.felix</groupId>
             	<artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -58,12 +46,6 @@
             <groupId>com.paremus.brain.iot</groupId>
             <artifactId>eventing.impl</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.aries.jax.rs</groupId>
-            <artifactId>org.apache.aries.jax.rs.jackson</artifactId>
-            <version>1.0.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

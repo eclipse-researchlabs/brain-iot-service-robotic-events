@@ -3,11 +3,9 @@ package org.lib;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -19,14 +17,18 @@ import com.paremus.brain.iot.example.orch.impl.ComponentImpl;
 
 public class Command {
 
-	static String IP="10.8.0.6";
-	static String PORT="8080";
+	private ComponentImpl component;
 	
 
 
-	static ArrayList<ArrayList<String>> Robots =new ArrayList<ArrayList<String>> ();
+	public Command(ComponentImpl component) {
+		super();
+		this.component = component;
+	}
+
+	ArrayList<ArrayList<String>> Robots =new ArrayList<ArrayList<String>> ();
 	
-	static void addOperation(int RobotId, String Operation){
+	void addOperation(int RobotId, String Operation){
 		
 		if(Robots.size()==0){
 			for(int i=0; i< 4; i++){
@@ -38,7 +40,7 @@ public class Command {
 		}
 	}
 	
-	static void removeOperation(int RobotId, String Operation){
+	void removeOperation(int RobotId, String Operation){
 		
 		if(Robots.size()==0){
 			for(int i=0; i< 4; i++){
@@ -54,82 +56,82 @@ public class Command {
 		}
 	}
 	
-	public static void main(String[] a) 
+	public void main(String[] a) 
     { 
 		System.out.println(read());
 
 
     } 
 	
-	public static Integer read(){
+	public Integer read(){
 		return null;
 		
 
 	}
 	
-	public static Integer readOperation(){
+	public Integer readOperation(){
 		return null;
 		
 
 	}
 	
 	
-	public static void writePosition(){
+	public void writePosition(){
 		
 		System.out.println("ROBOT : SEND POSITION ");
 		
 
 	}
 	
-	public static void writeMarker(){
+	public void writeMarker(){
 		
 		System.out.println("ROBOT : SEND MARKER IN SIGHT ");
 		
 	}
 	
-	public static void writeAvailability( ){
+	public void writeAvailability( ){
 		
 		System.out.println("ROBOT : SEND AVAILABILITY ");
 		
 		
 	}
 	
-	public static void writeGotoAdd( ){
+	public void writeGotoAdd( ){
 		
 		System.out.println("ROBOT : SEND GOTO ADD ");
 	
 		
 	}
 	
-	public static void writeGotoCancel( ){
+	public void writeGotoCancel( ){
 		
 		System.out.println("ROBOT : SEND GOTO CANCEL ");
 
 		
 	}
 	
-	public static void writeGotoQueryState( ){
+	public void writeGotoQueryState( ){
 		
 		System.out.println("ROBOT : SEND GOTO QUERY STATE ");
 
 		
 	}
 	
-	public static void writePickAdd( ){
+	public void writePickAdd( ){
 		
 		System.out.println("ROBOT : SEND PICK ADD ");
 
 		
 	}
 	
-	public static void writePickCancel( ){
+	public void writePickCancel( ){
 		
 		System.out.println("ROBOT : SEND PICK CANCEL ");
 
 		
 	}
 	
-	public static void writePickQueryState( ){
+	public void writePickQueryState( ){
 		
 		System.out.println("ROBOT : SEND PICK QUERY STATE ");
 
@@ -137,21 +139,21 @@ public class Command {
 	}
 	
 
-	public static void writePlaceAdd( ){
+	public void writePlaceAdd( ){
 		
 		System.out.println("ROBOT : SEND PLACE ADD ");
 
 		
 	}
 	
-	public static void writePlaceCancel( ){
+	public void writePlaceCancel( ){
 		
 		System.out.println("ROBOT : SEND PLCAE CANCEL ");
 
 		
 	}
 	
-	public static void writePlaceQueryState( ){
+	public void writePlaceQueryState( ){
 		
 		System.out.println("ROBOT : SEND PLACE QUERY STATE ");
 
@@ -160,52 +162,42 @@ public class Command {
 
 	
 
-	public static void writeChargeAdd( ){
+	public void writeChargeAdd( ){
 		
 		System.out.println("ROBOT : SEND CHARGE ADD ");
 
 		
 	}
 	
-	public static void writeChargeCancel( ){
+	public void writeChargeCancel( ){
 		
 		System.out.println("ROBOT : SEND CHARGE CANCEL ");
 	
 		
 	}
 	
-	public static void writeChargeQueryState( ){
+	public void writeChargeQueryState( ){
 		
 		System.out.println("ROBOT : SEND CHARGE QUERY STATE ");
 	
 		
 	}
 	
-	public static void writeUnChargeAdd (){
+	public void writeUnChargeAdd (){
 		System.out.println("ROBOT : SEND RETURN UNCHARGE ADD ");
 
 	}
-	public static void writeUnChargeCancel(){
+	public void writeUnChargeCancel(){
 		System.out.println("ROBOT : SEND RETURN UNCHARGE CANCEL ");
 
 	}
 	
 	public  int checkMarkers(int RobotId, int obj){
-		if(RobotId==1) {
-			return ComponentImpl.checkMarkers(RobotId,obj);
-		}
-		if(RobotId==2) {
-			return ComponentImpl.checkMarkersb(RobotId,obj);
-		}
-		if(RobotId==3) {
-			return ComponentImpl.checkMarkersc(RobotId,obj);
-		}
-		
-		return -1;
+		return component.checkMarkers(RobotId,obj);
 	}
 
 	
-	public static void printState(int RobotId, int mission ){
+	public void printState(int RobotId, int mission ){
 		
 		if(mission==1){
 		System.out.println("ROBOT : ROBOT ("+RobotId+") MISSION IS IN STATE FINISHED" );
@@ -214,66 +206,51 @@ public class Command {
 		}
 	}	
 	
-	public static void writeUnChargeQueryState(){
+	public void writeUnChargeQueryState(){
 		System.out.println("ROBOT : SEND UNCHARGE QUERY STATE ");
 
 	}
-	public static void  writeOpenDoor(){
-		ComponentImpl.writeOpenDoor();
+	public void  writeOpenDoor(String doorId){
+		component.writeOpenDoor(doorId);
 	}
-	public static void  writeCloseDoor(){
-		ComponentImpl.writeCloseDoor();
+	public void  writeCloseDoor(String doorId){
+		component.writeCloseDoor(doorId);
 	}
 
 	
-	public static void writeGOTO(int RobotId, int mission){
-		ComponentImpl.writegoto(RobotId, mission);
+	public void writeGOTO(int RobotId, int mission){
+		component.writegoto(RobotId, mission);
 	}
 
-	public static void placeCART(int RobotId, int cart){
-		ComponentImpl.placeCART(RobotId, cart);
+	public void placeCART(int RobotId, int cart){
+		component.placeCART(RobotId, cart);
 		
 	}
-	public static int cancel(int RobotId, int mission){
-		return ComponentImpl.cancel(RobotId, mission);
+	public int cancel(int RobotId, int mission){
+		return component.cancel(RobotId, mission);
 	}
 	public  int queryState(int RobotId, int mission){
-		int i=0;
-		if(RobotId==1) {
-			return ComponentImpl.queryState(RobotId, mission);
-		}
-		
-		if(RobotId==2) {
-			return ComponentImpl.queryStateb(RobotId, mission);
-		}
-
-		if(RobotId==3) {
-			return ComponentImpl.queryStatec(RobotId, mission);
-		}
-
-		return -1;
+		return component.queryState(RobotId, mission);
 	}
 	
-
-
-	static double DOCKINGAX;static double DOCKINGAY;	static double DOCKINGBX;static double DOCKINGBY;
-	static double theta;
+	double DOCKINGAX;double DOCKINGAY;	double DOCKINGBX;double DOCKINGBY;
+	double theta;
 	
-	static double UNLOADBX;	static double UNLOADBY;		static double UNLOADAX;	static double UNLOADAY;	
+	double UNLOADBX;	double UNLOADBY;		double UNLOADAX;	double UNLOADAY;	
 	
-	static double  STORAGEAX=8;	static double  STORAGEAY=-3.6;	static double  STORAGEBX=6.427;	static double  STORAGEBY=-5.627; static double  STORAGECX=6.489;	static double  STORAGECY=-7.801;	
+	double  STORAGEAX=8;	double  STORAGEAY=-3.6;	double  STORAGEBX=6.427;	double  STORAGEBY=-5.627; double  STORAGECX=6.489;	double  STORAGECY=-7.801;	
 	
 	
-	static double  FRONTDOORX=5.429;	static double  FRONTDOORY=-0.102;	
+	double  FRONTDOORX=5.429;	double  FRONTDOORY=-0.102;	
 	
-	public static void pickCart(int RobotId, int cart){
-		ComponentImpl.pickCart(RobotId, cart);
+	public void pickCart(int RobotId, int cart){
+		component.pickCart(RobotId, cart);
 	}
 	
 
 	
 	
-	public static void printPosition (int RobotId, int place){
+	public void printPosition (int RobotId, int place){
 		
 		
 		if (place== 0){//Docking
@@ -305,7 +282,7 @@ public class Command {
 	}
 	
 	
-	public static String getResponse(String request) {
+	public String getResponse(String request) {
 		String jsonObject ="";
 		
 		// Step2: Now pass JSON File Data to REST Service
@@ -337,40 +314,9 @@ public class Command {
 
 	}
 	
-	private static String postResponse(String request, String jsonObjectin) {
-		String jsonObject ="";
-		
-		// Step2: Now pass JSON File Data to REST Service
-		try {
-			URL url = new URL(request);
-			URLConnection connection = url.openConnection();
-			connection.setDoOutput(true);
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setConnectTimeout(5000);
-			connection.setReadTimeout(5000);
-			OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-			out.write(jsonObjectin.toString());
-			out.close();
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			jsonObject="";
-			String str="";
-			while ((str=in.readLine()) != null) {
-				jsonObject+=str;
-			}
-			System.out.println("\nRobot REST Service Invoked Successfully..");
-			in.close();
-		} catch (Exception e) {
-			System.out.println("\nError while calling ROBOT REST Service");
-			System.out.println(e);
-		}
-		
-		return jsonObject;
-	}
-	
-	public static Object getObject(String txt, Class c){
+	public <T> T getObject(String txt, Class<T> c){
 		 ObjectMapper mapper = new ObjectMapper();
-		 Object cmd = null;
+		 T cmd = null;
 			try {
 
 				 cmd = mapper.readValue(txt, c);
@@ -386,7 +332,7 @@ public class Command {
 			return cmd;
 	}
 	
-	public static String getJson(Object c){	
+	public String getJson(Object c){	
 
 	  
 		ObjectMapper mapper = new ObjectMapper();
