@@ -9,5 +9,5 @@ public class PickCart extends RobotCommand {
 	 */
 	public Mission mission = Mission.PICK;
 	
-	public int markerID;
+	public int markerID;   // from the cart marker ID, ROS Edge Node will get the cart name to be used in the ROS service
 }
