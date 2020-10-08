@@ -1,19 +1,23 @@
 package eu.brain.iot.robot.events;
 
 import eu.brain.iot.robot.api.Cooridinate;
-import eu.brain.iot.robot.api.OperationState;
 
 public class AvailabilityReturn extends RobotCommand {
 	
 	public OperationState operationState;
-	public String navigationStatus;
+	public String navigationType;              // GoToComponent | PickComponent |  PlaceComponent | None
 	public Cooridinate currentLocation;
 
+	public static enum OperationState {
+		idle, moving;
+	}
 }
 
 
-/* Availability: mission is started by the robot.
+/* Availability: check the overall availability of robot, including the current location
+ * possible values in ROS service:
 
+when mission is being executed by the robot:
 {
     "operation_state": "moving",
     "robot_state": "standby",
@@ -32,7 +36,7 @@ public class AvailabilityReturn extends RobotCommand {
             
  */
 
-/*   GoTo mission almost done.
+/* when  GoTo mission almost done.
  * {
     "operation_state": "idle",
     "robot_state": "standby",
@@ -44,7 +48,7 @@ public class AvailabilityReturn extends RobotCommand {
     	
     	*/
 
-/* mission is  completely done
+/* when mission is  completely done
 {
     "operation_state": "idle",
     "robot_state": "standby",

@@ -1,17 +1,17 @@
 package eu.brain.iot.robot.api;
 
 public class Cooridinate {
-	double y = 0;
 	double x = 0;
+	double y = 0;
 	double z = 0;
 	
 	public Cooridinate() {
 
 	}
 	
-	public Cooridinate(double y, double x, double z) {
-		this.y = y;
+	public Cooridinate(double x, double y, double z) {
 		this.x = x;
+		this.y = y;
 		this.z = z;
 	}
 	
@@ -35,7 +35,7 @@ public class Cooridinate {
 	}
 	@Override
 	public String toString() {
-		return "Cooridinate [y=" + y + ", x=" + x + ", z=" + z + "]";
+		return "Cooridinate [x=" + x + ", y=" + y + ", z=" + z + "]";
 	}
 
 	

@@ -2,10 +2,15 @@ package eu.brain.iot.warehouse.events;
 
 import eu.brain.iot.robot.api.Cooridinate;
 
+/*
+ * The dockAuxliaryPoint field is fixed point for a specific robot in the storage side in front of Door on the way to docking area. 
+ * Robot will stop here waiting for checking marker  cmd or new GoTo event if door is open.
+ * */
+
 public class DockingResponse extends WarehouseCommand{
 	
 	public Cooridinate dockingPoint;
 
-	// fixed point in the storage side in front of Door where robot will stop here for checking the door is open or not, on the way to docking area 
+	
 	public Cooridinate dockAuxliaryPoint;
 }
