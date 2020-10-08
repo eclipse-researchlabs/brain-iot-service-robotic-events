@@ -12,7 +12,7 @@ public class OverWorkload extends RobotCommand {
 	   in such case, ROS Edge Node gets a response from the ROS Service and it finds the robot is busy now (indicated by the response result = error),
 	   it will report using this 'OverWorkload' event to Robot Behavior, as well as the reason message. 
 	   
-	   Of course, if a 'QueryState' command is explicitly sent from Robot Behavior, after receiving it, ROS Edge Node will also execute and  reply with 'QueryStateValueReturn'.
+	
 	*/
 
 	public Result result; 	  //   OK | ERROR
