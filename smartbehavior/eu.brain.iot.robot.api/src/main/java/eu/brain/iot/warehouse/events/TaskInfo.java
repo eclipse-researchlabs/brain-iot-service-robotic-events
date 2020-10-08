@@ -2,6 +2,10 @@ package eu.brain.iot.warehouse.events;
 
 import eu.brain.iot.robot.api.Cooridinate;
 
+/*
+ * Response of warehouse manager with the new task info to Robot Behavior
+*/
+
 public class TaskInfo extends WarehouseCommand{
 	
 	public Cooridinate pickPoint;
