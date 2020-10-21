@@ -1,6 +1,6 @@
 package eu.brain.iot.robot.events;
 
-import eu.brain.iot.robot.api.Mission;
+import eu.brain.iot.robot.api.Command;
 
 /*
    This event will be automatically created by ROS Edge Node when it receives the five events,
@@ -12,7 +12,7 @@ import eu.brain.iot.robot.api.Mission;
 
 public class QueryStateValueReturn extends RobotCommand {
 	
-	public Mission mission;
+	public Command command;
 	public CurrentState currentState;
 	
 	public static enum CurrentState {

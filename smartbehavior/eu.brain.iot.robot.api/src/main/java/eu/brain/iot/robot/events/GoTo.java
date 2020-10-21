@@ -1,14 +1,15 @@
 package eu.brain.iot.robot.events;
 
 import eu.brain.iot.robot.api.Cooridinate;
-import eu.brain.iot.robot.api.Mission;
+import eu.brain.iot.robot.api.Command;
 
 public class GoTo extends RobotCommand {
 	
 	/* 
-	 * Used for matching with the mission of QueryStateValueReturn received by Robot Behaviour 
+	 * Used for matching with the mission of QueryStateValueReturn received by Robot Behaviour  
+	 * who will know the QueryStateValueReturn is the response of which robot command(goto, pickCart, placeCart)
 	 */
-	public Mission mission = Mission.GOTO;  
+	public Command command = Command.GOTO;  
 
 	public Cooridinate cooridinate;
 }

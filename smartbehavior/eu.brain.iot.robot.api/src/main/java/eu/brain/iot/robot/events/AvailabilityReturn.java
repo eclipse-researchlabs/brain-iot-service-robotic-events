@@ -6,7 +6,7 @@ public class AvailabilityReturn extends RobotCommand {
 	
 	public OperationState operationState;
 	public String navigationType;              // GoToComponent | PickComponent |  PlaceComponent | None
-	public Cooridinate currentLocation;
+	public Cooridinate currentPosition;
 
 	public static enum OperationState {
 		idle, moving;

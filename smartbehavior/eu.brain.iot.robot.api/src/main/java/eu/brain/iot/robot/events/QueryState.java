@@ -1,6 +1,6 @@
 package eu.brain.iot.robot.events;
 
-import eu.brain.iot.robot.api.Mission;
+import eu.brain.iot.robot.api.Command;
 
 /*
  * Check current mission is finished or not if Robot Behavior wants to explicitly check the status
@@ -8,5 +8,5 @@ import eu.brain.iot.robot.api.Mission;
 public class QueryState extends RobotCommand {
 
 	 
-	public Mission mission;
+	public Command mission;
 }

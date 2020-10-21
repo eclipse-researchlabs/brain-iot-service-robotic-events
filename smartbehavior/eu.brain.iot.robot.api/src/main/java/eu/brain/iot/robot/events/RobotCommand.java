@@ -6,5 +6,5 @@ public abstract class RobotCommand extends BrainIoTEvent {
 
 	public static final int ALL_ROBOTS = -1;
 	
-	public int robotId;
+	public int robotID;
 }

@@ -1,12 +1,13 @@
 package eu.brain.iot.robot.events;
 
-import eu.brain.iot.robot.api.Mission;
+import eu.brain.iot.robot.api.Command;
 
 public class PlaceCart extends RobotCommand {
 
 	/* 
-	 * Used for matching with the mission of QueryStateValueReturn received by Robot Behaviour 
+	 * Used for matching with the command field of QueryStateValueReturn received by Robot Behaviour  
+	 * who will know the QueryStateValueReturn is the response of which robot command(goto, pickCart, placeCart)
 	 */
-	public Mission mission = Mission.PLACE;
+	public Command command = Command.PLACE;
 	
 }
