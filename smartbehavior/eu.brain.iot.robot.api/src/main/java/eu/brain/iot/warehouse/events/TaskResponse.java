@@ -6,7 +6,9 @@ import eu.brain.iot.robot.api.Cooridinate;
  * Response of warehouse manager with the new task info to Robot Behavior
 */
 
-public class TaskInfo extends WarehouseCommand{
+public class TaskResponse extends WarehouseCommand{
+	
+	public boolean hasNewTask = false;
 	
 	public Cooridinate pickPoint;
 	
