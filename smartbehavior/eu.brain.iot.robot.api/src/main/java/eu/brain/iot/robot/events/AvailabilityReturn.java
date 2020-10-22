@@ -5,11 +5,15 @@ import eu.brain.iot.robot.api.Cooridinate;
 public class AvailabilityReturn extends RobotCommand {
 	
 	public OperationState operationState;
-	public String navigationType;              // GoToComponent | PickComponent |  PlaceComponent | None
+	public NavigationType navigationType;              // GoToComponent | PickComponent |  PlaceComponent | None
 	public Cooridinate currentPosition;
 
 	public static enum OperationState {
 		idle, moving;
+	}
+	
+	public static enum NavigationType {
+		GoToComponent, PickComponent, PlaceComponent, None;
 	}
 }
 

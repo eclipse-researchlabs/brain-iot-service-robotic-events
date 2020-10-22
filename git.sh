@@ -1,5 +1,5 @@
 #!/bin/bash
 git add . 
-git commit -m 'add hasNewTask field'
+git commit -m 'events updates'
 git push -u origin master
 
