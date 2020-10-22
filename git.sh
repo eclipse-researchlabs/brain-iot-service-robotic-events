@@ -1,5 +1,5 @@
 #!/bin/bash
 git add . 
-git commit -m 'events updates'
+git commit -m 'add NoCartNotice event'
 git push -u origin master
 
