@@ -1,5 +1,5 @@
 #!/bin/bash
 git add . 
-git commit -m 'add CartMovedNotice event'
+git commit -m 'update readme to add workflow and sequence diagram'
 git push -u origin master
 
