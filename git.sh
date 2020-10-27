@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'update readme and bndrun file'
+git commit -m 'add ci'
 git push -u origin master
 
