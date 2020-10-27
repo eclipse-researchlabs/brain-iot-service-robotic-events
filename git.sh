@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'add ci'
+git commit -m 'update repo structure'
 git push -u origin master
 

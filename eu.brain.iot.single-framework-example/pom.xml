@@ -15,11 +15,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.single-framework-example</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>osgi-api</artifactId>
 			<type>pom</type>
@@ -67,7 +62,7 @@
 					<includeJar>true</includeJar>
 				</configuration>
 			</plugin>
-			<plugin>
+		<!--	<plugin>
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-export-maven-plugin</artifactId>
 				<configuration>
@@ -75,7 +70,7 @@
 						<bndrun>eu.brain.iot.single-framework-example.bndrun</bndrun>
 					</bndruns>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-resolver-maven-plugin</artifactId>
