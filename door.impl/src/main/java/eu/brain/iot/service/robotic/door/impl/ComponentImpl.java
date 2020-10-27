@@ -74,7 +74,7 @@ public class ComponentImpl implements SmartBehaviour<DoorStatusRequest> {
 		worker = Executors.newSingleThreadExecutor();
 		
 		worker.execute(() -> {
-			cmd.writeCloseDoor(config.host(), config.port(), config.path());
+		//	cmd.writeCloseDoor(config.host(), config.port(), config.path());
 			door.setOpen(false);
 		});
 		
