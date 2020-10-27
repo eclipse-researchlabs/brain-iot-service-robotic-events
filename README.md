@@ -1,9 +1,11 @@
 # Robotics-Events
 
-This repository defines the Events to be used in the updated Service Robotics use case. It contains the following packages:
+This repository defines the Events in the `eu.brain.iot.robot.api` sub-project to be used in the updated Service Robotics use case. It contains the following packages:
 
 * **eu.brain.iot.robot.events**  (contains events between robot behaviour and ROS Edge Node)
 * **eu.brain.iot.warehouse.events**   (contains events between robot behaviour and Warehouse Manager)
+
+This repository also contains the door.api, door.impl, single-framework-example projects updated based on the M18 version, to be used in updated use case later.
 
 See [BRAIN-IoT Events Word file](https://istitutoboella-my.sharepoint.com/:w:/g/personal/pert-projects_ismb_it/EaXDJA-FWppKsPSoleB5INsBm7kAwY1yRTDb9p4A0NZdZQ?e=yTaiG6) the detailed explaination of events.
 

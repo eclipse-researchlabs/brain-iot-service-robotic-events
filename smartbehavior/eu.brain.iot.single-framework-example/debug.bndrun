@@ -6,7 +6,12 @@ test-index: target/test-index.xml;name="eu.brain.iot.single-framework-example Te
 
 -runproperties: \
 	osgi.console=,\
-	osgi.console.enable.builtin=false
+	osgi.console.enable.builtin=false,\
+	org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog,\
+	org.eclipse.jetty.LEVEL=WARN,\
+	org.apache.felix.log.storeDebug=false,\
+	org.osgi.service.http.port=8081,\
+	org.osgi.service.log.admin.loglevel=WARN
 
 -runrequires.debug: osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole)',\
  osgi.identity;filter:='(osgi.identity=org.apache.felix.webconsole.plugins.ds)',\
