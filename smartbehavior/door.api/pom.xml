@@ -9,9 +9,9 @@
 		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>eu.brain.iot.robot.api</artifactId>
+	<artifactId>door.api</artifactId>
 
-	<description>The eu.brain.iot.robot.api API bundle - built using OSGi enRoute R7</description>
+	<description>The door.api API bundle - built using OSGi enRoute R7</description>
 
 	<dependencies>
 		<dependency>
@@ -19,10 +19,12 @@
 			<artifactId>osgi-api</artifactId>
 			<type>pom</type>
 		</dependency>
+
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.api</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -144,12 +144,6 @@
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.aries.jax.rs</groupId>
-				<artifactId>org.apache.aries.jax.rs.jackson</artifactId>
-				<version>1.0.2</version>
-				<scope>runtime</scope>
-			</dependency>
-			<dependency>
 				<groupId>com.paremus.brain.iot</groupId>
 				<artifactId>eventing.impl</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
@@ -160,6 +154,29 @@
 				<artifactId>message.integrity.insecure.impl</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 				<scope>runtime</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.aries.jax.rs</groupId>
+				<artifactId>org.apache.aries.jax.rs.jackson</artifactId>
+				<version>1.0.2</version>
+				<scope>runtime</scope>
+			</dependency>
+
+
+
+			<!-- Upgrade the version of Mockito so that it works with JDK 11 -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>2.23.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.aries.spec</groupId>
+				<artifactId>org.apache.aries.javax.jax.rs-api</artifactId>
+				<version>1.0.1</version>
+				<scope>compile</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -309,5 +326,8 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
 	</build>
 	<modules>
 		<module>eu.brain.iot.robot.api</module>
+		<module>door.api</module>
+		<module>door.impl</module>
+		<module>eu.brain.iot.single-framework-example</module>
 	</modules>
 </project>
