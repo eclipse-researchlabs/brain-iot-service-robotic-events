@@ -1,15 +1,15 @@
 package eu.brain.iot.robot.api;
 
-public class Cooridinate {
+public class Coordinate {
 	double x = 0;
 	double y = 0;
 	double z = 0;
 	
-	public Cooridinate() {
+	public Coordinate() {
 
 	}
 	
-	public Cooridinate(double x, double y, double z) {
+	public Coordinate(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

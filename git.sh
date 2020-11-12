@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'update workflow in SIM and Real robot'
+git commit -m 'add current states: unknown, finished, queued, running, paused'
 git push -u origin master
 

@@ -6,7 +6,7 @@ public class PlaceCart extends RobotCommand {
 
 	/* 
 	 * Used for matching with the command field of QueryStateValueReturn received by Robot Behaviour  
-	 * who will know the QueryStateValueReturn is the response of which robot command(goto, pickCart, placeCart)
+	 * who will know the QueryStateValueReturn is the response of which robot command(WriteGoTo, pickCart, placeCart)
 	 */
 	public Command command = Command.PLACE;
 	

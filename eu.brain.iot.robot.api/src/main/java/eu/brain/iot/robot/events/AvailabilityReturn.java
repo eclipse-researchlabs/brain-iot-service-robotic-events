@@ -1,12 +1,12 @@
 package eu.brain.iot.robot.events;
 
-import eu.brain.iot.robot.api.Cooridinate;
+import eu.brain.iot.robot.api.Coordinate;
 
 public class AvailabilityReturn extends RobotCommand {
 	
 	public OperationState operationState;
 	public NavigationType navigationType;              // GoToComponent | PickComponent |  PlaceComponent | None
-	public Cooridinate currentPosition;
+	public Coordinate currentPosition;
 
 	public static enum OperationState {
 		idle, moving;

@@ -1,6 +1,6 @@
 package eu.brain.iot.warehouse.events;
 
-import eu.brain.iot.robot.api.Cooridinate;
+import eu.brain.iot.robot.api.Coordinate;
 
 /*
  * The dockAuxliaryPoint field is fixed point for a specific robot in the storage side in front of Door on the way to docking area. 
@@ -9,8 +9,8 @@ import eu.brain.iot.robot.api.Cooridinate;
 
 public class DockingResponse extends WarehouseCommand{
 	
-	public Cooridinate dockingPoint;
+	public Coordinate dockingPoint;
 
 	
-	public Cooridinate dockAuxliaryPoint;
+	public Coordinate dockAuxliaryPoint;
 }

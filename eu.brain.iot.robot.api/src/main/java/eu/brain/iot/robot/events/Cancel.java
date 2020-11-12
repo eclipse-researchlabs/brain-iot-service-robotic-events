@@ -4,7 +4,7 @@ import eu.brain.iot.robot.api.Command;
 
 public class Cancel extends RobotCommand {
 	
-	// sent by Robot Behavior, ROS Edge Node will cancel the current mission
+	// sent by Robot Behavior, ROS Edge Node will cancel the current action
 	
-	public Command mission;
+	public Command command;
 }
