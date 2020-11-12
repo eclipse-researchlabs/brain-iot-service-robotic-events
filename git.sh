@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'door is closed at beginning'
+git commit -m 'update workflow in SIM and Real robot'
 git push -u origin master
 

@@ -6,6 +6,6 @@ public class WarehouseCommand extends BrainIoTEvent {
 	
 	public static final int ALL_ROBOT_BEHAVIOURS = -1;
 	
-	public int robotBehaviorID;
+	public int robotID;
 
 }
