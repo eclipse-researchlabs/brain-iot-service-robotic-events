@@ -1,4 +1,4 @@
--include: ~eu.brain.iot.single-framework-example.bndrun
+-include: ~RobotBehaviour-Door.bndrun
 
 test-index: target/test-index.xml;name="eu.brain.iot.single-framework-example Test"
 

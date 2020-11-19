@@ -11,16 +11,8 @@
         "path": "/door1/door_controller/command"},
     
     
-    "eu.brain.iot.example.robot.Robot~robotA": {
-           "host": "localhost", 
-           "port": "8080",
-           "id": 1},
-    "eu.brain.iot.example.robot.Robot~robotB": {
-           "host": "localhost", 
-           "port": "8080",
-           "id": 2},
-    "eu.brain.iot.example.robot.Robot~robotC": {
-          "host": "localhost", 
-          "port": "8080",
-          "id": 3}
+    "eu.brain.iot.robot.behaviour.Behaviour~BehaviourA": {
+           "name": "RB1",
+           "id": 1
+    }
 }

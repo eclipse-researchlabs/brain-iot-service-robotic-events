@@ -11,5 +11,5 @@ public class WriteGoTo extends RobotCommand {
 	 */
 	public Command command = Command.GOTO;  
 
-	public Coordinate cooridinate;
+	public Coordinate coordinate;
 }
