@@ -111,6 +111,13 @@ Then:
 $ java -jar RosEdgeNode.jar
 ```
 
+## Shared tables
+The four tables in wiki managed by warehouse backend has been updated using the coordinates in simulation, it's waiting for the confirmation from **Robotnik**. Generally the layout of the points is shown in Stage GUI:
+
+![image](./Tables_Info_in_StageGUI.png)
+
+
+
 
 *Welcome to review and give comments*
 
