@@ -1,6 +1,7 @@
 package eu.brain.iot.robot.events;
 
 import eu.brain.iot.robot.api.Coordinate;
+import eu.brain.iot.robot.api.RobotCommand;
 
 public class AvailabilityReturn extends RobotCommand {
 	

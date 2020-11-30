@@ -1,6 +1,8 @@
 package eu.brain.iot.warehouse.events;
 
-public class NewStoragePointRequest extends WarehouseCommand{
+import eu.brain.iot.robot.api.RobotCommand;
+
+public class NewStoragePointRequest extends RobotCommand{
 
 	public int markerID;  // cart marker ID, is used to identify the Place position.
 	

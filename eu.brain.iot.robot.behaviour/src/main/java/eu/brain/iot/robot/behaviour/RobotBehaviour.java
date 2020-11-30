@@ -29,7 +29,7 @@ import eu.brain.iot.robot.api.Command;
 import eu.brain.iot.robot.api.Coordinate;
 import eu.brain.iot.robot.events.*;
 import eu.brain.iot.robot.events.QueryStateValueReturn.CurrentState;
-import eu.brain.iot.robot.events.RobotCommand;
+import eu.brain.iot.robot.api.RobotCommand;
 import eu.brain.iot.warehouse.events.CartMovedNotice;
 import eu.brain.iot.warehouse.events.CartNoticeResponse;
 import eu.brain.iot.warehouse.events.DockingResponse;

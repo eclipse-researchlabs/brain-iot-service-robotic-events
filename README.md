@@ -96,7 +96,7 @@ DOOR REST Service Invoked Successfully..
 ```
 
 ## Run RosEdgeNode.jar
-this jar packages the ros edge node, door behaviour and the robot behaviour implemented by LINKS based on the old events defined by UGA. this jar will control one robot in the simulation to move all three carts, and the corresponding coordinates are hard-coded. the Door behaviour is the one for M18, it will directly open the simulated door.
+this jar packages the ros edge node, door behaviour and the robot behaviour implemented by LINKS based on the old events defined by UGA. this jar will control one robot in the simulation to move all three carts, and the corresponding coordinates are hard-coded. the Door behaviour is the one used in M18, it will directly open the simulated door. The jar will use the `localhost` to connect to the ROS simulation.
 
 Start the ROS simulation (be careful about the `$HOME`):
 ```bash
@@ -112,7 +112,7 @@ $ java -jar RosEdgeNode.jar
 ```
 
 ## Shared tables
-The four tables in wiki managed by warehouse backend has been updated using the coordinates in simulation, it's waiting for the confirmation from **Robotnik**. Generally the layout of the points is shown in Stage GUI:
+The four tables in [wiki](https://wiki.repository-pert.ismb.it/xwiki-enterprise-web-7.4.5/wiki/brainiot/view/Main/WP3+IoT+Framework+for+smart+dynamic+behaviour+%5BLeader%3A+ISMB/WP3_Activity_2020/) managed by warehouse backend has been updated using the coordinates in simulation, it's waiting for the confirmation from **Robotnik**. Generally the layout of the points is shown in Stage GUI:
 
 ![image](./Tables_Info_in_StageGUI.png)
 

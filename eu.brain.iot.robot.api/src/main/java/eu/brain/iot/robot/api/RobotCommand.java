@@ -1,4 +1,4 @@
-package eu.brain.iot.robot.events;
+package eu.brain.iot.robot.api;
 
 import eu.brain.iot.eventing.api.BrainIoTEvent;
 

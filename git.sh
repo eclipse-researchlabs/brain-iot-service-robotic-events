@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'add Tables_Info_in_StageGUI.png'
+git commit -m 'add robotIP property in DockingRequest event'
 git push -u origin master
 

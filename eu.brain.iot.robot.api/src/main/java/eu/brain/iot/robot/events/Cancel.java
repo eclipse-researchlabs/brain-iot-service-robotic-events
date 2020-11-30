@@ -1,6 +1,7 @@
 package eu.brain.iot.robot.events;
 
 import eu.brain.iot.robot.api.Command;
+import eu.brain.iot.robot.api.RobotCommand;
 
 public class Cancel extends RobotCommand {
 	

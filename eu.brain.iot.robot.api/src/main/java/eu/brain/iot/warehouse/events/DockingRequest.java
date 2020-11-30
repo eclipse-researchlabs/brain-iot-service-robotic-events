@@ -1,6 +1,9 @@
 package eu.brain.iot.warehouse.events;
 
-public class DockingRequest extends WarehouseCommand{
-	
+import eu.brain.iot.robot.api.RobotCommand;
 
+public class DockingRequest extends RobotCommand{
+	
+	public String robotIP;
+	
 }
