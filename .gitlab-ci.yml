@@ -19,6 +19,7 @@ cache:
 sfi-build:
   stage: build
   script:
+    - mvn -version
     - mvn $MAVEN_CLI_OPTS package
 
 bus-test:

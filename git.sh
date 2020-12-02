@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'REMOVE robotIP property in DockingRequest event, keep the same as before'
+git commit -m 'test mvn version'
 git push -u origin master
 
