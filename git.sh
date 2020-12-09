@@ -1,5 +1,5 @@
 #!/bin/bash
 git add .
-git commit -m 'test mvn version'
+git commit -m 'add eu.brain.iot.warehouse.sensinact.api project'
 git push -u origin master
 
