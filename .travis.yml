@@ -32,13 +32,12 @@ before_install:
     - unzip -qq apache-maven-3.6.3-bin.zip
     - export M2_HOME=$PWD/apache-maven-3.6.3
     - export PATH=$M2_HOME/bin:$PATH
-    - cd robotics-events
 
 install:
-    - mvn $MAVEN_CLI_OPTS package
+    - mvn $MAVEN_CLI_OPTS package bnd-resolver:resolve
 
 script:
-    - mvn $MAVEN_CLI_OPTS clean verify 
+    - mvn $MAVEN_CLI_OPTS clean verify bnd-export:export
 
 
 after_success:
