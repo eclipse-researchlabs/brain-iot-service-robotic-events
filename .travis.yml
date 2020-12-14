@@ -25,7 +25,7 @@ env:
 # Cache downloaded dependencies and plugins between builds.
 cache:
   directories:
-    - $HOME/robotics-events/.m2/repository
+    - $HOME/.m2/repository
 
 before_install:
     - wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
