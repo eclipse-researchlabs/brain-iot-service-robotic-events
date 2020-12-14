@@ -37,11 +37,11 @@ install:
     - mvn $MAVEN_CLI_OPTS package bnd-resolver:resolve
 
 script:
-    - mvn $MAVEN_CLI_OPTS clean verify bnd-export:export
+    - mvn $MAVEN_CLI_OPTS bnd-export:export
 
 
 after_success:
-     - mvn $MAVEN_CLI_OPTS $MAVEN_DEPLOY_OPTS clean package org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy
+     - mvn $MAVEN_CLI_OPTS $MAVEN_DEPLOY_OPTS org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy
 
 
 #end
