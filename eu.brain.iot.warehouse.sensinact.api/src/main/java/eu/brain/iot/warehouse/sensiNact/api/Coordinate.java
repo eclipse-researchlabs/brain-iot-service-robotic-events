@@ -1,4 +1,4 @@
-package eu.brain.iot.warehouse.sensinact.api;
+package eu.brain.iot.warehouse.sensiNact.api;
 
 public class Coordinate {
 	double x = 0;
@@ -35,7 +35,7 @@ public class Coordinate {
 	}
 	@Override
 	public String toString() {
-		return "Cooridinate [x=" + x + ", y=" + y + ", z=" + z + "]";
+		return "[x=" + x + ", y=" + y + ", z=" + z + "]";
 	}
 
 	

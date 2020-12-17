@@ -39,7 +39,7 @@ clone the repository
 ```bash
 $ cd robotics-events
 $ mvn clean package      # or "mvn clean install...."
-$ bnd-resolver:resolve bnd-export:export  
+$ mvn bnd-resolver:resolve bnd-export:export  
 ```
 Note: the `smart-behaviour-maven-plugin` has already been added in the pom.xml of robot behaviour project to package it as a smart behaviour, each build must have the `clean` phase to remove the `smart-behaviour` directory in target folder
 

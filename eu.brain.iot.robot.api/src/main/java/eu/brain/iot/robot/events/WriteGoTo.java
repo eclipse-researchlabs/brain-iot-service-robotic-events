@@ -1,6 +1,5 @@
 package eu.brain.iot.robot.events;
 
-import eu.brain.iot.robot.api.Coordinate;
 import eu.brain.iot.robot.api.RobotCommand;
 import eu.brain.iot.robot.api.Command;
 
@@ -12,5 +11,5 @@ public class WriteGoTo extends RobotCommand {
 	 */
 	public Command command = Command.GOTO;  
 
-	public Coordinate coordinate;
+	public String coordinate;
 }

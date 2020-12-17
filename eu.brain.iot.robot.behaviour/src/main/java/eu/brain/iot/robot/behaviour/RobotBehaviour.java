@@ -32,12 +32,14 @@ import eu.brain.iot.robot.events.QueryStateValueReturn.CurrentState;
 import eu.brain.iot.robot.api.RobotCommand;
 import eu.brain.iot.warehouse.events.CartMovedNotice;
 import eu.brain.iot.warehouse.events.CartNoticeResponse;
+import eu.brain.iot.warehouse.events.DockingRequest;
 import eu.brain.iot.warehouse.events.DockingResponse;
 import eu.brain.iot.warehouse.events.NewPickPointRequest;
 import eu.brain.iot.warehouse.events.NewPickPointResponse;
 import eu.brain.iot.warehouse.events.NewStoragePointRequest;
 import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
+import eu.brain.iot.warehouse.events.WarehouseCommand;
 
 
 @Component(
@@ -54,21 +56,19 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
     private int robotID;
+    private static volatile String robotIP;
 	private boolean isRobotReady=false;
-	private QueryStateValueReturn queryReturn;
-	private int markerID = 0;
-	private NewPickPointResponse pickResponse = null;
-	private NewStoragePointResponse storageResponse = null;
-	private DockingResponse dockingResponse = null;
-	private CartNoticeResponse cartNoticeResponse = null;
+	private static volatile QueryStateValueReturn queryReturn;
+	private static volatile int markerID = 0;
+	private static volatile NewPickPointResponse pickResponse = null;
+	private static volatile NewStoragePointResponse storageResponse = null;
+	private static volatile DockingResponse dockingResponse = null;
+	private static volatile CartNoticeResponse cartNoticeResponse = null;
 
 	
 	@ObjectClassDefinition
 	public static @interface Config {
 		
-		@AttributeDefinition(description = "The name of the robot behaviour")
-		String name();
-
 		@AttributeDefinition(description = "The identifier for the robot behaviour")
 		int id();
 
@@ -85,7 +85,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	void activate(BundleContext context, Config config, Map<String,Object> props){
     	
 	    this.config=config;
-	    System.out.println("\n Hello!  I am robotBehavior : "+config.id()+ "  name = "+config.name());
+	    this.robotID=config.id();
+	    
+	    System.out.println("\n Hello!  I am robotBehavior : "+robotID);
 	    
 	    worker = Executors.newFixedThreadPool(10);
 
@@ -94,12 +96,12 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 			
 			serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter", 
-		    String.format("(|(robotID=%s)(robotID=%s))", config.id(), RobotCommand.ALL_ROBOTS));
+		    String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
 			
-			System.out.println("+++++++++ filter = "+serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
+			System.out.println("+++++++++ Robot Behaviour filter = "+serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
 			reg = context.registerService(SmartBehaviour.class, this, serviceProps);
 
-		this.robotID=config.id();
+		
 
 	}
     
@@ -149,18 +151,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						if(response.currentState == State.OPEN) {
 							System.out.println("-->RB" + robotID + " door is opened successfully!!!!");
 						}
-					
-
-		} 
-		
-		
+		}
 	}
 	
 
 	
-	private WriteGoTo createWriteGoTo(Coordinate coordinate) {
+	private WriteGoTo createWriteGoTo(String coordinate) {
 		WriteGoTo writeGoTo = new WriteGoTo();
-		writeGoTo.robotID=robotID;
+		writeGoTo.robotID = robotID;
 		writeGoTo.coordinate = coordinate;
 		return writeGoTo;
 	}
@@ -191,16 +189,24 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	
 	private CartMovedNotice createCartMovedNotice() {
 		CartMovedNotice cartMovedNotice=new CartMovedNotice();
-		cartMovedNotice.robotID=robotID;
+		// the shared warehouse backend will receive all events with robotBehaviorID=-1, not only the events from a specific robot behaviour
+		cartMovedNotice.robotBehaviorID = WarehouseCommand.ALL_ROBOT_BEHAVIOURS;  // the default robotBehaviorID = -1, so this statement could also be removed
 		cartMovedNotice.pickPoint = pickResponse.pickPoint;
 		return cartMovedNotice;
 	}
 	
 	private NoCartNotice createNoCartNotice() {
 		NoCartNotice noCartNotice=new NoCartNotice();
-		noCartNotice.robotID=robotID;
+		// the shared warehouse backend will receive all events with robotBehaviorID=-1, not only the events from a specific robot behaviour
+		noCartNotice.robotBehaviorID = WarehouseCommand.ALL_ROBOT_BEHAVIOURS;
 		noCartNotice.pickPoint = pickResponse.pickPoint;
 		return noCartNotice;
+	}
+	
+	private DockingRequest createDockingRequest() {
+		DockingRequest dockingRequest = new DockingRequest();
+		dockingRequest.robotIP = robotIP;
+		return dockingRequest;
 	}
 	
 
