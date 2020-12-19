@@ -52,6 +52,12 @@
     <artifactId>jackson-databind</artifactId>
     <version>2.10.0</version>
 </dependency>
+         <dependency>
+            <groupId>com.paremus.brain.iot</groupId>
+            <artifactId>message.integrity.insecure.impl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
      </dependencies>
 
     <build>
