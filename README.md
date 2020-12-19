@@ -7,3 +7,4 @@
 *  4- Go to http://localhost:8080/main
 *  5- Type the ip address and port (IP:10.8.0.50 PORT:8080)
 *  6- If the page returned =>" Host : 10.8.0.50 is reachable "  Then the server is available and robots will start 
+
