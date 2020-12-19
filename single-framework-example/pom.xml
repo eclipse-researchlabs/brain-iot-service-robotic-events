@@ -78,7 +78,7 @@
                     <includeJar>true</includeJar>
                 </configuration>
             </plugin>
-            <plugin>
+      <!--      <plugin>
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-export-maven-plugin</artifactId>
                 <configuration>
@@ -86,7 +86,7 @@
                         <bndrun>debug.bndrun</bndrun>
                     </bndruns>
                 </configuration>
-            </plugin>
+            </plugin>  -->
             <plugin>
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-resolver-maven-plugin</artifactId>
