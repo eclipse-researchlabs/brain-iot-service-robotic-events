@@ -1,49 +1,25 @@
-# BRAIN-IoT service robotic .travis-ci.yml
-# https://docs.gitlab.com/ce/ci/yaml/
-
-# docker image with maven 3 and java 11
-#image: maven:3-jdk-11
-
-################
-### Language ###
-################
 language: java
-
-###########
-### JDK ###
-###########
 jdk:
-  - oraclejdk11
-
-
+- oraclejdk11
 env:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   MAVEN_CLI_OPTS: "'-s .m2/settings.xml -B'"
-  MAVEN_DEPLOY_OPTS: "'-DaltReleaseDeploymentRepository=brain-iot-releases::default::https://nexus.repository-pert.ismb.it/repository/maven-releases -DaltSnapshotDeploymentRepository=brain-iot-snapshots::default::https://nexus.repository-pert.ismb.it/repository/maven-snapshots'"
-#  CI_DEBUG_TRACE: "true"
-
-
-  
-# Cache downloaded dependencies and plugins between builds.
+  MAVEN_DEPLOY_OPTS: "'-DaltReleaseDeploymentRepository=brain-iot-releases::default::https://nexus.repository-pert.ismb.it/repository/maven-releases
+    -DaltSnapshotDeploymentRepository=brain-iot-snapshots::default::https://nexus.repository-pert.ismb.it/repository/maven-snapshots'"
+  global:
+  - secure: uVQgDkn6u+I4gghOGn0W1YigU5Yl+B15Ro5xIHWzic1gWtYR+auwmT8AxymI+gvtBiZzSIdbyuNOWy93Y1BZE1ejh82GU4Hq4dI92qdJH5UI4sM6hVzyqS78M7WQJFRx0ipyC5yBgWnMnZM7N2vH2WoqZ0C/t+tR1xTk17tzei1AN/WNiS1E2n1LHIgDmAON3XyV66dPn5HXFcqpIEUit4NSiyuxhZlPj+iEAbrhFnCbYsJVQ5FxR/FUV1paqg7NFuMVsxCcpgNMZ4HQawwk2U2eXbeFynCBOqetCUDMLt90a7wImo5sRSZEFI8dPBWFMWQLJMAbSPniRsODKHIve8UMbSvWcqwQfVsS35f+JjnHtbkYdZm9HKtNZRyApZOR1p83ao8HLYgZTxHUlpvTqVnpMB7FRsHJydMQTH3JoSz2z9f2/iJpGaoYrNyfihIYcEDku/HTLmVN0oAXgyNedkQfY3CSSijPx1jf4BHI03FBkEPd0iiT/RS2XAi5kfe/BMVIiLfMZHU6EKVhvRP1YoEnjE/LXQ+DHuPm64s/kwyTWPMLOstes5t6TthZnQ0eceEEMyIJ/De25aCF+X3PCCl3jg6XpCgqFD8pO5YJkE3WaOUToHitoGhV80JfLlpaL8fBIq81k5EeZHgDlfiBsp7y5zJKWjVQCOpT/GLz80c=
+  - secure: wKNwDi+ecc62FY+i7cw1ACSRBLK6qIgqwaqDv7eMFxoDBtQy4rQDipW8bzcOKEmMC1IJS4Iig9Tz2eyxGmdnCkZ8VjT2138iECQYK8ZWCxgpdvaaM9QbmF38ICWEvZaDqTlyUba7I5CnFx9MMnNhyw6PbQN4p/6tK5Fn9faoHJsDdQqikwRqGsDLJmZ3uwnSI7NFBYUPbYVfUAnmtgzH7UNdLQGDy89RdaBW8bCGYbQKn9YUvhwFl+Ky/5EJ6rKxZ7M3DsS3hQPbh4M8hdehgrN3MxX/blQJ3DswOX465OxtaD+uCXsJb/DrXhA8cIoPQGaWYB6m4qGPoxbcfNpxTmM0s7NGVs6ill5+qq7CZufw/LmZNtCjH1pXkJZpxUNVnNCrMVblml/w8YqLaxnZVp1HFtXNMKPwguw6xFxf5FasvAOCn3pTnll+AuzcB3fHnPgcoJvCVCUjKNdQ+bWs6B6D8wVhAAXTaoav2UCq2yEO2KeJcYciWWGO3HZlNIaslHcY6Oh0gLwHbm7FnQl48f8n4kdKezJWOqLb3Nq+cp/jwTj+JcKgLMfNsma8b8r9hU+PHKKW0ZGwkkyhoZW9517FyO9tXFWQTIJz4jxAaP0oAkfCcT3ihH0SFNnipJZxHOBh41OUNf1gr01BuHXdOnNm+JZzp0yf+YXbOAcRCeg=
 cache:
   directories:
-    - $HOME/.m2/repository
-
+  - "$HOME/.m2/repository"
 before_install:
-    - wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
-    - unzip -qq apache-maven-3.6.3-bin.zip
-    - export M2_HOME=$PWD/apache-maven-3.6.3
-    - export PATH=$M2_HOME/bin:$PATH
-
+- wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.zip
+- unzip -qq apache-maven-3.6.3-bin.zip
+- export M2_HOME=$PWD/apache-maven-3.6.3
+- export PATH=$M2_HOME/bin:$PATH
 install:
-    - mvn $MAVEN_CLI_OPTS package bnd-resolver:resolve
-
+- mvn $MAVEN_CLI_OPTS package bnd-resolver:resolve
 script:
-    - mvn $MAVEN_CLI_OPTS bnd-export:export
-
-
+- mvn $MAVEN_CLI_OPTS bnd-export:export
 after_success:
-     - mvn $MAVEN_CLI_OPTS $MAVEN_DEPLOY_OPTS clean package org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy
-
-
-#end
+- mvn $MAVEN_CLI_OPTS $MAVEN_DEPLOY_OPTS clean package org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy
