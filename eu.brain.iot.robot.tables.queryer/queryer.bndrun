@@ -1,0 +1,31 @@
+#-runfw: org.apache.felix.framework;version=5
+-runfw: org.apache.felix.framework;version='[6.0.2,6.0.2]'
+
+-runee: JavaSE-1.8
+
+-runprovidedcapabilities: ${native_capability}
+
+-resolve.effective: active;skip:="osgi.service"
+
+-runrequires: \
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
+	bnd.identity;version='latest';id='eu.brain.iot.robot.tables.queryer',\
+	bnd.identity;id='com.paremus.brain.iot.eventing.impl'
+	
+	
+-runbundles: \
+	com.h2database;version='[1.4.200,1.4.201)',\
+	org.apache.felix.gogo.command;version='[0.16.0,0.16.1)',\
+	org.apache.felix.gogo.runtime;version='[0.16.2,0.16.3)',\
+	org.apache.felix.gogo.shell;version='[0.12.0,0.12.1)',\
+	org.apache.felix.scr;version='[2.1.10,2.1.11)',\
+	com.paremus.brain.iot.eventing.api;version='[0.0.1,0.0.2)',\
+	org.osgi.util.function;version='[1.1.0,1.1.1)',\
+	org.osgi.util.pushstream;version='[1.0.0,1.0.1)',\
+	osgi.promise;version='[7.0.1,7.0.2)',\
+	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.robot.api;version=snapshot,\
+	eu.brain.iot.robot.tables.queryer;version=snapshot
+
+
