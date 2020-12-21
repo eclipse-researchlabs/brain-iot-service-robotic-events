@@ -9,6 +9,7 @@
 
 -runrequires: \
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
+	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer'
 	
 	
