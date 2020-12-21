@@ -52,6 +52,24 @@
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>message.integrity.insecure.impl</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>1.4.200</version>
+</dependency>
+				<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		
+						<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		
      </dependencies>
 
     <build>
@@ -85,13 +103,13 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>RobotBehaviour.bndrun</bndrun>
+								<bndrun>queryer.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+	<!--		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
@@ -101,11 +119,11 @@
 							<goal>smart-behaviour</goal>
 						</goals>
 						<configuration>
-							<bndrun>RobotBehaviour.bndrun</bndrun>
+							<bndrun>queryer.bndrun</bndrun>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 </project>

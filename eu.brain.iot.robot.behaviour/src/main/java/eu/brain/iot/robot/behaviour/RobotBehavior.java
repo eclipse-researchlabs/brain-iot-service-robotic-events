@@ -20,12 +20,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import java.util.function.Predicate;
-
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
-
 import eu.brain.iot.service.robotic.door.api.DoorStatusResponse;
 import eu.brain.iot.service.robotic.door.api.DoorStatusRequest;
+import eu.brain.iot.service.robotic.door.api.DoorStatusRequest.State;
 import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
 import eu.brain.iot.eventing.api.BrainIoTEvent;
 import eu.brain.iot.eventing.api.EventBus;
@@ -456,7 +455,7 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 		} else if (event instanceof DoorStatusResponse) {
 			worker.execute(() -> {
 				DoorStatusResponse response = (DoorStatusResponse) event;
-				if (response.state == State.OPEN) {
+				if (response.currentState == State.OPEN) {
 					isDoorOpen = true;
 					System.out.println("-->RB" + robotID + " door is opened successfully!!!!");
 				}

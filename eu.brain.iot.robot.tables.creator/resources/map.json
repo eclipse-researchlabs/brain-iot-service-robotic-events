@@ -1,0 +1,23 @@
+{ 
+	"Map":{
+		"PlaceCenter":{"y":0,"x":0,"z":-3.14},
+		"PlaceLeft":{"y":-7.75,"x":0,"z":-3.14},
+		"PlaceRight":{"y":7.75,"x":0,"z":-3.14},
+		"UNLOAD":[
+		{
+		    "pickPoseID":1,
+		    "pose":{"y":-3.6,"x":8,"z":-3.14}
+		},
+		{
+		    "pickPoseID":2,
+		    "pose":{"y":-5.5,"x":8,"z":-3.14}
+		},
+		{
+		    "pickPoseID":3,
+		    "pose":{"y":-7.75,"x":8,"z":-3.14}
+		}
+		]
+	}
+
+}
+

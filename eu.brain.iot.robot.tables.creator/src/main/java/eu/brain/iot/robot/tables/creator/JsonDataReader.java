@@ -20,10 +20,14 @@ public class JsonDataReader {
 	protected StorageTable storageTable;
 	protected CartTable cartTable;
 	protected DockTable dockTable;
+	private String jsonFilePath;
 	
+	public JsonDataReader(){}
 
-	public JsonDataReader()
+
+	public JsonDataReader(String jsonFilePath)
 	{
+		this.jsonFilePath = jsonFilePath;
 		loadTables();
 
         System.out.println("--------------------Warehouse Tables---------------------------");
@@ -52,16 +56,17 @@ public class JsonDataReader {
 		}
 
 		try {
-			reader = new JsonReader(new FileReader("resources/Picking_Points.json"));
+			
+			reader = new JsonReader(new FileReader(jsonFilePath+"Picking_Points.json"));
 			pickingTable = gson.fromJson(reader, PickingTable.class);
 			
-			reader = new JsonReader(new FileReader("resources/Storage_Points.json"));
+			reader = new JsonReader(new FileReader(jsonFilePath+"Storage_Points.json"));
 			storageTable = gson.fromJson(reader, StorageTable.class);
 			
-			reader = new JsonReader(new FileReader("resources/Cart_Storage.json"));
+			reader = new JsonReader(new FileReader(jsonFilePath+"Cart_Storage.json"));
 			cartTable = gson.fromJson(reader, CartTable.class);
 			
-			reader = new JsonReader(new FileReader("resources/Docking_Points.json"));
+			reader = new JsonReader(new FileReader(jsonFilePath+"Docking_Points.json"));
 			dockTable = gson.fromJson(reader, DockTable.class);
 			
 		} catch (FileNotFoundException e) {

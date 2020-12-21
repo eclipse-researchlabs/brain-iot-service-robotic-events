@@ -1,0 +1,21 @@
+{ 
+	"Storage_Points":[
+		{
+		    	"STid" : "ST1",
+		    	"storageAUX":{"x":7.0,"y":-0.6,"z":-3.14},
+		    	"storagePose":{"x":0.0,"y":0.0,"z":-3.14}
+		},
+		{
+		    	"STid" : "ST2",
+		    	"storageAUX":{"x":7.0,"y":0.0,"z":-3.14},
+		    	"storagePose":{"x":0.0,"y":-7.75,"z":-3.14}
+		},
+		{
+		    	"STid" : "ST3",
+		    	"storageAUX":{"x":7.0,"y":0.6,"z":-3.14},
+		    	"storagePose":{"x":0.0,"y":7.75,"z":-3.14}
+		}
+	]
+
+}
+
