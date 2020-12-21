@@ -84,7 +84,7 @@
 				<configuration>
 					<bndruns>
 						
-						<bndrun>TablesCreator.bndrun</bndrun>
+						<bndrun>rb-door-wb.bndrun</bndrun>
 					</bndruns>
 				</configuration>
 			</plugin>
