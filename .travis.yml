@@ -34,11 +34,11 @@ before_install:
     - export PATH=$M2_HOME/bin:$PATH
 
 install:
-    - mvn $MAVEN_CLI_OPTS package bnd-resolver:resolve
+    - mvn $MAVEN_CLI_OPTS package bnd-export:export
 
 script:
-    - mvn $MAVEN_CLI_OPTS bnd-export:export
-
+    - ls $HOME/.m2/repository
+#    - mvn $MAVEN_CLI_OPTS bnd-export:export
 
 after_success:
      - mvn $MAVEN_CLI_OPTS $MAVEN_DEPLOY_OPTS clean package org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy

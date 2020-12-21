@@ -33,7 +33,7 @@ import eu.brain.iot.warehouse.events.NewStoragePointRequest;
 import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
 import eu.brain.iot.robot.api.Coordinate;
-import eu.brain.iot.robot.tables.creator.TablesCreater;
+import eu.brain.iot.robot.tables.creator.api.TableCreator;
 
 
 @Component(service = { TableQueryer.class },
@@ -65,7 +65,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 	private EventBus eventBus;
 	
 	@Reference
-	private TablesCreater tablesCreater;
+	private TableCreator tablesCreater;
 
 	@Activate
 	public void activate(BundleContext context, Map<String, Object> props) throws SQLException {

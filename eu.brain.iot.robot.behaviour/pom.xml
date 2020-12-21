@@ -114,7 +114,7 @@
 					</execution>
 				</executions>
 			</plugin>
-	<!--		<plugin>
+	<!-- -->		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
@@ -128,7 +128,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>-->
+			</plugin>
 		</plugins>
 	</build>
 </project>

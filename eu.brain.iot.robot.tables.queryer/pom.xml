@@ -66,8 +66,9 @@
 		
 						<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
+    <artifactId>eu.brain.iot.robot.tables.creator.api</artifactId>
     <version>0.0.2-SNAPSHOT</version>
+   
 		</dependency>
 		
      </dependencies>
@@ -109,7 +110,7 @@
 					</execution>
 				</executions>
 			</plugin>
-	<!--		<plugin>
+	<!-- -->		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
@@ -123,7 +124,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>-->
+			</plugin>
 		</plugins>
 	</build>
 </project>

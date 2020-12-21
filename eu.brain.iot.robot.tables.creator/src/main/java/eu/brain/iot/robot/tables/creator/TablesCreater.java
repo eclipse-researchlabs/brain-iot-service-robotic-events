@@ -18,6 +18,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
 import eu.brain.iot.eventing.api.BrainIoTEvent;
 import eu.brain.iot.eventing.api.SmartBehaviour;
+import eu.brain.iot.robot.tables.creator.api.TableCreator;
 import eu.brain.iot.robot.tables.jsonReader.CartStorage;
 import eu.brain.iot.robot.tables.jsonReader.CartTable;
 import eu.brain.iot.robot.tables.jsonReader.DockAUX;
@@ -36,13 +37,13 @@ import eu.brain.iot.robot.tables.jsonReader.StorageTable;
 		immediate=true,
 		configurationPid = "eu.brain.iot.robot.tables.creator.TablesCreater", 
 		configurationPolicy = ConfigurationPolicy.REQUIRE, 
-		service = {SmartBehaviour.class, TablesCreater.class}
+		service = {SmartBehaviour.class, TableCreator.class}
 )
 @SmartBehaviourDefinition(consumed = {}, 
 		author = "LINKS", name = "Warehouse Module: Tables Creator", 
 		description = "Implements Four Shared Tables in H2 DB."
 )
-public class TablesCreater implements SmartBehaviour<BrainIoTEvent> {
+public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreator {
 	//Define the connection of database 
 	  private static final String JDBC_URL = "jdbc:h2:./tables;DB_CLOSE_DELAY=-1";//"./tables":DB locaiton;"DB_CLOSE_DELAY=-1":allow single connection 
 
@@ -55,7 +56,7 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent> {
 	  private String jsonFilePath;
 	  
 	  private Connection conn;
-	private Statement stmt;
+	  private Statement stmt;
 	  private JsonDataReader jsonDataReader;
 	  
 	  @ObjectClassDefinition
