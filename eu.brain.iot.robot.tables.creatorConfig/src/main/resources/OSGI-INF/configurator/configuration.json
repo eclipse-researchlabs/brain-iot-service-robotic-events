@@ -1,0 +1,12 @@
+{
+
+    ":configurator:resource-version" : 1,
+    ":configurator:symbolic-name" : "eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creatorConfig.config",
+    ":configurator:version" : "0.0.2-SNAPSHOT",
+    
+    
+    "eu.brain.iot.robot.tables.creator.TablesCreater": {
+           "jsonFilePath": "/home/fabric-n9/resources/"
+    }
+    
+}

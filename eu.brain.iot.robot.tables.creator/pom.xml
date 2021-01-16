@@ -61,12 +61,12 @@
 			<version>2.10.0</version>
 		</dependency>-->
 		
-        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.gogo.shell -->
+        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.gogo.shell 
 <dependency>
     <groupId>org.apache.felix</groupId>
     <artifactId>org.apache.felix.gogo.shell</artifactId>
     <version>0.12.0</version>
-</dependency>
+</dependency>-->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -87,6 +87,12 @@
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.paremus.brain.iot</groupId>
+			<artifactId>message.integrity.insecure.impl</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		   <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
 <dependency>
@@ -123,7 +129,7 @@
 					<includeJar>true</includeJar>
 				</configuration>
 			</plugin>
-			<!-- Validate that the smart behaviour can resolve 
+			<!-- Validate that the smart behaviour can resolve -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-resolver-maven-plugin</artifactId>
@@ -140,7 +146,29 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>-->
+			</plugin>
+			
+			<!-- Define the version of the export plugin we use -->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-export-maven-plugin</artifactId>
+				<version>${bnd.version}</version>
+				<configuration>
+					<bndruns>
+						<bndrun>creator.bndrun</bndrun>
+					</bndruns>
+					<resolve>true</resolve>
+					<failOnChanges>true</failOnChanges>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>export</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 	<!--  -->		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>

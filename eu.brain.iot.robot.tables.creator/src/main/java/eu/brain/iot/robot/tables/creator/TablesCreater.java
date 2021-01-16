@@ -45,7 +45,8 @@ import eu.brain.iot.robot.tables.jsonReader.StorageTable;
 )
 public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreator {
 	//Define the connection of database 
-	  private static final String JDBC_URL = "jdbc:h2:./tables;DB_CLOSE_DELAY=-1";//"./tables":DB locaiton;"DB_CLOSE_DELAY=-1":allow single connection 
+	
+	//  private static final String JDBC_URL = "jdbc:h2:./tables;DB_CLOSE_DELAY=-1";//"./tables":DB locaiton;"DB_CLOSE_DELAY=-1":allow single connection 
 
 	  private static final String USER = "RosEdgeNode";
 
@@ -63,7 +64,8 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 		public static @interface Config {
 
 			@AttributeDefinition(description = "The identifier for the robot behaviour")
-			String jsonFilePath();
+			
+			String jsonFilePath();  // /home/fabric-n9/resources/
 
 		}
 
@@ -85,6 +87,14 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 		
 		try {
 			
+			String home  = System.getenv("HOME");
+			if(!home.endsWith(File.separator)) {
+				home+=File.separator;
+			}
+			// /home/fabric-n9/tables
+			final String JDBC_URL = "jdbc:h2:"+home+"tables;DB_CLOSE_DELAY=-1";
+			
+			System.out.println("Table Creator is creating "+home+"tables..........");
 			
 			Class.forName(DRIVER_CLASS);
 
@@ -96,8 +106,8 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 			initCartTable(stmt);
 			initDockTable(stmt);
 
-		//	stmt.close();
-		//	conn.close();
+			stmt.close(); // TODO don't close it if it's a referenced osgi service
+			conn.close();
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

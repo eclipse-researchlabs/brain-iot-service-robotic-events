@@ -47,10 +47,17 @@
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.impl</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>message.integrity.insecure.impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>1.0.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 <dependency>
@@ -58,11 +65,17 @@
     <artifactId>h2</artifactId>
     <version>1.4.200</version>
 </dependency>
+
+<!-- <dependency>
+    <groupId>org.apache.felix</groupId>
+    <artifactId>org.apache.felix.gogo.shell</artifactId>
+    <version>1.1.4</version>
+</dependency>
 				<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
 			<version>1.0.2</version>
-		</dependency>
+		</dependency> -->
 		
 						<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
@@ -110,6 +123,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- Define the version of the export plugin we use -->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-export-maven-plugin</artifactId>
+				<version>${bnd.version}</version>
+				<configuration>
+					<bndruns>
+						<bndrun>queryer.bndrun</bndrun>
+					</bndruns>
+					<resolve>true</resolve>
+					<failOnChanges>true</failOnChanges>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>export</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 	<!-- -->		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>

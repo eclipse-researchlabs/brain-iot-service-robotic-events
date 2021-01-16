@@ -46,8 +46,7 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 @Component(
 		configurationPid = "eu.brain.iot.example.robot.RobotBehavior", 
 		configurationPolicy = ConfigurationPolicy.REQUIRE, 
-		service = {
-				/*SmartBehaviour.class*/ })
+		service = {})
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
 		DoorStatusResponse.class, AvailabilityReturn.class}, 
 		author = "LINKS", name = "Robot Behavior", 

@@ -1,5 +1,6 @@
 package eu.brain.iot.robot.tables.queryer;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,7 +38,7 @@ import eu.brain.iot.robot.tables.creator.api.TableCreator;
 
 
 @Component(service = { TableQueryer.class },
-					   immediate = true)
+		   immediate = true)
 @SmartBehaviourDefinition(
 		consumed = { NewPickPointRequest.class, NewStoragePointRequest.class, NoCartNotice.class,
 		CartMovedNotice.class, DockingRequest.class }, 
@@ -46,9 +47,10 @@ import eu.brain.iot.robot.tables.creator.api.TableCreator;
 
 public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO must able to cache multiple requests
 
-	private static String base = "/home/rui/git/ros-edge-node/eu.brain.iot.robot.tables.creator";
+//	private static String base = "/home/rui/git/ros-edge-node/eu.brain.iot.robot.tables.creator";
+//		private static String base = "/home/fabric-n9";
 
-	private static final String JDBC_URL = "jdbc:h2:" + base + "/tables;DB_CLOSE_DELAY=-1";
+//	private static final String JDBC_URL = "jdbc:h2:" + base + "/tables;DB_CLOSE_DELAY=-1";
 
 	private static final String USER = "RosEdgeNode";
 
@@ -64,8 +66,11 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 	@Reference
 	private EventBus eventBus;
 	
-	@Reference
-	private TableCreator tablesCreater;
+	// Question: can tablesCreater be referenced from a different osgi FW in same node or different node in fabric?
+	
+	// TODO: MUST run with creator to install, but // TODO don't close it if it's a referenced osgi service
+//	@Reference
+//	private TableCreator tablesCreater;
 
 	@Activate
 	public void activate(BundleContext context, Map<String, Object> props) throws SQLException {
@@ -73,11 +78,23 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			System.out.println("\nHello, this is Table Queryer !");
 			
 			Class.forName(DRIVER_CLASS);
-
-	//		conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
-	//		stmt = conn.createStatement();
-			conn = tablesCreater.getConn();
-			stmt = tablesCreater.getStmt();
+			
+//-----------------------todo------------------------------
+			String home  = System.getenv("HOME");
+			if(!home.endsWith(File.separator)) {
+				home+=File.separator;
+			}
+			// /home/fabric-n9/tables
+			final String JDBC_URL = "jdbc:h2:"+home+"tables;DB_CLOSE_DELAY=-1";
+			
+			System.out.println("Table Queryer is reading "+home+"tables..........");
+			
+			conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+			stmt = conn.createStatement();
+//-----------------------------------------------------			
+			
+	//		conn = tablesCreater.getConn();
+	//		stmt = tablesCreater.getStmt();
 
 			worker = Executors.newFixedThreadPool(10);
 			

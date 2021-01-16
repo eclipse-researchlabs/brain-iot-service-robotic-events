@@ -57,11 +57,13 @@
 			<groupId>eu.brain.iot.service.robotic</groupId>
     <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
     <version>0.0.2-SNAPSHOT</version>
+    <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
     <artifactId>eu.brain.iot.robot.tables.queryer</artifactId>
     <version>0.0.2-SNAPSHOT</version>
+    <scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -88,9 +90,9 @@
 					</bndruns>
 				</configuration>
 			</plugin>
+			
 	<!--		<plugin>
-	<bndrun>RobotBehaviour-Door.bndrun</bndrun>
-						<bndrun>debug.bndrun</bndrun>
+						
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-export-maven-plugin</artifactId>
 				<configuration>

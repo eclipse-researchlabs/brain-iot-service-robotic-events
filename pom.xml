@@ -332,5 +332,6 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
     <module>eu.brain.iot.robot.tables.creator</module>
     <module>eu.brain.iot.robot.tables.queryer</module>
     <module>eu.brain.iot.robot.tables.creator.api</module>
+    <module>eu.brain.iot.robot.tables.creatorConfig</module>
   </modules>
 </project>
