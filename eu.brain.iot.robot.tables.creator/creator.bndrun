@@ -4,7 +4,7 @@
 -runee: JavaSE-1.8
 
 
--resolve.effective: active;skip:="osgi.service"
+-resolve.effective: active
 
 -runrequires: \
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator'

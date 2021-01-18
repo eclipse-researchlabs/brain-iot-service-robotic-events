@@ -46,7 +46,7 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 @Component(
 		configurationPid = "eu.brain.iot.example.robot.RobotBehavior", 
 		configurationPolicy = ConfigurationPolicy.REQUIRE, 
-		service = {})
+		service = {SmartBehaviour.class})
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
 		DoorStatusResponse.class, AvailabilityReturn.class}, 
 		author = "LINKS", name = "Robot Behavior", 
@@ -89,7 +89,9 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 		this.config = config;
 		this.robotID = config.id();
 		
-		System.out.println("\nHello!  I am robotBehavior : " + robotID);
+		String UUID = context.getProperty("org.osgi.framework.uuid");
+		
+		System.out.println("\nHello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
 
 		worker = Executors.newFixedThreadPool(10);
 

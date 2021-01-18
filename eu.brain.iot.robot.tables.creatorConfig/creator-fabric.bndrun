@@ -3,9 +3,9 @@
 -runfw: org.eclipse.osgi
 -runee: JavaSE-1.8
 
--runprovidedcapabilities: ${native_capability}
+#-runprovidedcapabilities: ${native_capability}
 
--resolve.effective: active;skip:="osgi.service"
+-resolve.effective: active
 
 -runrequires: \
     osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creatorConfig)',\
