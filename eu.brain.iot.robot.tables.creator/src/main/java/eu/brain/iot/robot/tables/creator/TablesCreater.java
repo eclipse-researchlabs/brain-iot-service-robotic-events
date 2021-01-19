@@ -106,8 +106,10 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 			initCartTable(stmt);
 			initDockTable(stmt);
 
-		//	stmt.close(); // TODO don't close it if it's a referenced osgi service
-		//	conn.close();
+			stmt.close(); // TODO don't close it if it's a referenced osgi service
+			conn.close();
+			stmt = null; // TODO don't close it if it's a referenced osgi service
+			conn = null;
 			
 			System.out.println("Table Creator finished to create "+home+"tables..........");
 
