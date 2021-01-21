@@ -1,5 +1,6 @@
 package eu.brain.iot.robot.behaviour;
 
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,20 +11,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.ServiceScope;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import java.util.function.Predicate;
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
 import eu.brain.iot.service.robotic.door.api.DoorStatusResponse;
-import eu.brain.iot.service.robotic.door.api.DoorStatusRequest;
 import eu.brain.iot.service.robotic.door.api.DoorStatusRequest.State;
 import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
 import eu.brain.iot.eventing.api.BrainIoTEvent;
@@ -44,9 +49,12 @@ import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
 
 @Component(
+		immediate=true,
 		configurationPid = "eu.brain.iot.example.robot.RobotBehavior", 
-		configurationPolicy = ConfigurationPolicy.REQUIRE, 
+		configurationPolicy = ConfigurationPolicy.OPTIONAL,
+		scope=ServiceScope.SINGLETON,
 		service = {SmartBehaviour.class})
+
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
 		DoorStatusResponse.class, AvailabilityReturn.class}, 
 		author = "LINKS", name = "Robot Behavior", 
@@ -55,7 +63,7 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 
 	private int robotID;
-	private static volatile String robotIP;
+	private String robotIP;
 	private boolean robotReady = false;
 	private static volatile QueryStateValueReturn queryReturn;
 	private static volatile int markerID = 0;
@@ -66,28 +74,36 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 	private static NewStoragePointResponse storageResponse = null;
 	private static DockingResponse dockingResponse = null;
 	private static CartNoticeResponse cartNoticeResponse = null;
+	private ConfigurationAdmin cm;
+	private BundleContext context;
 	
 	private List<PendingRequest> pendingRequests = new CopyOnWriteArrayList<>();
 
-	@ObjectClassDefinition
+/*	@ObjectClassDefinition
 	public static @interface Config {
 
 		@AttributeDefinition(description = "The identifier for the robot behaviour")
 		int id();
 
-	}
+	}*/
 
-	private Config config;
+//	private Config config;
 	private ExecutorService worker;
 	private ServiceRegistration<?> reg;
 
 	@Reference
 	private EventBus eventBus;
+	
+	@Reference
+    void setConfigurationAdmin(ConfigurationAdmin cm) {
+        this.cm = cm;
+    }
 
 	@Activate
-	void activate(BundleContext context, Config config, Map<String, Object> props) {
-		this.config = config;
-		this.robotID = config.id();
+	void activate(BundleContext context, /*Config config,*/ Map<String, Object> props) {
+	/*	this.config = config;
+		this.robotID = config.id();*/
+		this.context = context;
 		
 		String UUID = context.getProperty("org.osgi.framework.uuid");
 		
@@ -98,8 +114,8 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 		Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
 				.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 
-		serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // only receive some sepecific events with robotID
-				String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
+	//	serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // only receive some sepecific events with robotID
+	//			String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
 
 		System.out.println("+++++++++ Robot Behaviour filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
 		reg = context.registerService(SmartBehaviour.class, this, serviceProps);
@@ -398,17 +414,44 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 		);
 
 	}
+	
+	@Modified
+    void modified(Map<String, Object> properties) {
+        System.out.println("\n -->RB " + robotID + "  has osgi service properties :" + properties);
+
+    }
 
 	@Override
 	public void notify(BrainIoTEvent event) {
-		System.out.println("-->RB " + robotID + " received an event: "+event.getClass());
+		System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName());
 
 		if (event instanceof RobotReadyBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
 			worker.execute(() -> {
 				robotIP = rbc.robotIP;
+				robotID = rbc.robotID;
+			//	robotReady = rbc.isReady;
+				
+				Bundle adminBundle = FrameworkUtil.getBundle(RobotBehavior.class);
+				String location = adminBundle.getLocation();
+				
+				Configuration config;
+				try {
+					config = cm.getConfiguration("eu.brain.iot.example.robot.RobotBehavior", location);
+
+					Hashtable<String, Object> props = new Hashtable<>();
+					props.put(SmartBehaviourDefinition.PREFIX_ + "filter", // only receive some sepecific events with robotID
+							String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
+					config.update(props);
+					System.out.println("-->RB " + robotID + " update properties = "+props);
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 				robotReady = rbc.isReady;
-				System.out.println("-->RB " + robotID + "robotReady--"+robotReady);
+				System.out.println("-->RB " + robotID + " robotReady -- "+robotReady);
+				
 			});
 
 		} else if (event instanceof NewPickPointResponse) {

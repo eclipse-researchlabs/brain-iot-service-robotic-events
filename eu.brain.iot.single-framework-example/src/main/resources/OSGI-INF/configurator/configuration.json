@@ -11,10 +11,7 @@
         "path": "/door1/door_controller/command"
      },
     
-    
-    "eu.brain.iot.example.robot.RobotBehavior": {
-           "id": 1
-    },
+
     
     
     "eu.brain.iot.robot.tables.creator.TablesCreater": {
