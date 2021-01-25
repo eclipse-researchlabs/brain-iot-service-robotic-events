@@ -25,6 +25,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.ServiceScope;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+
 import java.util.function.Predicate;
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
@@ -47,6 +49,8 @@ import eu.brain.iot.warehouse.events.NewPickPointResponse;
 import eu.brain.iot.warehouse.events.NewStoragePointRequest;
 import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
+import org.osgi.service.log.FormatterLogger;
+import org.osgi.service.log.LoggerFactory;
 
 @Component(
 		immediate=true,
@@ -98,6 +102,9 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
     void setConfigurationAdmin(ConfigurationAdmin cm) {
         this.cm = cm;
     }
+	
+	@Reference(service = LoggerFactory.class, cardinality = ReferenceCardinality.OPTIONAL)
+	private FormatterLogger log;
 
 	@Activate
 	void activate(BundleContext context, /*Config config,*/ Map<String, Object> props) {
@@ -106,6 +113,7 @@ public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
 		this.context = context;
 		
 		String UUID = context.getProperty("org.osgi.framework.uuid");
+		log.info("\nHello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
 		
 		System.out.println("\nHello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
 
