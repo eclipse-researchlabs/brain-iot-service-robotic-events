@@ -13,6 +13,6 @@ import eu.brain.iot.robot.api.RobotCommand;
 
 public class CartNoticeResponse extends RobotCommand{
 
-	public String noticeStatus = "OK";
+	public static String noticeStatus = "OK";
 	
 }

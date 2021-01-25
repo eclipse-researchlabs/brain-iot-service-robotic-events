@@ -54,10 +54,12 @@
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.impl</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>message.integrity.insecure.impl</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
@@ -66,7 +68,21 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.10.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>1.0.2</version>
+			<scope>runtime</scope>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
+<dependency>
+    <groupId>org.osgi</groupId>
+    <artifactId>org.osgi.service.configurator</artifactId>
+    <version>1.0.0</version>
+    <scope>runtime</scope>
+</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -106,7 +122,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+	<!-- -->		<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>

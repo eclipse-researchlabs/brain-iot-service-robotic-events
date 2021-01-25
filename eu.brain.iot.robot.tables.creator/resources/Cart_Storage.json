@@ -1,0 +1,18 @@
+{ 
+	"Cart_Storages":[
+		{
+		    	"cartID":2,
+		    	"storageID":"ST2"
+		},
+		{
+		    	"cartID":3,
+		    	"storageID":"ST1"
+		},
+		{
+		    	"cartID":4,
+		    	"storageID":"ST3"
+		}
+	]
+
+}
+

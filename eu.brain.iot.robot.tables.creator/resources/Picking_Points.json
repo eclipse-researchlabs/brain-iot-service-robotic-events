@@ -1,0 +1,23 @@
+{ 
+	"Picking_Points":[
+		{
+		    	"PPid" : "PP1",
+		    	"pose" : {"x":8.0,"y":-3.6,"z":-3.14},
+		    	"isAssigned" : false
+
+		},
+		{
+		    	"PPid" : "PP2",
+		    	"pose":{"x":8.0,"y":-5.5,"z":-3.14},
+		    	"isAssigned":false
+		},
+		{
+		    	"PPid" : "PP3",
+		    	"pose":{"x":8.0,"y":-7.75,"z":-3.14},
+		    	"isAssigned":false
+
+		}
+	]
+
+}
+
