@@ -90,7 +90,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private ConfigurationAdmin cm;
 	private BundleContext context;
 	
-	private List<PendingRequest> pendingRequests = new CopyOnWriteArrayList<>();
 
 /*	@ObjectClassDefinition
 	public static @interface Config {
@@ -140,13 +139,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		 onStart();
 	}
 	
-	private static class PendingRequest {
-		public Predicate<? super BrainIoTEvent> consumer;
-		public BrainIoTEvent toResend;
-		public Deferred<? super BrainIoTEvent> latch;
-		
-		public int processed = -1;
-	}
 
 	
 
@@ -472,11 +464,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			});
 
 		} else if (event instanceof NewPickPointResponse) {
-		//	this.pickResponse = (NewPickPointResponse) event;
-		//	NewPickPointResponse rs = (NewPickPointResponse) event;
-		//	System.out.println("\n--1--"+(NewPickPointResponse) event);
-	
-		//	setPickResponse((NewPickPointResponse) event);
+
 			RobotBehaviour.pickResponse = (NewPickPointResponse) event;
 			
 			// System.out.println("-->RB" + robotID + " receive NewPickPointResponse ");
@@ -531,53 +519,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private static synchronized NewPickPointResponse getPickResponse() {
 		return pickResponse;
 	}
-	
-	
-/*	@Override
-	public void notify(BrainIoTEvent event) {
 
-		System.out.println("-->RB" + robotID + " received an event type " + event.getClass().getSimpleName());
-
-		for(PendingRequest pr : pendingRequests) {
-			try {
-				if(pr.consumer.test(event)) {
-					pr.latch.resolve(event);
-				}
-			} catch (Exception e) {
-				pr.latch.fail(e);
-			}
-		}
-	}*/
 	
-	private Promise<Integer> queryStateAsync(int RobotId, int mission) {
-		QueryState qs =new QueryState();
-		
-    	
-		System.out.println("ORCHESTRATOR: SEND QUERY STATE");
-			return awaitResponse(qs, e -> {
-				if(e instanceof QueryStateValueReturn) {
-					QueryStateValueReturn qsvr = (QueryStateValueReturn) e;
-				//	return RobotId == qsvr.robotId && qsvr.mission == mission;
-				}
-				return false;
-			})
-			.map(e -> (QueryStateValueReturn)e)
-			.thenAccept(e -> System.out.println("Orchestrator Recieved a Query response from Robot " + e.robotID))
-			.map(e -> e.robotID);   // QueryStateValueReturn.value
-	}
-	
-	
-	private Promise<BrainIoTEvent> awaitResponse(BrainIoTEvent event, 
-			Predicate<BrainIoTEvent> acceptableResponse) {
-		PendingRequest pr = new PendingRequest();
-		pr.toResend = event;
-		pr.consumer = acceptableResponse;
-		Deferred<BrainIoTEvent> deferred = new Deferred<>();
-		pr.latch = deferred;
-		pendingRequests.add(pr);
-		eventBus.deliver(event);   // for each await, a new command will be sent
-		return deferred.getPromise().timeout(10000).onResolve(() -> pendingRequests.remove(pr));
-	}
 
 	public boolean executeGoTo(String coordinate, String targetPoint) {
 		WriteGoTo writeGoTo = createWriteGoTo(coordinate); // writeGOTO
