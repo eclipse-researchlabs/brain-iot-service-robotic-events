@@ -63,7 +63,7 @@ import org.osgi.service.log.LoggerFactory;
 
 @Component(
 		immediate=true,
-		configurationPid = "eu.brain.iot.example.robot.RobotBehavior", 
+		configurationPid = "eu.brain.iot.example.robot.RobotBehaviour", 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL,
 		scope=ServiceScope.SINGLETON,
 		service = {SmartBehaviour.class})
@@ -174,13 +174,13 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 						NewPickPointRequest pickRequest = new NewPickPointRequest();
 						pickRequest.robotID = this.robotID;
-						RobotBehavior.pickResponse = null;
+						RobotBehaviour.pickResponse = null;
 						eventBus.deliver(pickRequest);
 
 						waitPickResponse();
 
 				//		if (getPickResponse().hasNewPoint) {
-						if (RobotBehavior.pickResponse.hasNewPoint) {	
+						if (RobotBehaviour.pickResponse.hasNewPoint) {	
 							System.out.println("----------- has new Pick Point = true-------------");
 							pickPoint = getPickResponse().pickPoint;
 							if(pickPoint == null) {
@@ -274,12 +274,12 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							NewStoragePointRequest storageRequest = new NewStoragePointRequest();
 							storageRequest.robotID = this.robotID;
 							storageRequest.markerID = markerID;
-							RobotBehavior.storageResponse = null;
+							RobotBehaviour.storageResponse = null;
 							eventBus.deliver(storageRequest);
 
 							waitStorageResponse();
 
-							if (RobotBehavior.storageResponse.hasNewPoint) {
+							if (RobotBehaviour.storageResponse.hasNewPoint) {
 								System.out.println("-----------has new Storage Point-------------");
 								break;
 							} else {
@@ -304,7 +304,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							// --------------------------- Go to Storage AUX -------------------------------------
 							System.out.println("--------------------------- Go to Storage AUX --------------------------------------");
 							
-							if (!executeGoTo(RobotBehavior.storageResponse.storageAuxliaryPoint, "storage AUX")) {
+							if (!executeGoTo(RobotBehaviour.storageResponse.storageAuxliaryPoint, "storage AUX")) {
 								break; // execution failed
 							}
 							
@@ -322,7 +322,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							// --------------------------- Go to Storage Point --------------------------------------
 							System.out.println("--------------------------- Go to Storage Point --------------------------------------");
 							
-							if (!executeGoTo(RobotBehavior.storageResponse.storagePoint, "storage Point")) {
+							if (!executeGoTo(RobotBehaviour.storageResponse.storagePoint, "storage Point")) {
 								break; // execution failed
 							}
 
@@ -449,7 +449,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				robotID = rbc.robotID;
 			//	robotReady = rbc.isReady;
 				
-				Bundle adminBundle = FrameworkUtil.getBundle(RobotBehavior.class);
+				Bundle adminBundle = FrameworkUtil.getBundle(RobotBehaviour.class);
 				String location = adminBundle.getLocation();
 				
 				Configuration config;
@@ -477,7 +477,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		//	System.out.println("\n--1--"+(NewPickPointResponse) event);
 	
 		//	setPickResponse((NewPickPointResponse) event);
-			RobotBehavior.pickResponse = (NewPickPointResponse) event;
+			RobotBehaviour.pickResponse = (NewPickPointResponse) event;
 			
 			// System.out.println("-->RB" + robotID + " receive NewPickPointResponse ");
 			worker.execute(() -> {
@@ -487,30 +487,30 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			});
 
 		} else if (event instanceof NewStoragePointResponse) {
-			RobotBehavior.storageResponse = (NewStoragePointResponse) event;
+			RobotBehaviour.storageResponse = (NewStoragePointResponse) event;
 		/*	worker.execute(() -> {
 				System.out.println("-->RB" + robotID + " receive NewStoragePointResponse ");
 			});*/
 
 		} else if (event instanceof DockingResponse) {
-			RobotBehavior.dockingResponse = (DockingResponse) event;
+			RobotBehaviour.dockingResponse = (DockingResponse) event;
 
 		} else if (event instanceof CartNoticeResponse) {
-			RobotBehavior.cartNoticeResponse = (CartNoticeResponse) event;
+			RobotBehaviour.cartNoticeResponse = (CartNoticeResponse) event;
 
 		} else if (event instanceof QueryStateValueReturn) {
 			QueryStateValueReturn qs = (QueryStateValueReturn) event;
 			worker.execute(() -> {
 				System.out.println("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState);
-				RobotBehavior.queryReturn = qs;
+				RobotBehaviour.queryReturn = qs;
 			});
 
 		} else if (event instanceof MarkerReturn) {
 			MarkerReturn cvr = (MarkerReturn) event;
 			worker.execute(() -> {
 				System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
-				RobotBehavior.markerID = cvr.markerID;
-				RobotBehavior.newMarkerCounter += 1;
+				RobotBehaviour.markerID = cvr.markerID;
+				RobotBehaviour.newMarkerCounter += 1;
 			});
 
 		} else if (event instanceof DoorStatusResponse) {
@@ -629,7 +629,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		System.out.println("-->RB" + robotID + " is waiting PickResponse");
 		while (true) {
 		//	if (getPickResponse() != null) {
-			if (RobotBehavior.pickResponse != null) {
+			if (RobotBehaviour.pickResponse != null) {
 				return true;
 			} else {
 				try {
@@ -644,7 +644,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	public boolean waitStorageResponse() {
 		System.out.println("-->RB" + robotID + " is waiting storageResponse");
 		while (true) {
-			if (RobotBehavior.storageResponse != null) {
+			if (RobotBehaviour.storageResponse != null) {
 				return true;
 			} else {
 				try {
@@ -697,8 +697,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	public int waitMarker() {
 		System.out.println("-->RB" + robotID + " is waiting for pose Marker");
 		while (true) {
-			if (RobotBehavior.currentMarkerCounter != RobotBehavior.newMarkerCounter) {
-				RobotBehavior.currentMarkerCounter = RobotBehavior.newMarkerCounter;
+			if (RobotBehaviour.currentMarkerCounter != RobotBehaviour.newMarkerCounter) {
+				RobotBehaviour.currentMarkerCounter = RobotBehaviour.newMarkerCounter;
 				return markerID;
 			} else {
 				try {
