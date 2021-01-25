@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (C) 2021 LINKS Foundation
+ * 
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package eu.brain.iot.robot.behaviour;
 
 import java.io.IOException;
@@ -64,7 +73,7 @@ import org.osgi.service.log.LoggerFactory;
 		author = "LINKS", name = "Robot Behavior", 
 		description = "Implements a Robot Behavior.")
 
-public class RobotBehavior implements SmartBehaviour<BrainIoTEvent> {
+public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	private int robotID;
 	private String robotIP;
