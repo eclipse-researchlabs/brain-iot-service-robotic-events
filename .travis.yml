@@ -34,10 +34,12 @@ before_install:
     - export PATH=$M2_HOME/bin:$PATH
 
 install:
-    - mvn $MAVEN_CLI_OPTS initialize package
+    - mvn $MAVEN_CLI_OPTS initialize
+    - ls .m2/repository/org/ros
+    - ls .m2/repository/org/apache/ws
 
 script:
-    - mvn $MAVEN_CLI_OPTS bnd-export:export
+    - mvn $MAVEN_CLI_OPTS verify
 #    - ls $HOME/.m2/repository
 #    - mvn $MAVEN_CLI_OPTS bnd-export:export
 
