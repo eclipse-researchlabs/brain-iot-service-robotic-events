@@ -1,9 +1,10 @@
 # Robotics-Events
 [![Build Status](https://travis-ci.com/eclipse-researchlabs/brain-iot-robotics-events.svg?branch=main)](https://travis-ci.com/eclipse-researchlabs/brain-iot-robotics-events)
 
-##Prerequisites
+## Prerequisites
 
 The repository will be built using bnd version 5.1.2, so the Maven version must be at least 3.5.4
+
 ###Setup
 
 Install Maven 3.6.3:
@@ -201,8 +202,10 @@ Hello!  I am robotBehavior : 0,  UUID = b27ee227-8a3a-4eef-ad0d-71c21b599cae
 Hello, this is Table Queryer !
 Table Queryer is reading /home/rui/tables.mv.db..........
 ...
+ The ROS Edge Node is registering....for Robot 1
 GoToComponent service registed.
 PickComponent service registed.
+
 {
   "data" : 0.0
 }
@@ -214,10 +217,12 @@ PlaceComponent service registed.
 PP1, 8.0,-3.6,-3.14, FALSE
 PP2, 8.0,-5.5,-3.14, FALSE
 PP3, 8.0,-7.75,-3.14, FALSE
- \>>> robot_1 broadCast Ready info
--->RB 0 received an event: RobotReadyBroadcast
+
+ >>> robot_1 broadCast Ready info
+-->RB 0 received an event: RobotReadyBroadcast    # robotBehavior received broadcast info, and configure itself with robotID=1
 -->RB 1 update properties = {eu.brain.iot.behaviour.filter=(|(robotID=1)(robotID=-1))}
 -->RB 1 robotReady -- true
+
 --------------------------- Query Pick point --------------------------------------
 -->RB1 is waiting PickResponse
 --> Table Queryer received an event class eu.brain.iot.warehouse.events.NewPickPointRequest
