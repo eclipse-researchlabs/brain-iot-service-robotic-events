@@ -58,11 +58,11 @@
 			<version>1.0.12</version>
 		</dependency>
 		<dependency>
-    <groupId>org.osgi</groupId>
-    <artifactId>org.osgi.service.configurator</artifactId>
-    <version>1.0.0</version>
-   	<scope>runtime</scope>
-</dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.service.configurator</artifactId>
+			<version>1.0.0</version>
+
+		</dependency>
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.impl</artifactId>
