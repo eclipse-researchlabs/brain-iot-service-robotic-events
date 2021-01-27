@@ -46,7 +46,7 @@ public class JsonDataReader {
 			String line = "";
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			while ((line = input.readLine()) != null) {
-				System.out.println(line);
+				System.out.println("TablesCreator current run path = "+ line);
 			}
 			input.close();
 			proc.destroy();

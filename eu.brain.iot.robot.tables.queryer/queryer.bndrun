@@ -1,19 +1,14 @@
-#-runfw: org.apache.felix.framework;version=5
-#-runfw: org.apache.felix.framework;version='[6.0.2,6.0.2]'
 -runfw: org.eclipse.osgi
+
 -runee: JavaSE-1.8
 
-#-runprovidedcapabilities: ${native_capability}
 #;skip:="osgi.service"   if it refers to creator, must add this skip to avoid resolving creator
 
 -resolve.effective: active
 
 -runrequires: \
 	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer'
-	
-#	bnd.identity;id='org.apache.felix.gogo.shell',\
-#	bnd.identity;id='org.apache.felix.gogo.command',\
-#	bnd.identity;id='org.apache.felix.gogo.runtime',\
+
 	
 -runbundles: \
 	com.h2database;version='[1.4.200,1.4.201)', com.paremus.brain.iot.eventing.api;version='[0.0.1,0.0.2)', com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)', com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)', com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)', eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)', eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer;version='[0.0.2,0.0.3)', org.apache.felix.scr;version='[2.1.10,2.1.11)', org.osgi.util.function;version='[1.1.0,1.1.1)', org.osgi.util.promise;version='[1.1.0,1.1.1)', org.osgi.util.pushstream;version='[1.0.0,1.0.1)'

@@ -1,13 +1,11 @@
-#index: target/index.xml;name="eu.brain.iot.single-framework-example"
-
-#-standalone: ${index}
+#TablesCreator.bndrun
 
 
 -runfw: org.eclipse.osgi
 
 -runee: JavaSE-1.8
 
--resolve.effective: active
+-resolve.effective: resolve, active
 
 -runproperties: \
 	org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog,\

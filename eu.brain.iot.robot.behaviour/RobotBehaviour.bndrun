@@ -1,10 +1,5 @@
-#-runfw: org.apache.felix.framework;version='[6.0.2,6.0.2]'
-
-#-runprovidedcapabilities: ${native_capability}
-
-
-
 -runfw: org.eclipse.osgi
+
 -runee: JavaSE-1.8
  
 -resolve.effective: active
@@ -24,5 +19,6 @@
 	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
-	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)'
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)',\
+	org.apache.felix.configadmin;version='[1.9.8,1.9.9)'
 

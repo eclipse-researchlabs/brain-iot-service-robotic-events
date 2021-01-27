@@ -65,7 +65,7 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 
 			@AttributeDefinition(description = "The identifier for the robot behaviour")
 			
-			String jsonFilePath();  // /home/fabric-n9/resources/
+			String jsonFilePath();  // ~/resources/
 
 		}
 
@@ -94,7 +94,7 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 			// /home/fabric-n9/tables
 			final String JDBC_URL = "jdbc:h2:"+home+"tables;DB_CLOSE_DELAY=-1";
 			
-			System.out.println("Table Creator is creating "+home+"tables..........");
+			System.out.println("Table Creator is creating "+home+"tables.mv.db..........");
 			
 			Class.forName(DRIVER_CLASS);
 
@@ -111,7 +111,7 @@ public class TablesCreater implements SmartBehaviour<BrainIoTEvent>, TableCreato
 			stmt = null; // TODO don't close it if it's a referenced osgi service
 			conn = null;
 			
-			System.out.println("Table Creator finished to create "+home+"tables..........");
+			System.out.println("Table Creator finished to create "+home+"tables.mv.db..........");
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

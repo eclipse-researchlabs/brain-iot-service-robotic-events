@@ -7,6 +7,8 @@
     <version>0.0.2-SNAPSHOT</version>
   </parent>
 
+	<!-- this bundle is used in fabric -->
+
     <groupId>eu.brain.iot.service.robotic</groupId>
     <artifactId>eu.brain.iot.robot.tables.creatorConfig</artifactId>
     <version>0.0.2-SNAPSHOT</version>

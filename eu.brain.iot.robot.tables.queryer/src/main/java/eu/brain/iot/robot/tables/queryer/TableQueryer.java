@@ -100,13 +100,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
 					.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 
-		/*	serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // -1, get all events
-					String.format("(|(robotID=%s)(robotID=%s))", 2, RobotCommand.ALL_ROBOTS));*/
-
-		/*	serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // robotBehaviorID = -1, warehouse backend get all events from robot behaviours
-					String.format("(|(robotID=%s)(robotBehaviorID=%s)", null, RobotCommand.ALL_ROBOTS, true));*/
-			
-			serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // get all events
+			serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // get all events from all robot behaviors
 					String.format("(robotID=*)"));
 			
 			System.out.println("+++++++++ Table Queryer filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
@@ -138,7 +132,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 	@Override
 	public void notify(BrainIoTEvent event) {
 
-		System.out.println("--> Table Queryer received an event "+event.getClass()/*.getSimpleName()*/);
+		System.out.println("--> Table Queryer received an event "+event.getClass());
 		
 		if (event instanceof NewPickPointRequest) {
 			NewPickPointRequest pickRequest = (NewPickPointRequest) event;
