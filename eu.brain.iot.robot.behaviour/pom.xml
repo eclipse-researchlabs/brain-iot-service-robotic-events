@@ -75,13 +75,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
+		<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator 
 <dependency>
     <groupId>org.osgi</groupId>
     <artifactId>org.osgi.service.configurator</artifactId>
     <version>1.0.0</version>
     <scope>runtime</scope>
-</dependency>
+</dependency>-->
 		
 	</dependencies>
 

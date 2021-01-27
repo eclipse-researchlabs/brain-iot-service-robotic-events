@@ -17,17 +17,13 @@
 	</properties>
 
 	<repositories>
-		<repository>
+	<!--  	<repository>
 			<id>spring</id>
 			<name>Spring Libs Repository</name>
 			<url>https://repo.spring.io/libs-release</url>
-		</repository>
+		</repository>-->
 		
-		<repository>
-            <id>jfrog</id>
-            <name>jfrog libs-releases</name>
-            <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
-        </repository>
+		
         
 		<repository>
 			<id>OSGi</id>
@@ -72,6 +68,13 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		
+		<repository>
+            <id>jfrog</id>
+            <name>jfrog libs-releases</name>
+            <url>http://repo.jfrog.org/artifactory/libs-releases/</url>
+        </repository>
+        
 	</repositories>
 
 	<pluginRepositories>
