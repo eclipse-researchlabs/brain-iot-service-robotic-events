@@ -29,11 +29,11 @@
 			<artifactId>debug-bundles</artifactId>
 			<type>pom</type>
 		</dependency>
-		<dependency>
+	<!--	<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>enterprise-api</artifactId>
 			<type>pom</type>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
