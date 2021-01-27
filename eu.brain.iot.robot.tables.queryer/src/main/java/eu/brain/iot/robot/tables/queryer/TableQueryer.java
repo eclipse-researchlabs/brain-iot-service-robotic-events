@@ -86,7 +86,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			// /home/fabric-n9/tables
 			final String JDBC_URL = "jdbc:h2:"+home+"tables;DB_CLOSE_DELAY=-1";
 			
-			System.out.println("Table Queryer is reading "+home+"tables..........");
+			System.out.println("Table Queryer is reading "+home+"tables.mv.db..........");
 			
 			conn = DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
 			stmt = conn.createStatement();

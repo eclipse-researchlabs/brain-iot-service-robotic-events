@@ -1,0 +1,270 @@
+RoscoreConfiguartor activating....... 
+Current Path = /home/brainiot-ros/Downloads/brain-iot-robotics-events/eu.brain.iot.single-framework-example/target
+
+roscore config file: /home/brainiot-ros/rosConfig.txt
+robotIP=192.168.2.202
+robotId=1
+robotName=rb1_base_a
+successfully read file rosConfig.txt with flag = 1
+
+--> masterURI = http://192.168.2.202:11311
+--> robotName = rb1_base_a
+--> robotId = 1
+--------------------Internal CartMapper---------------------------
+{2=rb1_base_a_cart2_contact, 3=rb1_base_b_cart3_contact, 4=rb1_base_c_cart4_contact}
+-----------------------------------------------
+
+ connecting to roscore, start =false
+
+  add this node 2
+
+Hello!  I am ROS Edge Node : 1  name = rb1_base_a  IP = 192.168.2.202,  UUID = af08251a-abc1-4bed-afb7-2ab44601f7a9
++++++++++ Ros Edge Node filter = (|(robotID=1)(robotID=-1))
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar <init>
+INFO: MasterXmlRpcEndpoint URI: http://192.168.2.202:11311
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar onPublisherAdded
+INFO: Registering publisher: Publisher<PublisherDefinition<PublisherIdentifier<NodeIdentifier</rosinfo1, http://192.168.2.202:44137/>, TopicIdentifier</rosout>>, Topic<TopicIdentifier</rosout>, TopicDescription<rosgraph_msgs/Log, acffd30cd6b6de30f120938c17c593fb>>>>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Registered [/rosinfo1] as publisher of [/rosout], [http://brainiotros-Inspiron-5570:42465/]>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.topic.DefaultPublisher$1 onMasterRegistrationSuccess
+INFO: Publisher registered: Publisher<PublisherDefinition<PublisherIdentifier<NodeIdentifier</rosinfo1, http://192.168.2.202:44137/>, TopicIdentifier</rosout>>, Topic<TopicIdentifier</rosout>, TopicDescription<rosgraph_msgs/Log, acffd30cd6b6de30f120938c17c593fb>>>>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar onSubscriberAdded
+INFO: Registering subscriber: Subscriber<Topic<TopicIdentifier</clock>, TopicDescription<rosgraph_msgs/Clock, a9c97c1d230cfc112e270351a944ee47>>>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Subscribed to [/clock], [http://brainiotros-Inspiron-5570:44995/]>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.topic.DefaultSubscriber$1 onMasterRegistrationSuccess
+INFO: Subscriber registered: Subscriber<Topic<TopicIdentifier</clock>, TopicDescription<rosgraph_msgs/Clock, a9c97c1d230cfc112e270351a944ee47>>>
+
+  onStart line 271 
+ 
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar <init>
+INFO: MasterXmlRpcEndpoint URI: http://192.168.2.202:11311
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar onPublisherAdded
+INFO: Registering publisher: Publisher<PublisherDefinition<PublisherIdentifier<NodeIdentifier</robot_1/serviceController, http://192.168.2.202:44945/>, TopicIdentifier</rosout>>, Topic<TopicIdentifier</rosout>, TopicDescription<rosgraph_msgs/Log, acffd30cd6b6de30f120938c17c593fb>>>>
+
+Hello!  I am robotBehavior : 0,  UUID = af08251a-abc1-4bed-afb7-2ab44601f7a9
++++++++++ Robot Behaviour filter = 
+
+Hello, this is Table Queryer !
+Table Queryer is reading /home/brainiot-ros/tables..........
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Registered [/robot_1/serviceController] as publisher of [/rosout], [http://brainiotros-Inspiron-5570:42465/]>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar onSubscriberAdded
+INFO: Registering subscriber: Subscriber<Topic<TopicIdentifier</clock>, TopicDescription<rosgraph_msgs/Clock, a9c97c1d230cfc112e270351a944ee47>>>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.topic.DefaultPublisher$1 onMasterRegistrationSuccess
+INFO: Publisher registered: Publisher<PublisherDefinition<PublisherIdentifier<NodeIdentifier</robot_1/serviceController, http://192.168.2.202:44945/>, TopicIdentifier</rosout>>, Topic<TopicIdentifier</rosout>, TopicDescription<rosgraph_msgs/Log, acffd30cd6b6de30f120938c17c593fb>>>>
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Subscribed to [/clock], [http://brainiotros-Inspiron-5570:44995/]>
+
+ The ROS Edge Node is registering....for Robot 1
+Jan 27, 2021 6:57:15 PM org.ros.internal.node.topic.DefaultSubscriber$1 onMasterRegistrationSuccess
+INFO: Subscriber registered: Subscriber<Topic<TopicIdentifier</clock>, TopicDescription<rosgraph_msgs/Clock, a9c97c1d230cfc112e270351a944ee47>>>
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.client.Registrar onSubscriberAdded
+INFO: Registering subscriber: Subscriber<Topic<TopicIdentifier</rb1_base_a/robot_local_control/state>, TopicDescription<robot_local_control_msgs/Status, 462e43c7f195a2a163e1766a560a3280>>>
+availibility registered.
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Subscribed to [/rb1_base_a/robot_local_control/state], [http://brainiotros-Inspiron-5570:34953/, http://brainiotros-Inspiron-5570:37693/]>
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.topic.DefaultSubscriber$1 onMasterRegistrationSuccess
+INFO: Subscriber registered: Subscriber<Topic<TopicIdentifier</rb1_base_a/robot_local_control/state>, TopicDescription<robot_local_control_msgs/Status, 462e43c7f195a2a163e1766a560a3280>>>
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.client.Registrar onSubscriberAdded
+INFO: Registering subscriber: Subscriber<Topic<TopicIdentifier</rb1_base_a/ar_pose_marker>, TopicDescription<ar_track_alvar_msgs/AlvarMarkers, 943fe17bfb0b4ea7890368d0b25ad0ad>>>
+ar_pose_marker registered.
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.client.Registrar callMaster
+INFO: Response<Success, Subscribed to [/rb1_base_a/ar_pose_marker], [http://brainiotros-Inspiron-5570:39635/, http://brainiotros-Inspiron-5570:38443/, http://brainiotros-Inspiron-5570:37693/]>
+Jan 27, 2021 6:57:16 PM org.ros.internal.node.topic.DefaultSubscriber$1 onMasterRegistrationSuccess
+INFO: Subscriber registered: Subscriber<Topic<TopicIdentifier</rb1_base_a/ar_pose_marker>, TopicDescription<ar_track_alvar_msgs/AlvarMarkers, 943fe17bfb0b4ea7890368d0b25ad0ad>>>
+GoToComponent service registed.
+{
+  "data" : 0.0
+}
+
+DOOR REST Service Invoked Successfully..
+
+PickComponent service registed.
+PlaceComponent service registed.
++++++++++ Table Queryer filter = (robotID=*)
+------------  PickingTable ----------------
+-->RB 0 received an event: RobotReadyBroadcast
+ >>> robot_1 broadCast Ready info
+-->RB 1 update properties = {eu.brain.iot.behaviour.filter=(|(robotID=1)(robotID=-1))}
+-->RB 1 robotReady -- true
+PP1, 8.0,-3.6,-3.14, TRUE
+PP2, 8.0,-5.5,-3.14, FALSE
+PP3, 8.0,-7.75,-3.14, FALSE
+--------------------------- Query Pick point --------------------------------------
+-->RB1 is waiting PickResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.NewPickPointRequest
+--> Table Queryer got a pickPoint 8.0,-5.5,-3.14
+------------  PickingTable ----------------
+PP1, 8.0,-3.6,-3.14, TRUE
+PP2, 8.0,-5.5,-3.14, TRUE
+PP3, 8.0,-7.75,-3.14, FALSE
+Queryer  sent NewPickPointResponse {"hasNewPoint":true, "pickPoint":"8.0,-5.5,-3.14", "robotID":1, "sourceNode":null, "timestamp":null, "securityToken":null}
+-->RB 1 received an event: NewPickPointResponse
+----------- has new Pick Point = true-------------
+-->RB1 get new Pick Point: 8.0,-5.5,-3.14
+--------------------------- Go to Picking point --------------------------------------
+-->RB1 is sending WriteGoTo: 8.0,-5.5,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 8.0,-5.5,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo Picking point successfully
+--------------------------- check Cart Marker --------------------------------------
+-->RB1 sending CheckMarker
+-->RB1 is waiting for pose Marker
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.CheckMarker with robotID = 1
+
+ >>> Robot 1 see Markers size = 1, and first marker ID = 3
+ >>> Robot 1 reply with MarkerReturn: 3
+-->RB 1 received an event: MarkerReturn
+-->RB1 receive Check Marker return, marker ID = 3
+-->RB1 got new MarkerID = 3
+--------------------------- Pick Cart --------------------------------------
+-->RB1 is sending PickCart with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.PickCart with robotID = 1
+ >>> robot 1 pickCart gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 Pick Cart successfully
+--------------------------- Query Storage point --------------------------------------
+-->RB1 is waiting storageResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.NewStoragePointRequest
+-->RB 1 received an event: NewStoragePointResponse
+-----------has new Storage Point-------------
+--------------------------- Go to Storage AUX --------------------------------------
+-->RB1 is sending WriteGoTo: 7.0,-0.6,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 7.0,-0.6,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo storage AUX successfully
+--------------------------- Check Door Marker --------------------------------------
+-->RB1 is sending cmd to check Door Marker
+-->RB1 is waiting for pose Marker
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.CheckMarker with robotID = 1
+
+ >>> Robot 1 see Markers size = 1, and first marker ID = 2
+ >>> Robot 1 reply with MarkerReturn: 2
+-->RB 1 received an event: MarkerReturn
+-->RB1 receive Check Marker return, marker ID = 2
+-->RB1 got DoorID = 2
+--------------------------- Go to Storage Point --------------------------------------
+-->RB1 is sending WriteGoTo: 0.0,0.0,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 0.0,0.0,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo storage Point successfully
+--------------------------- Place Cart --------------------------------------
+-->RB1 sending placeCart
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.PlaceCart with robotID = 1
+ >>> robot 1 PlaceCart gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+ >>> ROBOT 1 finishs this iteration......... 
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 Place Cart successfully
+--------------------------- Cart Moved Notice --------------------------------------
+-->RB1 is sending CartMovedNotice
+-->RB1 is waiting CartNoticeResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.CartMovedNotice
+------------  PickingTable ----------------
+PP1, 8.0,-3.6,-3.14, TRUE
+PP2, 8.0,-5.5,-3.14, FALSE
+PP3, 8.0,-7.75,-3.14, FALSE
+Table Queryer is sending CartNoticeResponse = OK
+-->RB 1 received an event: CartNoticeResponse
+-->RB1 got CartNoticeResponse
+--------------------------- Docking Request --------------------------------------
+-->RB1 is sending DockingRequest with robotIP = 1
+-->RB1 is waiting dockingResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.DockingRequest
+--> Table Queryer got a DockingRequest for robot 1
+-->RB 1 received an event: DockingResponse
+--------------------------- Go to Docking AUX --------------------------------------
+-->RB1 is sending WriteGoTo: 5.0,-0.6,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 5.0,-0.6,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo docking AUX successfully
+--------------------------- Check Door Marker --------------------------------------
+-->RB1 sending check Door Marker on the way to Docking area
+-->RB1 is waiting for pose Marker
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.CheckMarker with robotID = 1
+
+ >>> Robot 1 see Markers size = 1, and first marker ID = 1
+ >>> Robot 1 reply with MarkerReturn: 1
+-->RB 1 received an event: MarkerReturn
+-->RB1 receive Check Marker return, marker ID = 1
+-->RB1 got DoorID = 1
+--------------------------- Go to Docking Point --------------------------------------
+-->RB1 is sending WriteGoTo: 8.0,0.0,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 8.0,0.0,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo dock Point successfully
+--------------------------- Query Pick point --------------------------------------
+-->RB1 is waiting PickResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.NewPickPointRequest
+--> Table Queryer got a pickPoint 8.0,-5.5,-3.14
+------------  PickingTable ----------------
+PP1, 8.0,-3.6,-3.14, TRUE
+PP2, 8.0,-5.5,-3.14, TRUE
+PP3, 8.0,-7.75,-3.14, FALSE
+Queryer  sent NewPickPointResponse {"hasNewPoint":true, "pickPoint":"8.0,-5.5,-3.14", "robotID":1, "sourceNode":null, "timestamp":null, "securityToken":null}
+-->RB 1 received an event: NewPickPointResponse
+----------- has new Pick Point = true-------------
+-->RB1 get new Pick Point: 8.0,-5.5,-3.14
+--------------------------- Go to Picking point --------------------------------------
+-->RB1 is sending WriteGoTo: 8.0,-5.5,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 8.0,-5.5,-3.14
+ >>> robot 1 WriteGOTO gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 GoTo Picking point successfully
+--------------------------- check Cart Marker --------------------------------------
+-->RB1 sending CheckMarker
+-->RB1 is waiting for pose Marker
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.CheckMarker with robotID = 1
+
+ >>> Robot 1 see Markers size = 1, and first marker ID = 3
+ >>> Robot 1 reply with MarkerReturn: 3
+-->RB 1 received an event: MarkerReturn
+-->RB1 receive Check Marker return, marker ID = 3
+-->RB1 got new MarkerID = 3
+--------------------------- Pick Cart --------------------------------------
+-->RB1 is sending PickCart with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.PickCart with robotID = 1
+ >>> robot 1 pickCart gets CallResponse: result=ok, current_state=finished, last_event=finish, message is: Perfect
+-->RB 1 received an event: QueryStateValueReturn
+-->RB1 receive QueryStateValueReturn = finished
+-->RB 1 Pick Cart successfully
+--------------------------- Query Storage point --------------------------------------
+-->RB1 is waiting storageResponse
+--> Table Queryer received an event class eu.brain.iot.warehouse.events.NewStoragePointRequest
+-->RB 1 received an event: NewStoragePointResponse
+-----------has new Storage Point-------------
+--------------------------- Go to Storage AUX --------------------------------------
+-->RB1 is sending WriteGoTo: 7.0,-0.6,-3.14with robotID = 1
+-->RB1 is waiting QueryStateValueReturn
+ >>> Robot 1 received an event: class eu.brain.iot.robot.events.WriteGoTo with robotID = 1
+ >>> Robot 1 received GoTo: 7.0,-0.6,-3.14
+^Cbrainiot-ros@brainiotros-Inspiron-5570:~/Downloads/brain-iot-robotics-events/eu.brain.iot.single-framework-example/target$ 
+
