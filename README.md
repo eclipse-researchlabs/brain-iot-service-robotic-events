@@ -5,7 +5,7 @@
 
 The repository will be built using bnd version 5.1.2, so the Maven version must be at least 3.5.4
 
-###Setup
+### Setup
 
 Install Maven 3.6.3:
 
