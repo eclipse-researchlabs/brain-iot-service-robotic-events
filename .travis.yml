@@ -1,9 +1,6 @@
 # BRAIN-IoT service robotic .travis-ci.yml
 # https://docs.gitlab.com/ce/ci/yaml/
 
-# docker image with maven 3 and java 11
-#image: maven:3-jdk-11
-
 ################
 ### Language ###
 ################
@@ -35,8 +32,6 @@ before_install:
 
 install:
     - mvn $MAVEN_CLI_OPTS initialize
-#    - ls .m2/repository/org/ros
-#    - ls .m2/repository/org/apache/ws
 
 script:
     - mvn $MAVEN_CLI_OPTS verify

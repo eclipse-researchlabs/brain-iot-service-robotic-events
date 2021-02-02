@@ -220,23 +220,23 @@
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>eu.brain.iot.robot.msgs</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>be.iminds.iot.ros.api</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>be.iminds.iot.ros.core</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 
 		</dependency>
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -253,6 +253,12 @@
 			<artifactId>org.apache.felix.configadmin</artifactId>
 			<version>1.9.8</version>
 		</dependency>
+<!-- https://mvnrepository.com/artifact/io.netty/netty -->
+<dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty</artifactId>
+    <version>3.5.2.Final</version>
+</dependency>
 
 	</dependencies>
 
@@ -281,7 +287,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+								<bndrun>creator.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -295,7 +301,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+						<bndrun>creator.bndrun</bndrun>
 					</bndruns>
 					<resolve>true</resolve>
 					<failOnChanges>true</failOnChanges>

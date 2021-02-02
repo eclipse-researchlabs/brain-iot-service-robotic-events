@@ -20,7 +20,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class JsonDataReader {
@@ -31,20 +36,22 @@ public class JsonDataReader {
 	protected DockTable dockTable;
 	private String jsonFilePath;
 	
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(JsonDataReader.class.getSimpleName());
+	
 	public JsonDataReader(){}
 
 
 	public JsonDataReader(String jsonFilePath)
 	{
-		this.jsonFilePath = jsonFilePath;
+		this.jsonFilePath = jsonFilePath; // /home/fabric-n9/resources/
 		loadTables();
 
-        System.out.println("--------------------Warehouse Tables---------------------------");
-        System.out.println(pickingTable);
-        System.out.println(storageTable);
-        System.out.println(cartTable);
-        System.out.println(dockTable);
-        System.out.println("-----------------------------------------------");
+		logger.info("--------------------Warehouse Tables---------------------------");
+        System.out.println(pickingTable.toString());
+        System.out.println(storageTable.toString());
+        System.out.println(cartTable.toString());
+        System.out.println(dockTable.toString());
+        logger.info("-----------------------------------------------");
 	}
 	
 	private void loadTables() {
@@ -55,17 +62,16 @@ public class JsonDataReader {
 			String line = "";
 			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 			while ((line = input.readLine()) != null) {
-				System.out.println("TablesCreator current run path = "+ line);
+				logger.info(" Table Creator current path = "+ line);
 			}
 			input.close();
 			proc.destroy();
 			proc = null;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("\n Exception:", e);
 		}
 
 		try {
-			
 			reader = new JsonReader(new FileReader(jsonFilePath+"Picking_Points.json"));
 			pickingTable = gson.fromJson(reader, PickingTable.class);
 			
@@ -79,7 +85,7 @@ public class JsonDataReader {
 			dockTable = gson.fromJson(reader, DockTable.class);
 			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("\n Exception:", e);
 		}
 		
 	}

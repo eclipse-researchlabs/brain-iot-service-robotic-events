@@ -20,5 +20,8 @@
 	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)',\
-	org.apache.felix.configadmin;version='[1.9.8,1.9.9)'
+	org.apache.felix.configadmin;version='[1.9.8,1.9.9)',\
+	ch.qos.logback.classic;version='[1.1.2,1.1.3)',\
+	ch.qos.logback.core;version='[1.1.2,1.1.3)',\
+	slf4j.api;version='[1.7.7,1.7.8)'
 
