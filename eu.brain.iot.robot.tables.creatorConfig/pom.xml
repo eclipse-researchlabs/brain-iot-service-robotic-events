@@ -102,7 +102,7 @@
 					<bndruns>
 						<bndrun>creator-fabric.bndrun</bndrun>
 					</bndruns>
-					<resolve>true</resolve>
+					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>
 				</configuration>
 				<executions>

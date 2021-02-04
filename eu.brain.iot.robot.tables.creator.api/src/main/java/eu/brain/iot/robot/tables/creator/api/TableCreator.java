@@ -9,14 +9,11 @@
  ******************************************************************************/
 package eu.brain.iot.robot.tables.creator.api;
 
+import java.sql.ResultSet;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-//@ProviderType
 public interface TableCreator {
-    
-	public Connection getConn();
-
-	public Statement getStmt();
+	
+	public ResultSet executeQuery(String sql);
+	
+	public int executeUpdate(String sql);
 }

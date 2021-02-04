@@ -7,17 +7,21 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ******************************************************************************/
+
 package eu.brain.iot.robot.behaviour;
 
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -30,7 +34,11 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.ServiceScope;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.service.component.annotations.Reference;
+import java.util.function.Predicate;
+import org.osgi.util.promise.Deferred;
+import org.osgi.util.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import eu.brain.iot.service.robotic.door.api.DoorStatusResponse;
@@ -83,18 +91,13 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private BundleContext context;
 	
 
-/*	@ObjectClassDefinition
+	@ObjectClassDefinition
 	public static @interface Config {
-
-		@AttributeDefinition(description = "The identifier for the robot behaviour")
-		int id();
-
-	}*/
+		String logPath() default "/opt/fabric/resources/logback.xml"; // "/opt/fabric/resources/";
+	}
 	
-//	private static final Logger logger = (Logger) LoggerFactory.getLogger(RobotBehaviour.class.getSimpleName());
 	private  Logger logger;
 	
-//	private Config config;
 	private ExecutorService worker;
 	private ServiceRegistration<?> reg;
 
@@ -107,18 +110,16 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
     }
 
 	@Activate
-	void activate(BundleContext context, /*Config config,*/ Map<String, Object> props) {
-	/*	this.config = config;
-		this.robotID = config.id();*/
+	void activate(BundleContext context, Config config, Map<String, Object> props) {
 		
-		System.setProperty("logback.configurationFile", "/opt/fabric/resources/logback.xml");
+		System.setProperty("logback.configurationFile", config.logPath());
+		
 		logger = (Logger) LoggerFactory.getLogger(RobotBehaviour.class.getSimpleName());
-		
 		this.context = context;
 		
 		String UUID = context.getProperty("org.osgi.framework.uuid");
 		
-		logger.info("\nHello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
+		logger.info("Hello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
 
 		worker = Executors.newFixedThreadPool(10);
 
@@ -687,6 +688,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			Thread.currentThread().interrupt();
 			logger.error("\n Exception:", ie);
 		}
+		logger.info("------------  Robot Behavior "+ robotID+" is deactivated----------------");
 	}
 
 }

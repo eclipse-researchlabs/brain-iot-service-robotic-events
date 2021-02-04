@@ -14,8 +14,8 @@
 
     
     
-    "eu.brain.iot.robot.tables.creator.TablesCreater": {
-           "jsonFilePath": "/opt/fabric/resources/"
+    "eu.brain.iot.robot.tables.creator.TablesCreator": {
+          
     }
     
 }

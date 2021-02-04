@@ -174,7 +174,7 @@
 					<bndruns>
 						<bndrun>creator.bndrun</bndrun>
 					</bndruns>
-					<resolve>true</resolve>
+					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>
 				</configuration>
 				<executions>

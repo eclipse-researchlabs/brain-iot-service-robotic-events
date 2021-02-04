@@ -20,13 +20,11 @@
 -runrequires: \
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
 	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example)',\
+	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour',\
 	bnd.identity;version='0.0.4';id='eu.brain.iot.ros.edge.node'
-	
-	
-# bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 
 
 	

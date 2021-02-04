@@ -43,7 +43,7 @@ public class JsonDataReader {
 
 	public JsonDataReader(String jsonFilePath)
 	{
-		this.jsonFilePath = jsonFilePath; // /home/fabric-n9/resources/
+		this.jsonFilePath = jsonFilePath;
 		loadTables();
 
 		logger.info("--------------------Warehouse Tables---------------------------");
@@ -57,20 +57,6 @@ public class JsonDataReader {
 	private void loadTables() {
 		Gson gson = new Gson();
 		JsonReader reader;
-		try {
-			Process proc = Runtime.getRuntime().exec(new String[] { "/bin/bash", "-c", "pwd" });
-			String line = "";
-			BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			while ((line = input.readLine()) != null) {
-				logger.info(" Table Creator current path = "+ line);
-			}
-			input.close();
-			proc.destroy();
-			proc = null;
-		} catch (IOException e) {
-			logger.error("\n Exception:", e);
-		}
-
 		try {
 			reader = new JsonReader(new FileReader(jsonFilePath+"Picking_Points.json"));
 			pickingTable = gson.fromJson(reader, PickingTable.class);

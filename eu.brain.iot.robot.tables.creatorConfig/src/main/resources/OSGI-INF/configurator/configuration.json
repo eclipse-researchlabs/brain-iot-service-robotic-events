@@ -5,8 +5,12 @@
     ":configurator:version" : "0.0.2-SNAPSHOT",
     
     
-    "eu.brain.iot.robot.tables.creator.TablesCreater": {
-           "jsonFilePath": "/home/fabric-n9/resources/"
+    "eu.brain.iot.robot.tables.creator.TablesCreator": {
+           
     }
+
     
+
 }
+
+/*"resourcesPath": "/home/rui/resources" */
