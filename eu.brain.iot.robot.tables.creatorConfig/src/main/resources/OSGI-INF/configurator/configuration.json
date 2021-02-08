@@ -6,7 +6,7 @@
     
     
     "eu.brain.iot.robot.tables.creator.TablesCreator": {
-           
+           "resourcesPath": "/home/rui/resources/log"
     }
 
     

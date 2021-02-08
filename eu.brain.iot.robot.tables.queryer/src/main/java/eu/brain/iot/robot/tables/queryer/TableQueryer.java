@@ -48,7 +48,16 @@ import eu.brain.iot.warehouse.events.NewStoragePointRequest;
 import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
 import eu.brain.iot.robot.api.Coordinate;
+import eu.brain.iot.robot.tables.creator.api.GetPickingTable;
+import eu.brain.iot.robot.tables.creator.api.PickingTableValues;
+import eu.brain.iot.robot.tables.creator.api.QueryDockResponse;
+import eu.brain.iot.robot.tables.creator.api.QueryDockTable;
+import eu.brain.iot.robot.tables.creator.api.QueryPickResponse;
+import eu.brain.iot.robot.tables.creator.api.QueryPickingTable;
+import eu.brain.iot.robot.tables.creator.api.QueryStorageResponse;
+import eu.brain.iot.robot.tables.creator.api.QueryStorageTable;
 import eu.brain.iot.robot.tables.creator.api.TableCreator;
+import eu.brain.iot.robot.tables.creator.api.UpdatePickingTable;
 
 
 @Component(service = { TableQueryer.class },
@@ -58,7 +67,7 @@ import eu.brain.iot.robot.tables.creator.api.TableCreator;
 		)
 @SmartBehaviourDefinition(
 		consumed = { NewPickPointRequest.class, NewStoragePointRequest.class, NoCartNotice.class,
-		CartMovedNotice.class, DockingRequest.class }, 
+		CartMovedNotice.class, DockingRequest.class, QueryPickResponse.class, QueryStorageResponse.class, QueryDockResponse.class, PickingTableValues.class }, 
 		author = "LINKS", name = "Warehouse Module: Tables Queryer", 
 		description = "Implements the Tables Queryer.")
 
@@ -69,9 +78,6 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 	
 	@Reference
 	private EventBus eventBus;
-	
-	@Reference
-	private TableCreator tablesCreator;
 	
 	private  Logger logger;
 	private String logPath;
@@ -90,7 +96,8 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			
 			logger = (Logger) LoggerFactory.getLogger(TableQueryer.class.getSimpleName());
 					
-			logger.info("Hello, this is Table Queryer !");
+			logger.info("Hello, this is Table Queryer ! UUID = "+ context.getProperty("org.osgi.framework.uuid"));
+			System.out.println("Hello, this is Table Queryer !");
 			
 			logger.info("Table Queryer is using log: "+logPath);
 
@@ -106,291 +113,140 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			reg = context.registerService(SmartBehaviour.class, this, serviceProps);
 			
 			logger.info("------------Queryer:  PickingTable ----------------");
+			System.out.println("------------Queryer:  PickingTable ----------------");
 			
-			
-			try {
-			  ResultSet rs = tablesCreator.executeQuery("SELECT * FROM PickingTable");
+			GetPickingTable get = new GetPickingTable();
+			get.robotID = 0;
+			eventBus.deliver(get);
 
-		if (rs != null) {
-			while (rs.next()) {
-				logger.info(rs.getString("PPid") + ", " + rs.getString("pose") + ", " + rs.getString("isAssigned"));
-			}
-		} else
-			logger.error("Error accours to query PickingTable, got null");
-			} catch(Exception e) {
-				logger.error("\n Exception:", e);
-			}
 	}
 	
 	
 	@Override
-	public void notify(BrainIoTEvent event) {
+	public void notify(BrainIoTEvent event) {  
 
 		logger.info("--> Table Queryer received an event "+event.getClass());
 		
-		if (event instanceof NewPickPointRequest) {
+		if (event instanceof NewPickPointRequest) { // TODO
 			NewPickPointRequest pickRequest = (NewPickPointRequest) event;
-			NewPickPointResponse rs = getPickResponse(pickRequest);
-			if(rs !=null) {
-				logger.info("Queryer  sent NewPickPointResponse "+ rs);
-				eventBus.deliver(rs);
-			}	
-		} else if (event instanceof NewStoragePointRequest) {
+			QueryPickingTable query = new QueryPickingTable();  // isAssigned = false
+			query.isAssigned = false;
+			query.robotID = pickRequest.robotID;
+
+				logger.info("Queryer  sent QueryPickingTable "+ query);
+				eventBus.deliver(query);
+		
+		} else if (event instanceof NewStoragePointRequest) { // TODO
 			NewStoragePointRequest storageRequest = (NewStoragePointRequest) event;
 			worker.execute(() -> {
-				NewStoragePointResponse resp = getStorageResponse(storageRequest);
-				if(resp!=null) {
-					logger.info("Queryer  sent NewStoragePointResponse "+ resp);
-					eventBus.deliver(resp);
-				}
+				QueryStorageTable query = new QueryStorageTable();
+				query.markerID = storageRequest.markerID;
+				query.robotID = storageRequest.robotID;
+
+					logger.info("Queryer  sent QueryStorageTable "+ query);
+					eventBus.deliver(query);
 			});
 			
-		} else if (event instanceof DockingRequest) {
+		} else if (event instanceof DockingRequest) { // TODO
 			DockingRequest dockRequest = (DockingRequest) event;
 			worker.execute(() -> {
-				DockingResponse resp = getDockResponse(dockRequest);
-				if(resp!=null) {
-					logger.info("Queryer  sent DockingResponse "+ resp);
-					eventBus.deliver(resp);
-				}
+				QueryDockTable query =  new QueryDockTable();
+				query.robotIP = dockRequest.robotIP;
+				query.robotID = dockRequest.robotID;
+				
+					logger.info("Queryer  sent QueryDockTable "+ query);
+					eventBus.deliver(query);
+				
 			});
 			
 		} else if (event instanceof CartMovedNotice) {
 			CartMovedNotice cartMovedNotice = (CartMovedNotice) event;
 			worker.execute(() -> {
-				CartNoticeResponse resp = getCartMovedNotice(cartMovedNotice);
-				if(resp!=null) {
-					logger.info("Queryer  sent CartNoticeResponse "+ resp);
-					eventBus.deliver(resp);
-				}
+				UpdatePickingTable update = new UpdatePickingTable();
+				update.isAssigned = false;
+				update.robotID = cartMovedNotice.robotID;
+				update.pickPoint = cartMovedNotice.pickPoint;
+
+					logger.info("Queryer  sent UpdatePickingTable "+ update);
+					eventBus.deliver(update);
 			});
 			
 		} else if (event instanceof NoCartNotice) {
 			NoCartNotice noCartNotice = (NoCartNotice) event;
 			worker.execute(() -> {
-				eventBus.deliver(getNoCartNotice(noCartNotice));
+				UpdatePickingTable update = new UpdatePickingTable();
+				update.isAssigned = false;
+				update.robotID = noCartNotice.robotID;
+				update.pickPoint = noCartNotice.pickPoint;
+
+					logger.info("Queryer  sent UpdatePickingTable "+ update);
+					eventBus.deliver(update);
 			});
-		}
-	}
-	
-
-	private NewPickPointResponse getPickResponse(NewPickPointRequest pickRequest) {
-
-		NewPickPointResponse pickReponse = new NewPickPointResponse();
-		pickReponse.robotID = pickRequest.robotID;
-		try {
-
-		ResultSet rs = tablesCreator.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=false");
-
-		if (rs == null) {
-			logger.error("Error accours to query PickingTable, nothing to reply");
-			return null;
-		} else {
-			while (rs.next()) {
-
-				pickReponse.hasNewPoint = true;
-				pickReponse.pickPoint = rs.getString("pose");
-				logger.info("--> Table Queryer got a pickPoint "+pickReponse.pickPoint);
-				tablesCreator.executeUpdate(
-						"UPDATE PickingTable SET isAssigned='" + true + "' WHERE PPid='" + rs.getString("PPid") + "'");
-				break;
-			}
-		}
-		logger.info("------------Queryer:  PickingTable ----------------");
-		  rs = tablesCreator.executeQuery("SELECT * FROM PickingTable");
-		  while (rs.next()) {
-			  logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-		  }
-			  
-		} catch (Exception e) {
-			logger.error("\n Exception:", e);
-			return null;
-		}
-		return pickReponse;
-	}
-
-	private NewStoragePointResponse getStorageResponse(NewStoragePointRequest storageRequest) {
-
-		int markerID = storageRequest.markerID;
-		String storageID = null;
-
-		NewStoragePointResponse storageReponse = new NewStoragePointResponse();
-		storageReponse.robotID = storageRequest.robotID;
-		try {
-		ResultSet rs = tablesCreator.executeQuery("SELECT * FROM CartTable WHERE cartID=" + markerID);
-		if (rs == null) {
-			logger.error("Error accours to query CartTable, no StorageResponse to reply");
-			return null;
-		} else {
-			while (rs.next()) {
-				storageID = rs.getString("storageID");
-				break;
-			}
-			if (storageID != null) {
-
-				rs = tablesCreator.executeQuery("SELECT * FROM StorageTable WHERE STid = '" +storageID+"'");
-				if (rs == null) {
-					logger.error("Error accours to query StorageTable, no StorageResponse to reply");
-					return null;
-				} else {
-				while (rs.next()) {
-
-					storageReponse.hasNewPoint = true;
-					storageReponse.storageAuxliaryPoint = rs.getString("storageAUX");
-					storageReponse.storagePoint = rs.getString("storagePose");
-					break;
-				}
-				}
-			}
-		}
-			
-		} catch (Exception e) {
-			logger.error("\n Exception:", e);
-			return null;
-		}
-
-		return storageReponse;
-	}
-	
-	private DockingResponse getDockResponse(DockingRequest dockingRequest) {
-		logger.info("--> Table Queryer got a DockingRequest for robot "+dockingRequest.robotID);
+		} 
 		
-		DockingResponse dockReponse = new DockingResponse();
-		dockReponse.robotID = dockingRequest.robotID;
-		try {
-		ResultSet rs = tablesCreator.executeQuery("SELECT * FROM DockTable WHERE IPid = '"+ dockingRequest.robotID+"'");
-		if (rs == null) {
-			logger.error("Error accours to query DockTable, nothing to reply");
-			return null;
-		} else {
-			while (rs.next()) {
-
-				dockReponse.hasNewPoint = true;
-				dockReponse.dockAuxliaryPoint = rs.getString("dockAUX");
-				dockReponse.dockingPoint = rs.getString("dockPose");
-				break;
-			}
-		}
-		} catch (Exception e) {
-			logger.error("\n Exception:", e);
-			return null;
-		}
-
-		return dockReponse;
-	}
-	
-
-	private Coordinate getCoordinate(String crd) {
-
-		Coordinate cord = new Coordinate();
-
-		String[] strs = crd.trim().split(",");
-		cord.setX(new Double(strs[0]).doubleValue());
-		cord.setY(new Double(strs[1]).doubleValue());
-		cord.setZ(new Double(strs[2]).doubleValue());
-
-		return cord;
-	}
-	
-	private CartNoticeResponse getCartMovedNotice(CartMovedNotice cartMovedNotice) {
-
-		CartNoticeResponse cartNoticeResponse = new CartNoticeResponse();
-		cartNoticeResponse.robotID = cartMovedNotice.robotID;
-
-		Coordinate targetPoint = getCoordinate(cartMovedNotice.pickPoint);
-		Coordinate pickPose = null;
-		try {
-		ResultSet rs = tablesCreator.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=true");
-		if (rs == null) {
-			logger.error("Error accours to query PickingTable marked with TRUE, nothing to reply");
-			return null;
-		} else {
-			while (rs.next()) {
-				pickPose = getCoordinate(rs.getString("pose"));
+		
+		
+		
+		else if (event instanceof QueryPickResponse) {  // TODO how to provide robotID ?
+			QueryPickResponse resp = (QueryPickResponse) event;
+			worker.execute(() -> {
+				NewPickPointResponse rs = new NewPickPointResponse();
+				rs.robotID = resp.robotID;
 				
-				if(pickPose.getX() == targetPoint.getX() && pickPose.getY() == targetPoint.getY() && pickPose.getZ() == targetPoint.getZ()) {
-					tablesCreator.executeUpdate(
-							"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid") + "'");
-					pickPose = null;
-					break;
+				if (resp.pickPoint != null) {
+					rs.hasNewPoint = true;
+					rs.pickPoint = resp.pickPoint;
 				}
-				pickPose = null;
+				logger.info("Queryer  sent NewPickPointResponse " + rs);
+				eventBus.deliver(rs);
+			});
 				
-			}
-		}
-		logger.info("------------Queryer:  PickingTable ----------------");
+		} else if (event instanceof QueryStorageResponse) {
+			QueryStorageResponse resp = (QueryStorageResponse) event;
+			worker.execute(() -> {
+				NewStoragePointResponse rs = new NewStoragePointResponse();
+				rs.robotID = resp.robotID;
+				
+				rs.markerID = resp.markerID;
+				rs.hasNewPoint = resp.hasNewPoint;
+				rs.storagePoint = resp.storagePoint;
+				rs.storageAuxliaryPoint = resp.storageAuxliaryPoint;
+					logger.info("Queryer  sent NewStoragePointResponse "+ rs);
+					eventBus.deliver(rs);
 
-		  rs = tablesCreator.executeQuery("SELECT * FROM PickingTable");
-
-		  while (rs.next()) {
-		       logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-		  }
-		  
-		  logger.info("Table Queryer is sending CartNoticeResponse = "+CartNoticeResponse.noticeStatus);
+			});
 			
-		} catch (Exception e) {
-			logger.error("\n Exception:", e);
-			return null;
-		}
-		return cartNoticeResponse;
-	}
-	
-	private CartNoticeResponse getNoCartNotice(NoCartNotice noCartNotice) {
-
-		CartNoticeResponse cartNoticeResponse = new CartNoticeResponse();
-		cartNoticeResponse.robotID = noCartNotice.robotID;
-
-	//	Coordinate targetPoint = noCartNotice.pickPoint;
-		Coordinate targetPoint = getCoordinate(noCartNotice.pickPoint);
-		Coordinate pickPose = null;
-	
-		try {
-			ResultSet rs = tablesCreator.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=true");
-			if (rs == null) {
-				logger.error("Error accours to query PickingTable marked with TRUE, nothing to reply");
-				return null;
-			} else {
-				while (rs.next()) {
-					pickPose = getCoordinate(rs.getString("pose"));
-					
-					if(pickPose.getX() == targetPoint.getX() && pickPose.getY() == targetPoint.getY() && pickPose.getZ() == targetPoint.getZ()) {
-						tablesCreator.executeUpdate(
-								"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid") + "'");
-						pickPose = null;
-						break;
-					}
-					pickPose = null;
-					
-				}
-			}
-			logger.info("------------Queryer:  PickingTable ----------------");
-
-			  rs = tablesCreator.executeQuery("SELECT * FROM PickingTable");
-
-			  while (rs.next()) {
-			       logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-			  }
-			  
-			  logger.info("Table Queryer is sending CartNoticeResponse = "+CartNoticeResponse.noticeStatus);
+		} else if (event instanceof QueryDockResponse) {
+			QueryDockResponse resp = (QueryDockResponse) event;
+			worker.execute(() -> {
+				DockingResponse rs = new DockingResponse();
+				rs.robotID = resp.robotID;
 				
-			} catch (Exception e) {
-				logger.error("\n Exception:", e);
-				return null;
-			}
+				rs.hasNewPoint = resp.hasNewPoint;
+				rs.dockingPoint = resp.dockingPoint;
+				rs.dockAuxliaryPoint = resp.dockAuxliaryPoint;
+					logger.info("Queryer  sent DockingResponse "+ rs);
+					eventBus.deliver(rs);
+			});
+			
+		} else if (event instanceof PickingTableValues) {
+			PickingTableValues resp = (PickingTableValues) event;
 
-		return cartNoticeResponse;
+			logger.info("Queryer  gets Picking Table: \n"+ resp.pickingTableValues);
+			System.out.println("Queryer  gets Picking Table: \n"+ resp.pickingTableValues);
+			
+		}
 	}
-	
-	
+
 	
 	@Deactivate
 	void stop() {
 		worker.shutdown();
 		try {
 			worker.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException ie) {
+		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			logger.error("\n Exception:", ie);
+			logger.error("\nCreator Exception: {}", e.toString());
 		}
 		logger.info("------------  Table Queryer is deactivated----------------");
 	}

@@ -47,11 +47,13 @@ public class JsonDataReader {
 		loadTables();
 
 		logger.info("--------------------Warehouse Tables---------------------------");
-        System.out.println(pickingTable.toString());
-        System.out.println(storageTable.toString());
-        System.out.println(cartTable.toString());
-        System.out.println(dockTable.toString());
+		System.out.println("--------------------Warehouse Tables---------------------------");
+        System.out.println(pickingTable.toString()+"\n");
+        System.out.println(storageTable.toString()+"\n");
+        System.out.println(cartTable.toString()+"\n");
+        System.out.println(dockTable.toString()+"\n");
         logger.info("-----------------------------------------------");
+        System.out.println("-----------------------------------------------");
 	}
 	
 	private void loadTables() {
@@ -70,8 +72,9 @@ public class JsonDataReader {
 			reader = new JsonReader(new FileReader(jsonFilePath+"Docking_Points.json"));
 			dockTable = gson.fromJson(reader, DockTable.class);
 			
-		} catch (FileNotFoundException e) {
-			logger.error("\n Exception:", e);
+		} catch (Exception e) {
+			logger.error("\n Exception: {}", e.toString());
+			e.printStackTrace();
 		}
 		
 	}

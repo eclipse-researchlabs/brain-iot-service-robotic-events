@@ -66,17 +66,6 @@
     <artifactId>h2</artifactId>
     <version>1.4.200</version>
 </dependency>
-
-<!-- <dependency>
-    <groupId>org.apache.felix</groupId>
-    <artifactId>org.apache.felix.gogo.shell</artifactId>
-    <version>1.1.4</version>
-</dependency>
-				<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.gogo.runtime</artifactId>
-			<version>1.0.2</version>
-		</dependency> -->
 		
 						<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
@@ -99,6 +88,13 @@
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-api</artifactId>
     <version>1.7.7</version>
+</dependency>
+
+<dependency>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+    <scope>runtime</scope>
 </dependency>
 		
      </dependencies>

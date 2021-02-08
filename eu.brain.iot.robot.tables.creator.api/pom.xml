@@ -20,6 +20,10 @@
             <artifactId>osgi-api</artifactId>
             <type>pom</type>
         </dependency>
+        <dependency>
+			<groupId>com.paremus.brain.iot</groupId>
+			<artifactId>eventing.api</artifactId>
+		</dependency>
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 <dependency>
     <groupId>com.h2database</groupId>

@@ -93,7 +93,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@ObjectClassDefinition
 	public static @interface Config {
-		String logPath() default "/opt/fabric/resources/logback.xml"; // "/opt/fabric/resources/";
+		String logPath() default "/home/rui/resources/logback.xml"; // "/opt/fabric/resources/";
 	}
 	
 	private  Logger logger;
@@ -425,7 +425,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@Override
 	public void notify(BrainIoTEvent event) {
-		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName());
+		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", robotID="+((RobotCommand)event).robotID);
 
 		if (event instanceof RobotReadyBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
