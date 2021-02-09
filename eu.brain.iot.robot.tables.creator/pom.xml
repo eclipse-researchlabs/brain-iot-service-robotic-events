@@ -103,6 +103,12 @@
     <artifactId>slf4j-api</artifactId>
     <version>1.7.7</version>
 </dependency>
+
+<dependency>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>eu.brain.iot.warehouse.sensinact.api</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+</dependency>
 		   
      </dependencies>
 

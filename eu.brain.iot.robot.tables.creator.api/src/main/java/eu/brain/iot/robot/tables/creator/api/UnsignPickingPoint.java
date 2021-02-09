@@ -1,6 +1,6 @@
 package eu.brain.iot.robot.tables.creator.api;
 
-public class UpdatePickingTable extends TableEvent{
+public class UnsignPickingPoint extends TableEvent{
 
 	public String pickPoint;
 	public boolean isAssigned = false;

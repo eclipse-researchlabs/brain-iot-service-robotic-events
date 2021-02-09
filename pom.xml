@@ -17,13 +17,6 @@
 	</properties>
 
 	<repositories>
-	<!--  	<repository>
-			<id>spring</id>
-			<name>Spring Libs Repository</name>
-			<url>https://repo.spring.io/libs-release</url>
-		</repository>-->
-		
-		
         
 		<repository>
 			<id>OSGi</id>

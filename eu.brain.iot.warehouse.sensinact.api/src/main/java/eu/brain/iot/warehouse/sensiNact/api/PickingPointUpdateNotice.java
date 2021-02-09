@@ -17,6 +17,8 @@ public class PickingPointUpdateNotice extends SensiNactCommand {
     
    public String pickID;
 
-   //after receiving this event from warehouse backend, Sensinact must update the isAssigned column after an iteration starts or finished
+   //after receiving this event from warehouse backend, 
+   //Sensinact must update the isAssigned to true(after an iteration starts) or false(if the interation finished)
+   
    public boolean isAssigned; 
 }

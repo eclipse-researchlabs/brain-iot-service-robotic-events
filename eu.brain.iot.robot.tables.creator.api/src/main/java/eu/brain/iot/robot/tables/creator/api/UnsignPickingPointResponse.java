@@ -1,6 +1,7 @@
 package eu.brain.iot.robot.tables.creator.api;
 
-public class TableUpdatedResponse extends TableEvent {
+public class UnsignPickingPointResponse extends TableEvent {
 
+	public String pickID;
 	public boolean updateStatus = true;
 }

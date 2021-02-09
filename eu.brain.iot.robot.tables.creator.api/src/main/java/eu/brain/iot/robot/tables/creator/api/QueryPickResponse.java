@@ -2,5 +2,6 @@ package eu.brain.iot.robot.tables.creator.api;
 
 public class QueryPickResponse extends TableEvent{
 
-	public String pickPoint = null;
+	public String pickID;
+	public String pickPoint;
 }

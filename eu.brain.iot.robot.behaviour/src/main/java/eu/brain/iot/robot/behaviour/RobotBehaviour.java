@@ -68,7 +68,8 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 		scope=ServiceScope.SINGLETON,
 		service = {SmartBehaviour.class})
 
-@SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
+@SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, 
+		CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
 		DoorStatusResponse.class, AvailabilityReturn.class}, 
 		author = "LINKS", name = "Robot Behavior", 
 		description = "Implements a Robot Behavior.")

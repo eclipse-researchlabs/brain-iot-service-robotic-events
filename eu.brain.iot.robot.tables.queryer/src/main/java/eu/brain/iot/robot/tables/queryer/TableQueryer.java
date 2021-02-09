@@ -9,14 +9,11 @@
  ******************************************************************************/
 package eu.brain.iot.robot.tables.queryer;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +44,6 @@ import eu.brain.iot.warehouse.events.NewPickPointResponse;
 import eu.brain.iot.warehouse.events.NewStoragePointRequest;
 import eu.brain.iot.warehouse.events.NewStoragePointResponse;
 import eu.brain.iot.warehouse.events.NoCartNotice;
-import eu.brain.iot.robot.api.Coordinate;
 import eu.brain.iot.robot.tables.creator.api.GetPickingTable;
 import eu.brain.iot.robot.tables.creator.api.PickingTableValues;
 import eu.brain.iot.robot.tables.creator.api.QueryDockResponse;
@@ -56,8 +52,8 @@ import eu.brain.iot.robot.tables.creator.api.QueryPickResponse;
 import eu.brain.iot.robot.tables.creator.api.QueryPickingTable;
 import eu.brain.iot.robot.tables.creator.api.QueryStorageResponse;
 import eu.brain.iot.robot.tables.creator.api.QueryStorageTable;
-import eu.brain.iot.robot.tables.creator.api.TableCreator;
-import eu.brain.iot.robot.tables.creator.api.UpdatePickingTable;
+import eu.brain.iot.robot.tables.creator.api.UnsignPickingPointResponse;
+import eu.brain.iot.robot.tables.creator.api.UnsignPickingPoint;
 
 
 @Component(service = { TableQueryer.class },
@@ -67,7 +63,8 @@ import eu.brain.iot.robot.tables.creator.api.UpdatePickingTable;
 		)
 @SmartBehaviourDefinition(
 		consumed = { NewPickPointRequest.class, NewStoragePointRequest.class, NoCartNotice.class,
-		CartMovedNotice.class, DockingRequest.class, QueryPickResponse.class, QueryStorageResponse.class, QueryDockResponse.class, PickingTableValues.class }, 
+		CartMovedNotice.class, DockingRequest.class, QueryPickResponse.class, QueryStorageResponse.class, 
+		QueryDockResponse.class, PickingTableValues.class, UnsignPickingPointResponse.class }, 
 		author = "LINKS", name = "Warehouse Module: Tables Queryer", 
 		description = "Implements the Tables Queryer.")
 
@@ -123,19 +120,19 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 	
 	
 	@Override
-	public void notify(BrainIoTEvent event) {  
+	public void notify(BrainIoTEvent event) {
 
-		logger.info("--> Table Queryer received an event "+event.getClass());
-		
+		logger.info("--> Table Queryer received an event " + event.getClass());
+
 		if (event instanceof NewPickPointRequest) { // TODO
 			NewPickPointRequest pickRequest = (NewPickPointRequest) event;
-			QueryPickingTable query = new QueryPickingTable();  // isAssigned = false
+			QueryPickingTable query = new QueryPickingTable(); // isAssigned = false
 			query.isAssigned = false;
 			query.robotID = pickRequest.robotID;
 
-				logger.info("Queryer  sent QueryPickingTable "+ query);
-				eventBus.deliver(query);
-		
+			logger.info("Queryer  sent to Creator QueryPickingTable " + query);
+			eventBus.deliver(query);
+
 		} else if (event instanceof NewStoragePointRequest) { // TODO
 			NewStoragePointRequest storageRequest = (NewStoragePointRequest) event;
 			worker.execute(() -> {
@@ -143,56 +140,59 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				query.markerID = storageRequest.markerID;
 				query.robotID = storageRequest.robotID;
 
-					logger.info("Queryer  sent QueryStorageTable "+ query);
-					eventBus.deliver(query);
+				logger.info("Queryer  sent to Creator QueryStorageTable " + query);
+				eventBus.deliver(query);
 			});
-			
+
 		} else if (event instanceof DockingRequest) { // TODO
 			DockingRequest dockRequest = (DockingRequest) event;
 			worker.execute(() -> {
-				QueryDockTable query =  new QueryDockTable();
+				QueryDockTable query = new QueryDockTable();
 				query.robotIP = dockRequest.robotIP;
 				query.robotID = dockRequest.robotID;
-				
-					logger.info("Queryer  sent QueryDockTable "+ query);
-					eventBus.deliver(query);
-				
+
+				logger.info("Queryer  sent to Creator QueryDockTable " + query);
+				eventBus.deliver(query);
+
 			});
-			
+
 		} else if (event instanceof CartMovedNotice) {
 			CartMovedNotice cartMovedNotice = (CartMovedNotice) event;
 			worker.execute(() -> {
-				UpdatePickingTable update = new UpdatePickingTable();
+				UnsignPickingPoint update = new UnsignPickingPoint();
 				update.isAssigned = false;
 				update.robotID = cartMovedNotice.robotID;
 				update.pickPoint = cartMovedNotice.pickPoint;
 
-					logger.info("Queryer  sent UpdatePickingTable "+ update);
-					eventBus.deliver(update);
+				logger.info("Queryer  sent to Creator UnsignPickingPoint " + update);
+				eventBus.deliver(update);
 			});
-			
+
 		} else if (event instanceof NoCartNotice) {
 			NoCartNotice noCartNotice = (NoCartNotice) event;
 			worker.execute(() -> {
-				UpdatePickingTable update = new UpdatePickingTable();
+				UnsignPickingPoint update = new UnsignPickingPoint();
 				update.isAssigned = false;
 				update.robotID = noCartNotice.robotID;
 				update.pickPoint = noCartNotice.pickPoint;
 
-					logger.info("Queryer  sent UpdatePickingTable "+ update);
-					eventBus.deliver(update);
+				logger.info("Queryer  sent to Creator UnsignPickingPoint " + update);
+				eventBus.deliver(update);
 			});
-		} 
-		
-		
-		
-		
-		else if (event instanceof QueryPickResponse) {  // TODO how to provide robotID ?
+		}  else if (event instanceof UnsignPickingPointResponse) {
+			UnsignPickingPointResponse resp = (UnsignPickingPointResponse) event;
+			worker.execute(() -> {
+				logger.info("Queryer  received from Creator Picking point is marked to False, PickID = "+resp.pickID);
+
+			});
+		}
+
+		else if (event instanceof QueryPickResponse) { // TODO how to provide robotID ?
 			QueryPickResponse resp = (QueryPickResponse) event;
 			worker.execute(() -> {
 				NewPickPointResponse rs = new NewPickPointResponse();
 				rs.robotID = resp.robotID;
-				
+
 				if (resp.pickPoint != null) {
 					rs.hasNewPoint = true;
 					rs.pickPoint = resp.pickPoint;
@@ -200,41 +200,41 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				logger.info("Queryer  sent NewPickPointResponse " + rs);
 				eventBus.deliver(rs);
 			});
-				
+
 		} else if (event instanceof QueryStorageResponse) {
 			QueryStorageResponse resp = (QueryStorageResponse) event;
 			worker.execute(() -> {
 				NewStoragePointResponse rs = new NewStoragePointResponse();
 				rs.robotID = resp.robotID;
-				
+
 				rs.markerID = resp.markerID;
 				rs.hasNewPoint = resp.hasNewPoint;
 				rs.storagePoint = resp.storagePoint;
 				rs.storageAuxliaryPoint = resp.storageAuxliaryPoint;
-					logger.info("Queryer  sent NewStoragePointResponse "+ rs);
-					eventBus.deliver(rs);
+				logger.info("Queryer  sent NewStoragePointResponse " + rs);
+				eventBus.deliver(rs);
 
 			});
-			
+
 		} else if (event instanceof QueryDockResponse) {
 			QueryDockResponse resp = (QueryDockResponse) event;
 			worker.execute(() -> {
 				DockingResponse rs = new DockingResponse();
 				rs.robotID = resp.robotID;
-				
+
 				rs.hasNewPoint = resp.hasNewPoint;
 				rs.dockingPoint = resp.dockingPoint;
 				rs.dockAuxliaryPoint = resp.dockAuxliaryPoint;
-					logger.info("Queryer  sent DockingResponse "+ rs);
-					eventBus.deliver(rs);
+				logger.info("Queryer  sent DockingResponse " + rs);
+				eventBus.deliver(rs);
 			});
-			
+
 		} else if (event instanceof PickingTableValues) {
 			PickingTableValues resp = (PickingTableValues) event;
 
-			logger.info("Queryer  gets Picking Table: \n"+ resp.pickingTableValues);
-			System.out.println("Queryer  gets Picking Table: \n"+ resp.pickingTableValues);
-			
+			logger.info("Queryer  gets Picking Table: \n" + resp.pickingTableValues);
+			System.out.println("Queryer  gets Picking Table: \n" + resp.pickingTableValues);
+
 		}
 	}
 

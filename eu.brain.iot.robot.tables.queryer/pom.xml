@@ -60,12 +60,7 @@
 			<version>1.0.2</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>1.4.200</version>
-</dependency>
+
 		
 						<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
