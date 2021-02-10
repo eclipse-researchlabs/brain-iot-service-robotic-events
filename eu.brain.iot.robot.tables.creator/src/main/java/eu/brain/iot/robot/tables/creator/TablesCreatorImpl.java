@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -37,6 +39,7 @@ import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
 import eu.brain.iot.eventing.api.BrainIoTEvent;
 import eu.brain.iot.eventing.api.EventBus;
 import eu.brain.iot.eventing.api.SmartBehaviour;
+import eu.brain.iot.eventing.api.UntypedSmartBehaviour;
 import eu.brain.iot.robot.tables.creator.api.Coordinate;
 import eu.brain.iot.robot.tables.creator.api.GetPickingTable;
 import eu.brain.iot.robot.tables.creator.api.PickingTableValues;
@@ -61,7 +64,6 @@ import eu.brain.iot.robot.tables.jsonReader.StorageAUX;
 import eu.brain.iot.robot.tables.jsonReader.StoragePoint;
 import eu.brain.iot.robot.tables.jsonReader.StoragePose;
 import eu.brain.iot.robot.tables.jsonReader.StorageTable;
-import eu.brain.iot.warehouse.sensiNact.api.PickingPointUpdateNotice;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateCartStorage;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateDockPoint;
 import eu.brain.iot.warehouse.sensiNact.api.UpdatePickPoint;
@@ -73,12 +75,14 @@ import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 @Component(
 		immediate=true,
 		configurationPid = "eu.brain.iot.robot.tables.creator.TablesCreator", 
-		configurationPolicy = ConfigurationPolicy.OPTIONAL, 
-		service = {SmartBehaviour.class}
+		configurationPolicy = ConfigurationPolicy.OPTIONAL,
+		service = {SmartBehaviour.class}/*,
+		property = {"com.paremus.dosgi.scope=universal",
+				    "service.exported.interfaces=*"}*/
 )
-@SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, GetPickingTable.class,
-		UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
-		author = "LINKS", name = "Warehouse Module: Tables Creator", 
+@SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, 
+		GetPickingTable.class, UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
+		filter = "(robotID=*)", author = "LINKS", name = "Warehouse Module: Tables Creator", 
 		description = "Implements Four Shared  Tables."
 )
 public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
@@ -121,6 +125,8 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			logger = (Logger) LoggerFactory.getLogger(TablesCreatorImpl.class.getSimpleName());
 
 			logger.info("table creator resourcesPath = "+resourcesPath +", UUID = "+ context.getProperty("org.osgi.framework.uuid"));
+			System.out.println("table creator resourcesPath = "+resourcesPath +", UUID = "+ context.getProperty("org.osgi.framework.uuid"));
+			
 			worker = Executors.newFixedThreadPool(10);
 			try {
 			jsonDataReader = new JsonDataReader(resourcesPath);
@@ -143,16 +149,17 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				logger.info("Table Creator finished to create "+resourcesPath+"tables.mv.db..........");
 				System.out.println("Table Creator finished to create "+resourcesPath+"tables.mv.db..........");
 				
-				Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
+			/*	Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
 						.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 				
-				serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // get all events
-						String.format("(robotID=*)"));
+				serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",String.format("(robotID=*)"));
 				
-				reg = context.registerService(SmartBehaviour.class, this, serviceProps);
+				serviceProps.put("com.paremus.dosgi.scope", "universal");
+				
+				reg = context.registerService(SmartBehaviour.class, this, serviceProps);*/
 				
 			} catch (ClassNotFoundException e) {
-				logger.error("\nCreator Exception: {}", e.toString());
+				logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 				
 			} catch (SQLException e) {
 				if(stmt != null && !stmt.isClosed()) {
@@ -161,10 +168,10 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				logger.error("\nCreator Exception: {}", e.toString());
+				logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 			}
 		} catch (Exception e) {
-			logger.error("\nCreator Exception: {}", e.toString());
+			logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 			
 		}
@@ -173,31 +180,34 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 	@Override
 	public void notify(BrainIoTEvent event) {
 
-		logger.info("--> Table Creator received an event " + event.getClass());
-
+		logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
+		
+	// -----------------------------------   used for Queryer  start  ------------------------------------------------	
+		
 		if (event instanceof QueryPickingTable) {
 			QueryPickingTable pickRequest = (QueryPickingTable) event;
 			worker.execute(() -> {
 				QueryPickResponse rs = getQueryPickResponse(pickRequest);
-				rs.robotID = pickRequest.robotID;
 				if (rs != null) {
+					rs.robotID = pickRequest.robotID;
 					eventBus.deliver(rs);
-					logger.info("Creator  sent to Queryer QueryPickResponse " + rs);
+					logger.info("Creator  sent to Queryer QueryPickResponse, robotID= "+rs.robotID+", pickID= " + rs.pickID+", pickPoint="+rs.pickPoint);
 					
-					PickingPointUpdateNotice notice = new PickingPointUpdateNotice();
+			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();   // for interaction with SensiNact
 					notice.pickID = rs.pickID;
 					notice.isAssigned = true;
 					eventBus.deliver(notice);
-					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);
+					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);  */ 
 				}
 			});
 		} else if (event instanceof QueryStorageTable) {
 			QueryStorageTable storageRequest = (QueryStorageTable) event;
 			worker.execute(() -> {
 				QueryStorageResponse resp = getQueryStorageResponse(storageRequest);
-				resp.robotID = storageRequest.robotID;
 				if (resp != null) {
-					logger.info("Creator  sent to Queryer QueryStorageResponse " + resp);
+					resp.robotID = storageRequest.robotID;
+					logger.info("Creator  sent to Queryer QueryStorageResponse,  robotID= "+resp.robotID+", markerID= " 
+					+ resp.markerID+", hasNewPoint="+resp.hasNewPoint+", storageAuxPoint="+resp.storageAuxliaryPoint+", storagePoint="+resp.storagePoint);
 					eventBus.deliver(resp);
 				}
 			});
@@ -206,44 +216,47 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			QueryDockTable dockRequest = (QueryDockTable) event;
 			worker.execute(() -> {
 				QueryDockResponse resp = getQueryDockResponse(dockRequest);
-				resp.robotID = dockRequest.robotID;
 				if (resp != null) {
-					logger.info("Creator  sent to Queryer QueryDockResponse " + resp);
+					resp.robotID = dockRequest.robotID;
+					logger.info("Creator  sent to Queryer QueryDockResponse,  robotID= "+resp.robotID+", robotIP= " 
+							+ resp.robotIP+", hasNewPoint="+resp.hasNewPoint+", dockAuxPoint="+resp.dockAuxliaryPoint+", dockPoint="+resp.dockingPoint);
 					eventBus.deliver(resp);
 				}
 			});
-
+	// -----------------------------------   used for Queryer  end  ------------------------------------------------
+			
 		} else if (event instanceof UnsignPickingPoint) {  // it's sent when iteration is done or no cart found at picking point
 			UnsignPickingPoint updateRequest = (UnsignPickingPoint) event;
 			worker.execute(() -> {
 				UnsignPickingPointResponse rs = unsignPickingPoint(updateRequest);
-				
 				if (rs != null) {
 					rs.robotID = updateRequest.robotID;
 					eventBus.deliver(rs);
-					logger.info("Creator  sent TableUpdatedResponse " + rs);
+					logger.info("Creator  sent  to Queryer UnsignPickingPointResponse, pickID=" + rs.pickID+", updateStatus="+rs.updateStatus);
 					
-					PickingPointUpdateNotice notice = new PickingPointUpdateNotice();
+			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();  // for interaction with SensiNact
 					notice.pickID = rs.pickID;
 					notice.isAssigned = false;
 					eventBus.deliver(notice);
-					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);
+					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);*/
 				}
 			});
-		} else if (event instanceof GetPickingTable) {
+		} else if (event instanceof GetPickingTable) {  // print picking table by Queryer
 			GetPickingTable get = (GetPickingTable) event;
 			worker.execute(() -> {
 				PickingTableValues rs = getPickingTable(get);
-				rs.robotID = get.robotID;
 				if (rs != null) {
-					logger.info("Creator  sent PickingTableValues ");
+					rs.robotID = get.robotID;
+					logger.info("Creator  sent to Queryer PickingTableValues ");
 					eventBus.deliver(rs);
 				}
 			});
+			
+	// -----------------------------------   SensiNact  start  ------------------------------------------------	
 		} else if (event instanceof UpdatePickPoint) {
 			UpdatePickPoint up = (UpdatePickPoint) event;
 			worker.execute(() -> {
-				logger.info("--> Table Creator got a SensiNact UpdatePickPoint = " + up);
+				logger.info("--> Table Creator got a SensiNact UpdatePickPoint, pickID= " + up.pickID+", pickPoint= "+up.pickPoint+", isAssigned="+up.isAssigned);
 				UpdateResponse rs = new UpdateResponse();
 				if (updatePickTableRow(up)) {
 					rs.updateStatus = UpdateStatus.OK;
@@ -256,7 +269,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		} else if (event instanceof UpdateCartStorage) {
 			UpdateCartStorage up = (UpdateCartStorage) event;
 			worker.execute(() -> {
-				logger.info("--> Table Creator got a SensiNact UpdateCartStorage = " + up);
+				logger.info("--> Table Creator got a SensiNact UpdateCartStorage, cartID= " + up.cartID+", storageID= "+up.storageID);
 				UpdateResponse rs = new UpdateResponse();
 				if (updateCartStorageRow(up)) {
 					rs.updateStatus = UpdateStatus.OK;
@@ -269,7 +282,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		}  else if (event instanceof UpdateStoragePoint) {
 			UpdateStoragePoint up = (UpdateStoragePoint) event;
 			worker.execute(() -> {
-				logger.info("--> Table Creator got a SensiNact UpdateStoragePoint = " + up);
+				logger.info("--> Table Creator got a SensiNact UpdateStoragePoint, storageID = " + up.storageID+", storageAUX= "+up.storageAUX+", storagePoint= "+up.storagePoint);
 				UpdateResponse rs = new UpdateResponse();
 				if (updateStorageTableRow(up)) {
 					rs.updateStatus = UpdateStatus.OK;
@@ -282,7 +295,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		} else if (event instanceof UpdateDockPoint) {
 			UpdateDockPoint up = (UpdateDockPoint) event;
 			worker.execute(() -> {
-				logger.info("--> Table Creator got a SensiNact UpdateDockPoint = " + up);
+				logger.info("--> Table Creator got a SensiNact UpdateDockPoint, robotIP = " + up.robotIP+", dockAUX= "+up.dockAUX+", dockPoint= "+up.dockPoint);
 				UpdateResponse rs = new UpdateResponse();
 				if (updateDockTableRow(up)) {
 					rs.updateStatus = UpdateStatus.OK;
@@ -293,142 +306,160 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				eventBus.deliver(rs);
 			});
 		}
+		// -----------------------------------   SensiNact  end  ------------------------------------------------	
 	}
+	
 
-		private boolean updatePickTableRow(UpdatePickPoint pp) {
-			
-			StringBuilder value = new StringBuilder();
-			value.append("'"+pp.pickID+"', '"+pp.pickPoint.trim()+"', '"+pp.isAssigned+"'");
-			  int flag = 0;
-			  try {
-				  ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE PPid="+pp.pickID);
-				  while (rs.next()) {
-						
-						stmt.executeUpdate("UPDATE PickingTable SET PPid='"+pp.pickID+"', pose='"+pp.pickPoint.trim()+"', isAssigned='" + pp.isAssigned + "'");
-						flag = 1;
-						break;
-				  }
-				  if(flag==0) {
-					  stmt.executeUpdate("INSERT INTO PickingTable VALUES("+value.toString()+")");
-				  }
-				
-			} catch (Exception e) {
-				logger.error("\n Creator Exception: {}", e.toString());
-				value = null;
-				return false;
-			}
-			  value = null;
-			return true;
-		}
-		
-		private boolean updateCartStorageRow(UpdateCartStorage pp) {
-			
-			StringBuilder value = new StringBuilder();
-			value.append("'"+pp.cartID+"', '"+pp.storageID.trim()+"'");
-			  int flag = 0;
-			  try {
-				  ResultSet rs = stmt.executeQuery("SELECT * FROM CartTable WHERE cartID="+pp.cartID);
-				  while (rs.next()) {
-						
-						stmt.executeUpdate("UPDATE CartTable SET cartID='"+pp.cartID+"', storageID='"+pp.storageID.trim()+"'");
-						flag = 1;
-						break;
-				  }
-				  if(flag==0) {
-					  stmt.executeUpdate("INSERT INTO CartTable VALUES("+value.toString()+")");
-				  }
-				
-			} catch (Exception e) {
-				logger.error("\n Creator Exception: {}", e.toString());
-				value = null;
-				return false;
-			}
-			  value = null;
-			return true;
-		}
-		
-		private boolean updateStorageTableRow(UpdateStoragePoint pp) {
-			
-			StringBuilder value = new StringBuilder();
-			value.append("'"+pp.storageID.trim()+"', '"+pp.storageAUX.trim()+"', '"+pp.storagePoint.trim()+"'");
-			  int flag = 0;
-			  try {
-				  ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable WHERE STid="+pp.storageID.trim());
-				  while (rs.next()) {
-						
-						stmt.executeUpdate("UPDATE StorageTable SET STid='"+pp.storageID.trim()+"', storageAUX='"+pp.storageAUX.trim()+"', storagePose='" + pp.storagePoint.trim() + "'");
-						flag = 1;
-						break;
-				  }
-				  if(flag==0) {
-					  stmt.executeUpdate("INSERT INTO StorageTable VALUES("+value.toString()+")");
-				  }
-				
-			} catch (Exception e) {
-				logger.error("\n Creator Exception: {}", e.toString());
-				value = null;
-				return false;
-			}
-			  value = null;
-			return true;
-		}
-		
-		private boolean updateDockTableRow(UpdateDockPoint pp) {
-			
-			StringBuilder value = new StringBuilder();
-			value.append("'"+pp.robotIP.trim()+"', '"+pp.dockAUX.trim()+"', '"+pp.dockPoint.trim()+"'");
-			  int flag = 0;
-			  try {
-				  ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable WHERE IPid="+pp.robotIP.trim());
-				  while (rs.next()) {
-						
-						stmt.executeUpdate("UPDATE DockTable SET IPid='"+pp.robotIP.trim()+"', dockAUX='"+pp.dockAUX.trim()+"', dockPose='" + pp.dockPoint.trim() + "'");
-						flag = 1;
-						break;
-				  }
-				  if(flag==0) {
-					  stmt.executeUpdate("INSERT INTO DockTable VALUES("+value.toString()+")");
-				  }
-				
-			} catch (Exception e) {
-				logger.error("\n Creator Exception: {}", e.toString());
-				value = null;
-				return false;
-			}
-			  value = null;
-			return true;
-		}
-		
-		private synchronized QueryPickResponse getQueryPickResponse(QueryPickingTable pickRequest) {
+	// -----------------------------------   SensiNact  start  ------------------------------------------------
+	private boolean updatePickTableRow(UpdatePickPoint pp) {
 
-			QueryPickResponse pickReponse = new QueryPickResponse();
-			try {
+		StringBuilder value = new StringBuilder();
+		value.append("'" + pp.pickID + "', '" + pp.pickPoint.trim() + "', '" + pp.isAssigned + "'");
+		int flag = 0;
+		try {
+			synchronized (this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE PPid=" + pp.pickID);
+				while (rs.next()) {
+					stmt.executeUpdate("UPDATE PickingTable SET PPid='" + pp.pickID + "', pose='" + pp.pickPoint.trim()+ "', isAssigned='" + pp.isAssigned + "'");
+					flag = 1;
+					break;
+				}
+				if (flag == 0) {
+					stmt.executeUpdate("INSERT INTO PickingTable VALUES(" + value.toString() + ")");
+				}
+				printPickingTable();
+			}
+		} catch (Exception e) {
+			logger.error("\n Creator update PickingTable row Exception: {}", ExceptionUtils.getStackTrace(e));
+			value = null;
+			return false;
+		}
+		value = null;
+		return true;
+	}
+		
+	private boolean updateCartStorageRow(UpdateCartStorage pp) {
 
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=false");
+		StringBuilder value = new StringBuilder();
+		value.append("'" + pp.cartID + "', '" + pp.storageID.trim() + "'");
+		int flag = 0;
+		try {
+			synchronized (this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM CartTable WHERE cartID=" + pp.cartID);
+				while (rs.next()) {
+
+					stmt.executeUpdate("UPDATE CartTable SET cartID='" + pp.cartID + "', storageID='" + pp.storageID.trim() + "'");
+					flag = 1;
+					break;
+				}
+				if (flag == 0) {
+					stmt.executeUpdate("INSERT INTO CartTable VALUES(" + value.toString() + ")");
+				}
+			}
+			printCartTable();
+
+		} catch (Exception e) {
+			logger.error("\n Creator update CartTable row Exception: {}", ExceptionUtils.getStackTrace(e));
+			value = null;
+			return false;
+		}
+		value = null;
+		return true;
+	}
+		
+	private boolean updateStorageTableRow(UpdateStoragePoint pp) {
+
+		StringBuilder value = new StringBuilder();
+		value.append("'" + pp.storageID.trim() + "', '" + pp.storageAUX.trim() + "', '" + pp.storagePoint.trim() + "'");
+		int flag = 0;
+		try {
+			synchronized (this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable WHERE STid=" + pp.storageID.trim());
+				while (rs.next()) {
+
+					stmt.executeUpdate("UPDATE StorageTable SET STid='" + pp.storageID.trim() + "', storageAUX='"+ pp.storageAUX.trim() + "', storagePose='" + pp.storagePoint.trim() + "'");
+					flag = 1;
+					break;
+				}
+				if (flag == 0) {
+					stmt.executeUpdate("INSERT INTO StorageTable VALUES(" + value.toString() + ")");
+				}
+			}
+			printStorageTable();
+		} catch (Exception e) {
+			logger.error("\n Creator update StorageTable row Exception: {}", ExceptionUtils.getStackTrace(e));
+			value = null;
+			return false;
+		}
+		value = null;
+		return true;
+	}
+		
+	private boolean updateDockTableRow(UpdateDockPoint pp) {
+
+		StringBuilder value = new StringBuilder();
+		value.append("'" + pp.robotIP.trim() + "', '" + pp.dockAUX.trim() + "', '" + pp.dockPoint.trim() + "'");
+		int flag = 0;
+		try {
+			synchronized (this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable WHERE IPid=" + pp.robotIP.trim());
+				while (rs.next()) {
+
+					stmt.executeUpdate("UPDATE DockTable SET IPid='" + pp.robotIP.trim() + "', dockAUX='"+ pp.dockAUX.trim() + "', dockPose='" + pp.dockPoint.trim() + "'");
+					flag = 1;
+					break;
+				}
+				if (flag == 0) {
+					stmt.executeUpdate("INSERT INTO DockTable VALUES(" + value.toString() + ")");
+				}
+			}
+			printDockTable();
+		} catch (Exception e) {
+			logger.error("\n Creator update DockTable row Exception: {}", ExceptionUtils.getStackTrace(e));
+			value = null;
+			return false;
+		}
+		value = null;
+		return true;
+	}
+		// -----------------------------------   SensiNact  end  ------------------------------------------------
+		
+		
+		// -----------------------------------   used for Queryer   start  ------------------------------------------------
+		
+	private QueryPickResponse getQueryPickResponse(QueryPickingTable pickRequest) {
+
+		QueryPickResponse pickReponse = new QueryPickResponse();
+		try {
+			synchronized (this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=false");
 
 				while (rs.next()) {
 					pickReponse.pickID = rs.getString("PPid");
 					pickReponse.pickPoint = rs.getString("pose");
-					logger.info("--> Table Creator got a pickPoint "+pickReponse.pickPoint);
-					stmt.executeUpdate(
-							"UPDATE PickingTable SET isAssigned='" + true + "' WHERE PPid='" + rs.getString("PPid") + "'");
+					logger.info("--> Table Creator got a pickPoint " + pickReponse.pickPoint);
+					stmt.executeUpdate("UPDATE PickingTable SET isAssigned='" + true + "' WHERE PPid='"+ rs.getString("PPid") + "'");
 					break;
 				}
-		
-			logger.info("------------Creator:  PickingTable ----------------");
-			  rs = stmt.executeQuery("SELECT * FROM PickingTable");
-			  while (rs.next()) {
-				  logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-			  }
-				  
-			} catch (Exception e) {
-				logger.error("\n Creator Exception: {}", e.toString());
-				return null;
-			}
-			return pickReponse;
-		}
 
-		private synchronized QueryStorageResponse getQueryStorageResponse(QueryStorageTable storageRequest) {
+				logger.info("------------Creator Assigns  PickingTable ----------------");
+				System.out.println("------------Creator Assigns  PickingTable ----------------");
+
+				rs = stmt.executeQuery("SELECT * FROM PickingTable");
+				while (rs.next()) {
+					logger.info(rs.getString("PPid") + ", " + rs.getString("pose") + ", " + rs.getString("isAssigned"));
+					System.out.println(rs.getString("PPid") + ", " + rs.getString("pose") + ", " + rs.getString("isAssigned"));
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("\n Creator Exception: {}", ExceptionUtils.getStackTrace(e));
+			return null;
+		}
+		return pickReponse;
+	}
+
+		private  QueryStorageResponse getQueryStorageResponse(QueryStorageTable storageRequest) {
 
 			int markerID = storageRequest.markerID;
 			String storageID = null;
@@ -456,14 +487,14 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				}
 				
 			} catch (Exception e) {
-				logger.error("\nCreator Exception:{}", e.toString());
+				logger.error("\nCreator Exception:{}", ExceptionUtils.getStackTrace(e));
 				return null;
 			}
 
 			return storageReponse;
 		}
 		
-		private synchronized QueryDockResponse getQueryDockResponse(QueryDockTable dockingRequest) {
+		private QueryDockResponse getQueryDockResponse(QueryDockTable dockingRequest) {
 
 			QueryDockResponse dockReponse = new QueryDockResponse();
 			dockReponse.robotIP = dockingRequest.robotIP;
@@ -479,15 +510,16 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					break;
 				}
 			} catch (Exception e) {
-				logger.error("\nCreator Exception: {}", e.toString());
+				logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 				return null;
 			}
 
 			return dockReponse;
 		}
+		// -----------------------------------   used for Queryer   end  ------------------------------------------------		
 		
 		
-	 private synchronized UnsignPickingPointResponse unsignPickingPoint(UnsignPickingPoint update) {
+	 private  UnsignPickingPointResponse unsignPickingPoint(UnsignPickingPoint update) {  //  update picking point True-->False
 		 
 		 UnsignPickingPointResponse resp = new UnsignPickingPointResponse();
 			resp.robotID = update.robotID;
@@ -495,40 +527,43 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			Coordinate targetPoint = getCoordinate(update.pickPoint);
 			Coordinate pickPose = null;
 			try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=true");
+				synchronized(this) {
+				ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE isAssigned=true");
 
 				while (rs.next()) {
 					pickPose = getCoordinate(rs.getString("pose"));
 					
 					if(pickPose.getX() == targetPoint.getX() && pickPose.getY() == targetPoint.getY() && pickPose.getZ() == targetPoint.getZ()) {
 						resp.pickID = rs.getString("PPid");
-						stmt.executeUpdate(
-								"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");
+			/*			stmt.executeUpdate(  // TODO 3, to be used in real robot
+								"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");*/
 						pickPose = null;
 						break;
 					}
 					pickPose = null;
-					
 				}
 			
-			logger.info("------------Creator:  PickingTable ----------------");
+				logger.info("------------Creator un-assign  PickingTable ----------------");
+				System.out.println("------------Creator un-assign  PickingTable ----------------");
 
-			  rs = stmt.executeQuery("SELECT * FROM PickingTable");
+				rs = stmt.executeQuery("SELECT * FROM PickingTable");
 
-			  while (rs.next()) {
+				while (rs.next()) {
 			       logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-			  }
+			       System.out.println(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
+				}
+				}
 			  
-			  logger.info("Table Creator is sending TableUpdatedResponse with updateStatus = "+resp.updateStatus);
+				logger.info("Table Creator is sending UnsignPickingPointResponse with updateStatus = "+resp.updateStatus);
 				
 			} catch (Exception e) {
-				logger.error("\nCreator Exception: {}", e.toString());
+				logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 				return null;
 			}
 			return resp;
 	 }
 	 
-	private PickingTableValues getPickingTable(GetPickingTable get) {
+	private PickingTableValues getPickingTable(GetPickingTable get) {     // print picking table
 		PickingTableValues table = new PickingTableValues();
 		table.robotID = get.robotID;
 		try {
@@ -544,51 +579,46 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			}
 
 		} catch (Exception e) {
-			logger.error("\nCreator get PickingTable Exception: {}", e.toString());
+			logger.error("\nCreator print PickingTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 		
 		return table;
 	}
 		
-	  
-	  public void initPickingTable(Statement stmt) {
-		  try {
-		  stmt.execute("DROP TABLE IF EXISTS PickingTable");
+	// -----------------------------------   init tables  ------------------------------------------------  
+	
+	public void initPickingTable(Statement stmt) {
+		try {
+			stmt.execute("DROP TABLE IF EXISTS PickingTable");
 
-		  stmt.execute("CREATE TABLE PickingTable(PPid VARCHAR(10) PRIMARY KEY, pose VARCHAR(30), isAssigned BOOLEAN)");
-		  
-		  if(jsonDataReader != null) {
-		  PickingTable pickingTable = jsonDataReader.pickingTable;
-		  
-		  List<PickingPoint> pickingPoints = pickingTable.getPickingPoints();
-		  
-		  StringBuilder value = new StringBuilder();
-		  
-		  for(PickingPoint pickingPoint : pickingPoints) {
-			  if(value == null) {
-				  value = new StringBuilder();
-			  }
-			  
-			  value.append("'"+pickingPoint.getPPid()+"', '"+serializePose(pickingPoint.getPose())+"', '"+pickingPoint.getIsAssigned()+"'");
-			  
-			  stmt.executeUpdate("INSERT INTO PickingTable VALUES("+value.toString()+")");
-			  value = null;
-		  }
-		  logger.info("------------  PickingTable ----------------");
+			stmt.execute(
+					"CREATE TABLE PickingTable(PPid VARCHAR(10) PRIMARY KEY, pose VARCHAR(30), isAssigned BOOLEAN)");
 
-		  ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable");
+			if (jsonDataReader != null) {
+				PickingTable pickingTable = jsonDataReader.pickingTable;
 
-		  while (rs.next()) {
-			  logger.info(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-			  System.out.println(rs.getString("PPid") + ", " + rs.getString("pose")+ ", " + rs.getString("isAssigned"));
-		  }
-		  
-	  }
-	  } catch (Exception e) {
-		  logger.error("\nCreator Exception: {}", e.toString());
+				List<PickingPoint> pickingPoints = pickingTable.getPickingPoints();
+
+				StringBuilder value = new StringBuilder();
+
+				for (PickingPoint pickingPoint : pickingPoints) {
+					if (value == null) {
+						value = new StringBuilder();
+					}
+					value.append("'" + pickingPoint.getPPid() + "', '" + serializePose(pickingPoint.getPose()) + "', '"
+							+ pickingPoint.getIsAssigned() + "'");
+
+					stmt.executeUpdate("INSERT INTO PickingTable VALUES(" + value.toString() + ")");
+					value = null;
+				}
+
+				printPickingTable();
+			}
+		} catch (Exception e) {
+			logger.error("\nCreator create PickingTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
-		  
-	  }
+
+	}
 	  
 	  public void initStorageTable(Statement stmt) {
 		  try {
@@ -613,89 +643,135 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			  stmt.executeUpdate("INSERT INTO StorageTable VALUES("+value.toString()+")");
 			  value = null;
 		  }
-		  logger.info("------------  StorageTable ----------------");
-
-		  ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable");
-
-		  while (rs.next()) {
-			  logger.info(rs.getString("STid") + ", " + rs.getString("storageAUX")+ ", " + rs.getString("storagePose"));
-			  System.out.println(rs.getString("STid") + ", " + rs.getString("storageAUX")+ ", " + rs.getString("storagePose"));
-		  }
+		  printStorageTable();
 		  }
 	  } catch (Exception e) {
-		  logger.error("\nCreator Exception: {}", e.toString());
+		  logger.error("\nCreator create StorageTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 	  }
 
-	  public void initCartTable(Statement stmt) {
-		  try {
-		  stmt.execute("DROP TABLE IF EXISTS CartTable");
+	public void initCartTable(Statement stmt) {
+		try {
+			stmt.execute("DROP TABLE IF EXISTS CartTable");
 
-		  stmt.execute("CREATE TABLE CartTable(cartID INT PRIMARY KEY, storageID VARCHAR(10))");
-		  if(jsonDataReader != null) {
-		  CartTable cartTable = jsonDataReader.cartTable;
-		  
-		  List<CartStorage> cartStorages = cartTable.getCartStorages();
-		  
-		  StringBuilder value = new StringBuilder();
-		  
-		  for(CartStorage cartStorage : cartStorages) {
-			  if(value == null) {
-				  value = new StringBuilder();
-			  }
-			  
-			  value.append("'"+cartStorage.getCartID()+"', '"+cartStorage.getStorageID()+"'");
-			  
-			  stmt.executeUpdate("INSERT INTO CartTable VALUES("+value.toString()+")");
-			  value = null;
-		  }
-		  logger.info("------------  CartTable ----------------");
+			stmt.execute("CREATE TABLE CartTable(cartID INT PRIMARY KEY, storageID VARCHAR(10))");
+			if (jsonDataReader != null) {
+				CartTable cartTable = jsonDataReader.cartTable;
 
-		  ResultSet rs = stmt.executeQuery("SELECT * FROM CartTable");
+				List<CartStorage> cartStorages = cartTable.getCartStorages();
 
-		  while (rs.next()) {
-			  logger.info(rs.getString("cartID") + ", " + rs.getString("storageID"));
-		  }
-		  }
-	  } catch (Exception e) {
-		  logger.error("\nCreator Exception: {}", e.toString());
-		}
-	  }
-	  
-	  public void initDockTable(Statement stmt) {
-		  try {
-		  stmt.execute("DROP TABLE IF EXISTS DockTable");
+				StringBuilder value = new StringBuilder();
 
-		  stmt.execute("CREATE TABLE DockTable(IPid VARCHAR(20) PRIMARY KEY, dockAUX VARCHAR(30), dockPose VARCHAR(30))");
-		  if(jsonDataReader != null) {
-		  DockTable dockTable = jsonDataReader.dockTable;
-		  
-		  List<DockingPoint> dockingPoints = dockTable.getDockingPoints();
-		  
-		  StringBuilder value = new StringBuilder();
-		  
-		  for(DockingPoint dockingPoint : dockingPoints) {
-			  if(value == null) {
-				  value = new StringBuilder();
-			  }
-			  
-			  value.append("'"+dockingPoint.getIPid()+"', '"+serializeDockAUX(dockingPoint.getDockAUX())+"', '"+serializeDockPose(dockingPoint.getDockPose())+"'");
-			  
-			  stmt.executeUpdate("INSERT INTO DockTable VALUES("+value.toString()+")");
-			  value = null;
-		  }
-		  logger.info("------------  DockTable ----------------");
+				for (CartStorage cartStorage : cartStorages) {
+					if (value == null) {
+						value = new StringBuilder();
+					}
 
-		  ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable");
+					value.append("'" + cartStorage.getCartID() + "', '" + cartStorage.getStorageID() + "'");
 
-		  while (rs.next()) {
-			  logger.info(rs.getString("IPid") + ", " + rs.getString("dockAUX")+ ", " + rs.getString("dockPose"));
-		  }
-		  }
-		  } catch (Exception e) {
-			  logger.error("\nCreator Exception: {}", e.toString());
+					stmt.executeUpdate("INSERT INTO CartTable VALUES(" + value.toString() + ")");
+					value = null;
+				}
+				printCartTable();
 			}
-	  }
+		} catch (Exception e) {
+			logger.error("\nCreator create CartTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
+	  
+	public void initDockTable(Statement stmt) {
+		try {
+			stmt.execute("DROP TABLE IF EXISTS DockTable");
+
+			stmt.execute("CREATE TABLE DockTable(IPid VARCHAR(20) PRIMARY KEY, dockAUX VARCHAR(30), dockPose VARCHAR(30))");
+			if (jsonDataReader != null) {
+				DockTable dockTable = jsonDataReader.dockTable;
+
+				List<DockingPoint> dockingPoints = dockTable.getDockingPoints();
+
+				StringBuilder value = new StringBuilder();
+
+				for (DockingPoint dockingPoint : dockingPoints) {
+					if (value == null) {
+						value = new StringBuilder();
+					}
+
+					value.append("'" + dockingPoint.getIPid() + "', '" + serializeDockAUX(dockingPoint.getDockAUX())
+							+ "', '" + serializeDockPose(dockingPoint.getDockPose()) + "'");
+
+					stmt.executeUpdate("INSERT INTO DockTable VALUES(" + value.toString() + ")");
+					value = null;
+				}
+				printDockTable();
+			}
+		} catch (Exception e) {
+			logger.error("\nCreator create DockTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
+	  
+	private void printPickingTable() {
+		try {
+			logger.info("------------  PickingTable ----------------");
+			System.out.println("------------  PickingTable ----------------");
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable");
+
+			while (rs.next()) {
+				logger.info(rs.getString("PPid") + ", " + rs.getString("pose") + ", " + rs.getString("isAssigned"));
+				System.out.println(rs.getString("PPid") + ", " + rs.getString("pose") + ", " + rs.getString("isAssigned"));
+			}
+		} catch (Exception e) {
+			logger.error("\nCreator print PickingTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
+	
+	private void printStorageTable() {
+		try {
+			logger.info("------------  StorageTable ----------------");
+			System.out.println("------------  StorageTable ----------------");
+			
+			  ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable");
+
+			  while (rs.next()) {
+				  logger.info(rs.getString("STid") + ", " + rs.getString("storageAUX")+ ", " + rs.getString("storagePose"));
+				  System.out.println(rs.getString("STid") + ", " + rs.getString("storageAUX")+ ", " + rs.getString("storagePose"));
+			  }
+		} catch (Exception e) {
+			logger.error("\nCreator print StorageTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
+	
+	private void printCartTable() {
+		try {
+			  logger.info("------------  CartTable ----------------");
+			  System.out.println("------------  CartTable ----------------");
+			  
+			  ResultSet rs = stmt.executeQuery("SELECT * FROM CartTable");
+
+			  while (rs.next()) {
+				  logger.info(rs.getString("cartID") + ", " + rs.getString("storageID"));
+				  System.out.println(rs.getString("cartID") + ", " + rs.getString("storageID"));
+			  }
+		} catch (Exception e) {
+			logger.error("\nCreator print CartTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
+	
+	private void printDockTable() {
+		try {
+			logger.info("------------  DockTable ----------------");
+			System.out.println("------------  DockTable ----------------");
+			
+			  ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable");
+
+			  while (rs.next()) {
+				  logger.info(rs.getString("IPid") + ", " + rs.getString("dockAUX")+ ", " + rs.getString("dockPose"));
+				  System.out.println(rs.getString("IPid") + ", " + rs.getString("dockAUX")+ ", " + rs.getString("dockPose"));
+			  }
+		} catch (Exception e) {
+			logger.error("\nCreator print DockTable Exception: {}", ExceptionUtils.getStackTrace(e));
+		}
+	}
 	  
 		private Coordinate getCoordinate(String crd) {
 
@@ -744,7 +820,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				conn.close();
 			}
 		} catch (SQLException e) {
-			logger.error("\nCreator Exception: {}", e.toString());
+			logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 		logger.info("------------  Table Creator is deactivated----------------");
 	}

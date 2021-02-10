@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-    <artifactId>smartbehavior</artifactId>
-    <groupId>eu.brain.iot.service.robotic</groupId>
-    <version>0.0.2-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>smartbehavior</artifactId>
+		<groupId>eu.brain.iot.service.robotic</groupId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
 
-    <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.queryer</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+	<groupId>eu.brain.iot.service.robotic</groupId>
+	<artifactId>eu.brain.iot.robot.tables.queryer</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
 
-    <description>The eu.brain.iot.robot.tables.queryer DS component - built using OSGi enRoute R7</description>
+	<description>The eu.brain.iot.robot.tables.queryer DS component - built using OSGi enRoute R7</description>
 
-    <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>osgi-api</artifactId>
@@ -40,7 +42,7 @@
 			<artifactId>eu.brain.iot.robot.api</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.api</artifactId>
 		</dependency>
@@ -61,40 +63,39 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		
-						<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.creator.api</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
-   
-		</dependency>
-		
+
 		<dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-classic</artifactId>
-    <version>1.1.2</version>
-</dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.tables.creator.api</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
 <dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-core</artifactId>
-    <version>1.1.2</version>
-</dependency>
-<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-api</artifactId>
-    <version>1.7.7</version>
+    <groupId>commons-lang</groupId>
+    <artifactId>commons-lang</artifactId>
+    <version>2.6</version>
 </dependency>
 
-<dependency>
-    <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
-    <scope>runtime</scope>
-</dependency>
-		
-     </dependencies>
+	</dependencies>
 
-    <build>
+	<build>
 		<plugins>
 			<!-- Expected to inherit configuration from a parent enRoute pom. This 
 				includes -contract definitions and maven-jar-plugin setup -->
@@ -131,7 +132,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Define the version of the export plugin we use -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
@@ -152,8 +153,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-	<!-- -->		<plugin>
+
+			<!-- -->
+			<plugin>
 				<groupId>com.paremus.brain.iot.maven</groupId>
 				<artifactId>smart-behaviour-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>

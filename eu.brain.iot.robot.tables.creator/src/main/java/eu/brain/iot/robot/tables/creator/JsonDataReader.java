@@ -16,14 +16,9 @@ import eu.brain.iot.robot.tables.jsonReader.DockTable;
 import eu.brain.iot.robot.tables.jsonReader.PickingTable;
 import eu.brain.iot.robot.tables.jsonReader.StorageTable;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,12 +43,6 @@ public class JsonDataReader {
 
 		logger.info("--------------------Warehouse Tables---------------------------");
 		System.out.println("--------------------Warehouse Tables---------------------------");
-        System.out.println(pickingTable.toString()+"\n");
-        System.out.println(storageTable.toString()+"\n");
-        System.out.println(cartTable.toString()+"\n");
-        System.out.println(dockTable.toString()+"\n");
-        logger.info("-----------------------------------------------");
-        System.out.println("-----------------------------------------------");
 	}
 	
 	private void loadTables() {
@@ -73,7 +62,7 @@ public class JsonDataReader {
 			dockTable = gson.fromJson(reader, DockTable.class);
 			
 		} catch (Exception e) {
-			logger.error("\n Exception: {}", e.toString());
+			logger.error("\n Exception: {}", ExceptionUtils.getStackTrace(e));
 			e.printStackTrace();
 		}
 		

@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -70,7 +71,7 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, 
 		CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
-		DoorStatusResponse.class, AvailabilityReturn.class}, 
+		DoorStatusResponse.class, AvailabilityReturn.class},
 		author = "LINKS", name = "Robot Behavior", 
 		description = "Implements a Robot Behavior.")
 
@@ -89,12 +90,11 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private static DockingResponse dockingResponse = null;
 	private static CartNoticeResponse cartNoticeResponse = null;
 	private ConfigurationAdmin cm;
-	private BundleContext context;
 	
 
 	@ObjectClassDefinition
 	public static @interface Config {
-		String logPath() default "/home/rui/resources/logback.xml"; // "/opt/fabric/resources/";
+		String logPath() default "/opt/fabric/resources/logback.xml"; // "/opt/fabric/resources/";
 	}
 	
 	private  Logger logger;
@@ -116,7 +116,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		System.setProperty("logback.configurationFile", config.logPath());
 		
 		logger = (Logger) LoggerFactory.getLogger(RobotBehaviour.class.getSimpleName());
-		this.context = context;
 		
 		String UUID = context.getProperty("org.osgi.framework.uuid");
 		
@@ -124,14 +123,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 		worker = Executors.newFixedThreadPool(10);
 
-		Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
+	/*	Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
 				.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 
 	//	serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // only receive some sepecific events with robotID
 	//			String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
 
 		logger.info("+++++++++ Robot Behaviour filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
-		reg = context.registerService(SmartBehaviour.class, this, serviceProps);
+		reg = context.registerService(SmartBehaviour.class, this, serviceProps); */
 
 		 onStart();
 	}
@@ -155,7 +154,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					String pickPoint = null;
 					pickCounter = 1;
 					storageCounter = 1;
-
+					
+					logger.info("--------------------------- Start New Iteration --------------------------------------");
+					
 					// --------------------------- Query Pick point --------------------------------------
 					logger.info("--------------------------- Query Pick point --------------------------------------");
 					while (query) {
@@ -186,7 +187,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 								try {
 									TimeUnit.SECONDS.sleep(10);
 								} catch (InterruptedException e) {
-									logger.error("\n Exception:", e);
+									logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 								}
 								pickCounter--;
 								continue;
@@ -275,7 +276,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 									try {
 										TimeUnit.SECONDS.sleep(10);
 									} catch (InterruptedException e) {
-										logger.error("\n Exception:", e);
+										logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 									}
 									storageCounter--;
 									continue;
@@ -293,6 +294,11 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							
 							if (!executeGoTo(RobotBehaviour.storageResponse.storageAuxliaryPoint, "storage AUX")) {
 								break; // execution failed
+							}
+							try {
+								TimeUnit.SECONDS.sleep(4);
+							} catch (InterruptedException e) {
+								logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 							}
 							
 							// --------------------------- check Door Marker  --------------------------------------
@@ -343,7 +349,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 							waitCartNoticeResponse(); // noticeStatus = "OK"
 
-							logger.info("-->RB" + robotID + " got CartNoticeResponse");
+						//	logger.info("-->RB" + robotID + " got CartNoticeResponse");
 
 							// --------------------------- Docking Request--------------------------------------
 							logger.info("--------------------------- Docking Request --------------------------------------");
@@ -380,6 +386,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 									if (!executeGoTo(dockingResponse.dockingPoint, "dock Point")) {
 										break; // execution failed
+									} else {
+										logger.info("--------------------------- End of the Iteration --------------------------------------");
 									}
 								} else {
 									logger.info("-->RB" + robotID + " exit because NO Docking point found ");
@@ -401,7 +409,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					try {
 						TimeUnit.SECONDS.sleep(2);
 					} catch (InterruptedException e) {
-						logger.error("\n Exception:", e);
+						logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 					}
 				}
 
@@ -420,7 +428,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	
 	@Modified
     void modified(Map<String, Object> properties) {
-		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties);
+		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+"\n");
 
     }
 
@@ -449,7 +457,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					logger.info("-->RB " + robotID + " update properties = "+props);
 					
 				} catch (IOException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 				
 				robotReady = rbc.isReady;
@@ -512,7 +520,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		WriteGoTo writeGoTo = createWriteGoTo(coordinate); // writeGOTO
 		queryReturn = null;
 		eventBus.deliver(writeGoTo);
-		logger.info("-->RB" + robotID + " is sending WriteGoTo: "+ coordinate +"with robotID = "+writeGoTo.robotID);
+		logger.info("-->RB" + robotID + " is sending WriteGoTo: "+ coordinate +" with robotID = "+writeGoTo.robotID);
 
 		if (waitQueryReturn(writeGoTo.command)) { // always true.
 			CurrentState currentState = queryReturn.currentState;
@@ -541,14 +549,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					try {
 						TimeUnit.SECONDS.sleep(2);
 					} catch (InterruptedException e) {
-						logger.error("\n Exception:", e);
+						logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 					}
 				}
 			} else {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -564,7 +572,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -579,7 +587,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -594,7 +602,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -609,7 +617,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -625,7 +633,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(2);
 				} catch (InterruptedException e) {
-					logger.error("\n Exception:", e);
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}
@@ -685,9 +693,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		worker.shutdown();
 		try {
 			worker.awaitTermination(1, TimeUnit.SECONDS);
-		} catch (InterruptedException ie) {
+		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			logger.error("\n Exception:", ie);
+			logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 		logger.info("------------  Robot Behavior "+ robotID+" is deactivated----------------");
 	}

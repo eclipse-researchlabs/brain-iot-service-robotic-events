@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -56,7 +58,7 @@ import eu.brain.iot.robot.tables.creator.api.UnsignPickingPointResponse;
 import eu.brain.iot.robot.tables.creator.api.UnsignPickingPoint;
 
 
-@Component(service = { TableQueryer.class },
+@Component(service = {SmartBehaviour.class},
 		   immediate = true,
 		   configurationPid = "eu.brain.iot.robot.tables.queryer.TablesQueryer", 
 		   configurationPolicy = ConfigurationPolicy.OPTIONAL
@@ -65,7 +67,7 @@ import eu.brain.iot.robot.tables.creator.api.UnsignPickingPoint;
 		consumed = { NewPickPointRequest.class, NewStoragePointRequest.class, NoCartNotice.class,
 		CartMovedNotice.class, DockingRequest.class, QueryPickResponse.class, QueryStorageResponse.class, 
 		QueryDockResponse.class, PickingTableValues.class, UnsignPickingPointResponse.class }, 
-		author = "LINKS", name = "Warehouse Module: Tables Queryer", 
+		filter = "(robotID=*)", author = "LINKS", name = "Warehouse Module: Tables Queryer", 
 		description = "Implements the Tables Queryer.")
 
 public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO must able to cache multiple requests
@@ -94,20 +96,20 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			logger = (Logger) LoggerFactory.getLogger(TableQueryer.class.getSimpleName());
 					
 			logger.info("Hello, this is Table Queryer ! UUID = "+ context.getProperty("org.osgi.framework.uuid"));
-			System.out.println("Hello, this is Table Queryer !");
+			System.out.println("Hello, this is Table Queryer ! UUID = "+ context.getProperty("org.osgi.framework.uuid"));
 			
 			logger.info("Table Queryer is using log: "+logPath);
 
 			worker = Executors.newFixedThreadPool(10);
 			
-			Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
+	/*		Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
 					.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 			
 			serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // get all events
 					String.format("(robotID=*)"));
 			
 			logger.info("+++++++++ Table Queryer filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
-			reg = context.registerService(SmartBehaviour.class, this, serviceProps);
+			reg = context.registerService(SmartBehaviour.class, this, serviceProps);*/
 			
 			logger.info("------------Queryer:  PickingTable ----------------");
 			System.out.println("------------Queryer:  PickingTable ----------------");
@@ -115,47 +117,46 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			GetPickingTable get = new GetPickingTable();
 			get.robotID = 0;
 			eventBus.deliver(get);
-
 	}
 	
 	
 	@Override
 	public void notify(BrainIoTEvent event) {
 
-		logger.info("--> Table Queryer received an event " + event.getClass());
+		logger.info("--> Table Queryer received an event " + event.getClass().getSimpleName());
 
-		if (event instanceof NewPickPointRequest) { // TODO
+		if (event instanceof NewPickPointRequest) {
 			NewPickPointRequest pickRequest = (NewPickPointRequest) event;
 			QueryPickingTable query = new QueryPickingTable(); // isAssigned = false
 			query.isAssigned = false;
 			query.robotID = pickRequest.robotID;
 
-			logger.info("Queryer  sent to Creator QueryPickingTable " + query);
+			logger.info("Queryer  sent to Creator QueryPickingTable , isAssigned= " + query.isAssigned+ ", robotID= "+query.robotID);
 			eventBus.deliver(query);
 
-		} else if (event instanceof NewStoragePointRequest) { // TODO
+		} else if (event instanceof NewStoragePointRequest) {
 			NewStoragePointRequest storageRequest = (NewStoragePointRequest) event;
 			worker.execute(() -> {
 				QueryStorageTable query = new QueryStorageTable();
 				query.markerID = storageRequest.markerID;
 				query.robotID = storageRequest.robotID;
 
-				logger.info("Queryer  sent to Creator QueryStorageTable " + query);
+				logger.info("Queryer  sent to Creator QueryStorageTable, markerID= " + query.markerID+ ", robotID= "+query.robotID);
 				eventBus.deliver(query);
 			});
 
-		} else if (event instanceof DockingRequest) { // TODO
+		} else if (event instanceof DockingRequest) {
 			DockingRequest dockRequest = (DockingRequest) event;
 			worker.execute(() -> {
 				QueryDockTable query = new QueryDockTable();
-				query.robotIP = dockRequest.robotIP;
+		//		query.robotIP = dockRequest.robotID;  // TODO 2, to be used in real robot
+				query.robotIP = new Integer(dockRequest.robotID).toString();
 				query.robotID = dockRequest.robotID;
 
-				logger.info("Queryer  sent to Creator QueryDockTable " + query);
+				logger.info("Queryer  sent to Creator QueryDockTable, robotIP= " + query.robotIP+ ", robotID= "+query.robotID);
 				eventBus.deliver(query);
 
 			});
-
 		} else if (event instanceof CartMovedNotice) {
 			CartMovedNotice cartMovedNotice = (CartMovedNotice) event;
 			worker.execute(() -> {
@@ -179,15 +180,24 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				logger.info("Queryer  sent to Creator UnsignPickingPoint " + update);
 				eventBus.deliver(update);
 			});
-		}  else if (event instanceof UnsignPickingPointResponse) {
+		}  else if (event instanceof UnsignPickingPointResponse) {   // response from Creator for True --> False
 			UnsignPickingPointResponse resp = (UnsignPickingPointResponse) event;
 			worker.execute(() -> {
 				logger.info("Queryer  received from Creator Picking point is marked to False, PickID = "+resp.pickID);
-
+				CartNoticeResponse rs = new CartNoticeResponse();
+				rs.robotID = resp.robotID;
+				if(resp.updateStatus==true) {
+					rs.noticeStatus = "OK";
+				} else {
+					rs.noticeStatus = "ERROR";
+				}
+				eventBus.deliver(rs);
 			});
 		}
 
-		else if (event instanceof QueryPickResponse) { // TODO how to provide robotID ?
+	// -----------------------------------   used for Robot Behavior  start  ------------------------------------------------
+		
+		else if (event instanceof QueryPickResponse) {
 			QueryPickResponse resp = (QueryPickResponse) event;
 			worker.execute(() -> {
 				NewPickPointResponse rs = new NewPickPointResponse();
@@ -197,7 +207,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 					rs.hasNewPoint = true;
 					rs.pickPoint = resp.pickPoint;
 				}
-				logger.info("Queryer  sent NewPickPointResponse " + rs);
+				logger.info("Queryer  sent NewPickPointResponse, robotID= " + rs.robotID+", hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
 				eventBus.deliver(rs);
 			});
 
@@ -228,10 +238,10 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				logger.info("Queryer  sent DockingResponse " + rs);
 				eventBus.deliver(rs);
 			});
-
-		} else if (event instanceof PickingTableValues) {
+	// -----------------------------------   used for Robot Behavior  end  ------------------------------------------------
+			
+		} else if (event instanceof PickingTableValues) {  // print picking table 
 			PickingTableValues resp = (PickingTableValues) event;
-
 			logger.info("Queryer  gets Picking Table: \n" + resp.pickingTableValues);
 			System.out.println("Queryer  gets Picking Table: \n" + resp.pickingTableValues);
 
@@ -246,7 +256,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			worker.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			logger.error("\nCreator Exception: {}", e.toString());
+			logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
 		logger.info("------------  Table Queryer is deactivated----------------");
 	}

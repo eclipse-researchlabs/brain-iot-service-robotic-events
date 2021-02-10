@@ -24,7 +24,8 @@
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator.api;version='[0.0.2,0.0.3)',\
 	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
-	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)'
+	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
+	org.apache.commons.lang;version='[2.6.0,2.6.1)'
 	
 	
 	
