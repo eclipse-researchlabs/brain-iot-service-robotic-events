@@ -120,6 +120,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		String UUID = context.getProperty("org.osgi.framework.uuid");
 		
 		logger.info("Hello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
+		System.out.println("Hello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
 
 		worker = Executors.newFixedThreadPool(10);
 
@@ -370,7 +371,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 										break; // execution failed
 									}
 									// --------------------------- check Door Marker --------------------------------------
-									logger.info("--------------------------- Check Door Marker --------------------------------------");
+					/*				logger.info("--------------------------- Check Door Marker --------------------------------------");
 
 									
 									CheckMarker checkDoorMarker2 = createCheckMarker(); // CheckMarker
@@ -379,7 +380,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 									int DoorID2 = waitMarker();
 									logger.info("-->RB" + robotID + " got DoorID = " + DoorID2);
-
+*/
 									
 									// --------------------------- Go to Docking Point --------------------------------------
 									logger.info("--------------------------- Go to Docking Point --------------------------------------");

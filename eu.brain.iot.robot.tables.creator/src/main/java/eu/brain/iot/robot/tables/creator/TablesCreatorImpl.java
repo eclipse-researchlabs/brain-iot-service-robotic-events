@@ -74,11 +74,9 @@ import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 
 @Component(
 		immediate=true,
-		configurationPid = "eu.brain.iot.robot.tables.creator.TablesCreator", 
+		configurationPid = "eu.brain.iot.robot.tables.creator.TablesCreatorImpl", 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL,
-		service = {SmartBehaviour.class}/*,
-		property = {"com.paremus.dosgi.scope=universal",
-				    "service.exported.interfaces=*"}*/
+		service = {SmartBehaviour.class}
 )
 @SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, 
 		GetPickingTable.class, UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
@@ -188,9 +186,10 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			QueryPickingTable pickRequest = (QueryPickingTable) event;
 			worker.execute(() -> {
 				QueryPickResponse rs = getQueryPickResponse(pickRequest);
-				if (rs != null) {
+				if (rs != null && rs.pickID!=null) {
 					rs.robotID = pickRequest.robotID;
 					eventBus.deliver(rs);
+				//	logger.info("--> Table Creator got a pickID="+rs.pickID+", pickPoint= " + rs.pickPoint);
 					logger.info("Creator  sent to Queryer QueryPickResponse, robotID= "+rs.robotID+", pickID= " + rs.pickID+", pickPoint="+rs.pickPoint);
 					
 			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();   // for interaction with SensiNact
@@ -437,9 +436,13 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				while (rs.next()) {
 					pickReponse.pickID = rs.getString("PPid");
 					pickReponse.pickPoint = rs.getString("pose");
-					logger.info("--> Table Creator got a pickPoint " + pickReponse.pickPoint);
+					logger.info("--> Table Creator got a pickID="+pickReponse.pickID+", pickPoint= " + pickReponse.pickPoint);
 					stmt.executeUpdate("UPDATE PickingTable SET isAssigned='" + true + "' WHERE PPid='"+ rs.getString("PPid") + "'");
 					break;
+				}
+				
+				if(pickReponse.pickID == null) {
+					logger.info("==============> NO PICK POINT Found by Creator  for RB=  "+pickRequest.robotID);
 				}
 
 				logger.info("------------Creator Assigns  PickingTable ----------------");
@@ -535,8 +538,8 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					
 					if(pickPose.getX() == targetPoint.getX() && pickPose.getY() == targetPoint.getY() && pickPose.getZ() == targetPoint.getZ()) {
 						resp.pickID = rs.getString("PPid");
-			/*			stmt.executeUpdate(  // TODO 3, to be used in real robot
-								"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");*/
+				//		stmt.executeUpdate(  // TODO 3, to be used in real robot
+				//				"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");
 						pickPose = null;
 						break;
 					}

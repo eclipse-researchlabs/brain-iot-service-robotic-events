@@ -111,12 +111,12 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			logger.info("+++++++++ Table Queryer filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
 			reg = context.registerService(SmartBehaviour.class, this, serviceProps);*/
 			
-			logger.info("------------Queryer:  PickingTable ----------------");
+	/*		logger.info("------------Queryer:  PickingTable ----------------");
 			System.out.println("------------Queryer:  PickingTable ----------------");
 			
 			GetPickingTable get = new GetPickingTable();
 			get.robotID = 0;
-			eventBus.deliver(get);
+			eventBus.deliver(get);*/
 	}
 	
 	
@@ -149,7 +149,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 			DockingRequest dockRequest = (DockingRequest) event;
 			worker.execute(() -> {
 				QueryDockTable query = new QueryDockTable();
-		//		query.robotIP = dockRequest.robotID;  // TODO 2, to be used in real robot
+		//		query.robotIP = dockRequest.robotIP;  // TODO 2, to be used in real robot
 				query.robotIP = new Integer(dockRequest.robotID).toString();
 				query.robotID = dockRequest.robotID;
 
@@ -206,8 +206,10 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				if (resp.pickPoint != null) {
 					rs.hasNewPoint = true;
 					rs.pickPoint = resp.pickPoint;
+					logger.info("Queryer sent to RB "+rs.robotID+ " NewPickPointResponse, (pickID= "+resp.pickID +"), hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
+				} else {
+					logger.info("Queryer doesn't get available picking point, sent to RB "+rs.robotID+ " empty value");
 				}
-				logger.info("Queryer  sent NewPickPointResponse, robotID= " + rs.robotID+", hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
 				eventBus.deliver(rs);
 			});
 
@@ -221,7 +223,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				rs.hasNewPoint = resp.hasNewPoint;
 				rs.storagePoint = resp.storagePoint;
 				rs.storageAuxliaryPoint = resp.storageAuxliaryPoint;
-				logger.info("Queryer  sent NewStoragePointResponse " + rs);
+				logger.info("Queryer  sent to RB NewStoragePointResponse " + rs);
 				eventBus.deliver(rs);
 
 			});
@@ -235,7 +237,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				rs.hasNewPoint = resp.hasNewPoint;
 				rs.dockingPoint = resp.dockingPoint;
 				rs.dockAuxliaryPoint = resp.dockAuxliaryPoint;
-				logger.info("Queryer  sent DockingResponse " + rs);
+				logger.info("Queryer  sent to RB DockingResponse " + rs);
 				eventBus.deliver(rs);
 			});
 	// -----------------------------------   used for Robot Behavior  end  ------------------------------------------------
