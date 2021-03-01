@@ -8,7 +8,7 @@
   </parent>
   
 	<groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.warehouse.sensinact.api</artifactId>
+    <artifactId>warehouse.sensinact.api</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 
     <description>The eu.brain.iot.warehouse.sensinact.api API bundle - built using OSGi enRoute R7</description>

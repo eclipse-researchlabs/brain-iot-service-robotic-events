@@ -7,6 +7,24 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ******************************************************************************/
-@org.osgi.annotation.bundle.Export
-@org.osgi.annotation.versioning.Version("0.0.1")
 package eu.brain.iot.warehouse.sensiNact.api;
+
+import eu.brain.iot.warehouse.sensiNact.api.WarehouseTables.Tables;
+
+/*
+ * this event is sent from warehouse backend
+ * */
+
+public class UpdateResponse extends SensiNactCommand {
+
+	public UpdateStatus updateStatus; // Acknowledge response from warehouse backend
+	
+	public Tables table;
+	
+	public static enum UpdateStatus {
+		OK, ERROR;
+	}
+	
+	
+	
+}

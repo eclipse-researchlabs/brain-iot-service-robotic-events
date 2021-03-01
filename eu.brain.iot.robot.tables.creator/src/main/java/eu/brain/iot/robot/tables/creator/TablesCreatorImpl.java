@@ -64,11 +64,13 @@ import eu.brain.iot.robot.tables.jsonReader.StorageAUX;
 import eu.brain.iot.robot.tables.jsonReader.StoragePoint;
 import eu.brain.iot.robot.tables.jsonReader.StoragePose;
 import eu.brain.iot.robot.tables.jsonReader.StorageTable;
+import eu.brain.iot.warehouse.sensiNact.api.PickingPointUpdateNotice;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateCartStorage;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateDockPoint;
 import eu.brain.iot.warehouse.sensiNact.api.UpdatePickPoint;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateResponse;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateResponse.UpdateStatus;
+import eu.brain.iot.warehouse.sensiNact.api.WarehouseTables.Tables;
 import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 
 
@@ -80,7 +82,7 @@ import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 )
 @SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, 
 		GetPickingTable.class, UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
-		filter = "(robotID=*)", author = "LINKS", name = "Warehouse Module: Tables Creator", 
+		/*filter = "(robotID=*)", */author = "LINKS", name = "Warehouse Module: Tables Creator", 
 		description = "Implements Four Shared  Tables."
 )
 public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
@@ -93,7 +95,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		  
 		  private Connection conn;
 		  private Statement stmt;
-		  private JsonDataReader jsonDataReader;
+	//	  private JsonDataReader jsonDataReader;
 		  private String resourcesPath;
 		  
 		  @ObjectClassDefinition
@@ -126,8 +128,10 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			System.out.println("table creator resourcesPath = "+resourcesPath +", UUID = "+ context.getProperty("org.osgi.framework.uuid"));
 			
 			worker = Executors.newFixedThreadPool(10);
+			
+			
 			try {
-			jsonDataReader = new JsonDataReader(resourcesPath);
+			//	jsonDataReader = new JsonDataReader(resourcesPath);
 			
 			try {
 				final String JDBC_URL = "jdbc:h2:"+resourcesPath+"tables;DB_CLOSE_DELAY=-1";
@@ -178,11 +182,12 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 	@Override
 	public void notify(BrainIoTEvent event) {
 
-		logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
+	//	logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 		
 	// -----------------------------------   used for Queryer  start  ------------------------------------------------	
 		
 		if (event instanceof QueryPickingTable) {
+			logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 			QueryPickingTable pickRequest = (QueryPickingTable) event;
 			worker.execute(() -> {
 				QueryPickResponse rs = getQueryPickResponse(pickRequest);
@@ -192,14 +197,15 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				//	logger.info("--> Table Creator got a pickID="+rs.pickID+", pickPoint= " + rs.pickPoint);
 					logger.info("Creator  sent to Queryer QueryPickResponse, robotID= "+rs.robotID+", pickID= " + rs.pickID+", pickPoint="+rs.pickPoint);
 					
-			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();   // for interaction with SensiNact
+					PickingPointUpdateNotice notice = new PickingPointUpdateNotice();   // TODO 1 for interaction with SensiNact
 					notice.pickID = rs.pickID;
 					notice.isAssigned = true;
 					eventBus.deliver(notice);
-					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);  */ 
+					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);
 				}
 			});
 		} else if (event instanceof QueryStorageTable) {
+			logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 			QueryStorageTable storageRequest = (QueryStorageTable) event;
 			worker.execute(() -> {
 				QueryStorageResponse resp = getQueryStorageResponse(storageRequest);
@@ -212,6 +218,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			});
 
 		} else if (event instanceof QueryDockTable) {
+			logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 			QueryDockTable dockRequest = (QueryDockTable) event;
 			worker.execute(() -> {
 				QueryDockResponse resp = getQueryDockResponse(dockRequest);
@@ -225,6 +232,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 	// -----------------------------------   used for Queryer  end  ------------------------------------------------
 			
 		} else if (event instanceof UnsignPickingPoint) {  // it's sent when iteration is done or no cart found at picking point
+			logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 			UnsignPickingPoint updateRequest = (UnsignPickingPoint) event;
 			worker.execute(() -> {
 				UnsignPickingPointResponse rs = unsignPickingPoint(updateRequest);
@@ -233,14 +241,15 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					eventBus.deliver(rs);
 					logger.info("Creator  sent  to Queryer UnsignPickingPointResponse, pickID=" + rs.pickID+", updateStatus="+rs.updateStatus);
 					
-			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();  // for interaction with SensiNact
+					PickingPointUpdateNotice notice = new PickingPointUpdateNotice();  // TODO 2 for interaction with SensiNact
 					notice.pickID = rs.pickID;
 					notice.isAssigned = false;
 					eventBus.deliver(notice);
-					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);*/
+					logger.info("Creator  sent to SensiNact PickingPointUpdateNotice " + notice);
 				}
 			});
 		} else if (event instanceof GetPickingTable) {  // print picking table by Queryer
+			logger.info("--> Table Creator received an event " + event.getClass().getSimpleName());
 			GetPickingTable get = (GetPickingTable) event;
 			worker.execute(() -> {
 				PickingTableValues rs = getPickingTable(get);
@@ -262,6 +271,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				} else {
 					rs.updateStatus = UpdateStatus.ERROR;
 				}
+				rs.table = Tables.PICKING_TABLE;
 				logger.info("Creator sent Picking table Row UpdateResponse = " + rs.updateStatus);
 				eventBus.deliver(rs);
 			});
@@ -275,6 +285,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				} else {
 					rs.updateStatus = UpdateStatus.ERROR;
 				}
+				rs.table = Tables.CART_STORAGE_TABLE;
 				logger.info("Creator sent Cart Row UpdateResponse = " + rs.updateStatus);
 				eventBus.deliver(rs);
 			});
@@ -288,6 +299,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				} else {
 					rs.updateStatus = UpdateStatus.ERROR;
 				}
+				rs.table = Tables.STORAGE_TABLE;
 				logger.info("Creator sent storage table Row UpdateResponse = " + rs.updateStatus);
 				eventBus.deliver(rs);
 			});
@@ -301,6 +313,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				} else {
 					rs.updateStatus = UpdateStatus.ERROR;
 				}
+				rs.table = Tables.DOCKING_TABLE;
 				logger.info("Creator sent Docking table Row UpdateResponse = " + rs.updateStatus);
 				eventBus.deliver(rs);
 			});
@@ -317,7 +330,8 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		int flag = 0;
 		try {
 			synchronized (this) {
-				ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE PPid=" + pp.pickID);
+				ResultSet rs = stmt.executeQuery("SELECT * FROM PickingTable WHERE PPid='" + pp.pickID+"'");
+				
 				while (rs.next()) {
 					stmt.executeUpdate("UPDATE PickingTable SET PPid='" + pp.pickID + "', pose='" + pp.pickPoint.trim()+ "', isAssigned='" + pp.isAssigned + "'");
 					flag = 1;
@@ -373,7 +387,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		int flag = 0;
 		try {
 			synchronized (this) {
-				ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable WHERE STid=" + pp.storageID.trim());
+				ResultSet rs = stmt.executeQuery("SELECT * FROM StorageTable WHERE STid='" + pp.storageID.trim()+"'");
 				while (rs.next()) {
 
 					stmt.executeUpdate("UPDATE StorageTable SET STid='" + pp.storageID.trim() + "', storageAUX='"+ pp.storageAUX.trim() + "', storagePose='" + pp.storagePoint.trim() + "'");
@@ -401,7 +415,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		int flag = 0;
 		try {
 			synchronized (this) {
-				ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable WHERE IPid=" + pp.robotIP.trim());
+				ResultSet rs = stmt.executeQuery("SELECT * FROM DockTable WHERE IPid='" + pp.robotIP.trim()+"'");
 				while (rs.next()) {
 
 					stmt.executeUpdate("UPDATE DockTable SET IPid='" + pp.robotIP.trim() + "', dockAUX='"+ pp.dockAUX.trim() + "', dockPose='" + pp.dockPoint.trim() + "'");
@@ -597,7 +611,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			stmt.execute(
 					"CREATE TABLE PickingTable(PPid VARCHAR(10) PRIMARY KEY, pose VARCHAR(30), isAssigned BOOLEAN)");
 
-			if (jsonDataReader != null) {
+		/*	if (jsonDataReader != null) {
 				PickingTable pickingTable = jsonDataReader.pickingTable;
 
 				List<PickingPoint> pickingPoints = pickingTable.getPickingPoints();
@@ -616,7 +630,10 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				}
 
 				printPickingTable();
-			}
+			}*/
+			
+			printPickingTable();
+			
 		} catch (Exception e) {
 			logger.error("\nCreator create PickingTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
@@ -629,7 +646,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 
 		  stmt.execute("CREATE TABLE StorageTable(STid VARCHAR(10) PRIMARY KEY, storageAUX VARCHAR(30), storagePose VARCHAR(30))");
 
-		  if(jsonDataReader != null) {
+	/*	  if(jsonDataReader != null) {
 		  StorageTable storageTable = jsonDataReader.storageTable;
 		  
 		  List<StoragePoint> storagePoints = storageTable.getStoragePoints();
@@ -647,7 +664,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			  value = null;
 		  }
 		  printStorageTable();
-		  }
+		  }*/
 	  } catch (Exception e) {
 		  logger.error("\nCreator create StorageTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
@@ -658,7 +675,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			stmt.execute("DROP TABLE IF EXISTS CartTable");
 
 			stmt.execute("CREATE TABLE CartTable(cartID INT PRIMARY KEY, storageID VARCHAR(10))");
-			if (jsonDataReader != null) {
+		/*	if (jsonDataReader != null) {
 				CartTable cartTable = jsonDataReader.cartTable;
 
 				List<CartStorage> cartStorages = cartTable.getCartStorages();
@@ -676,7 +693,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					value = null;
 				}
 				printCartTable();
-			}
+			}*/
 		} catch (Exception e) {
 			logger.error("\nCreator create CartTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}
@@ -687,7 +704,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			stmt.execute("DROP TABLE IF EXISTS DockTable");
 
 			stmt.execute("CREATE TABLE DockTable(IPid VARCHAR(20) PRIMARY KEY, dockAUX VARCHAR(30), dockPose VARCHAR(30))");
-			if (jsonDataReader != null) {
+		/*	if (jsonDataReader != null) {
 				DockTable dockTable = jsonDataReader.dockTable;
 
 				List<DockingPoint> dockingPoints = dockTable.getDockingPoints();
@@ -706,7 +723,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					value = null;
 				}
 				printDockTable();
-			}
+			}*/
 		} catch (Exception e) {
 			logger.error("\nCreator create DockTable Exception: {}", ExceptionUtils.getStackTrace(e));
 		}

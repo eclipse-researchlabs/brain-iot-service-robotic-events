@@ -8,34 +8,41 @@
   </parent>
 
     <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
+    <artifactId>warehouse.sensinact.test</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 
-    <description>The eu.brain.iot.robot.tables.creator DS component - built using OSGi enRoute R7</description>
+    <description>The eu.brain.iot.warehouse.sensinact DS component - built using OSGi enRoute R7</description>
 
     <dependencies>
-		<dependency>
-			<groupId>org.osgi.enroute</groupId>
-			<artifactId>osgi-api</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi.enroute</groupId>
-			<artifactId>enterprise-api</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi.enroute</groupId>
-			<artifactId>test-bundles</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>osgi-api</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>enterprise-api</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi.enroute</groupId>
+            <artifactId>test-bundles</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>impl-index</artifactId>
 			<type>pom</type>
 			<scope>runtime</scope>
 		</dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.util.function -->
+<dependency>
+    <groupId>org.osgi</groupId>
+    <artifactId>org.osgi.util.function</artifactId>
+    <version>1.1.0</version>
+</dependency>
+		
+                <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 <dependency>
     <groupId>com.google.code.gson</groupId>
     <artifactId>gson</artifactId>
@@ -53,14 +60,22 @@
     <artifactId>commons-lang</artifactId>
     <version>2.6</version>
 </dependency>
-		<dependency>
+<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
+<dependency>
+    <groupId>org.osgi</groupId>
+    <artifactId>org.osgi.service.configurator</artifactId>
+    <version>1.0.0</version>
+   	<scope>runtime</scope>
+</dependency>
+        
+        <dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
 			<version>1.0.2</version>
 			<scope>runtime</scope>
 		</dependency>     
 
-<dependency>
+		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.api</artifactId>
 		</dependency>
@@ -74,20 +89,13 @@
 			<artifactId>message.integrity.insecure.impl</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		   <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
-<dependency>
-    <groupId>org.osgi</groupId>
-    <artifactId>org.osgi.service.configurator</artifactId>
-    <version>1.0.0</version>
-   	<scope>runtime</scope>
+		
+        <dependency>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>warehouse.sensinact.api</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
 </dependency>
 
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>eu.brain.iot.robot.tables.creator.api</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
-		</dependency> 
-		
 		<dependency>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-classic</artifactId>
@@ -103,13 +111,12 @@
     <artifactId>slf4j-api</artifactId>
     <version>1.7.7</version>
 </dependency>
-
 <dependency>
     <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>warehouse.sensinact.api</artifactId>
+    <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 </dependency>
-		   
+
      </dependencies>
 
     <build>
@@ -120,7 +127,8 @@
                 <groupId>biz.aQute.bnd</groupId>
                 <artifactId>bnd-maven-plugin</artifactId>
             </plugin>
-			<plugin>
+            
+            <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
@@ -143,7 +151,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>creator.bndrun</bndrun>
+								<bndrun>sensinact.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -157,7 +165,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>creator.bndrun</bndrun>
+						<bndrun>sensinact.bndrun</bndrun>
 					</bndruns>
 					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>
@@ -180,12 +188,10 @@
 						<goals>
 							<goal>smart-behaviour</goal>
 						</goals>
-						<configuration>
-							<bndrun>creator.bndrun</bndrun>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-	</build>
+			
+        </plugins>
+    </build>
 </project>
