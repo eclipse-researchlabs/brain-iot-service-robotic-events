@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (C) 2021 LINKS Foundation
  * 
@@ -7,24 +8,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ******************************************************************************/
+@org.osgi.annotation.bundle.Export
+@org.osgi.annotation.versioning.Version("0.0.2")
 package eu.brain.iot.warehouse.sensiNact.api;
-
-import eu.brain.iot.warehouse.sensiNact.api.WarehouseTables.Tables;
-
-/*
- * this event is sent from warehouse backend
- * */
-
-public class UpdateResponse extends SensiNactCommand {
-
-	public UpdateStatus updateStatus; // Acknowledge response from warehouse backend (table creator) for updating a row
-	
-	public Tables table;  // response for updating a specific table
-	
-	public static enum UpdateStatus {
-		OK, ERROR;
-	}
-	
-	
-	
-}
