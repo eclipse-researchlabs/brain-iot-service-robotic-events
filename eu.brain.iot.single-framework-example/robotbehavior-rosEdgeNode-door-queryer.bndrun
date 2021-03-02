@@ -15,7 +15,8 @@
 	org.eclipse.jetty.LEVEL=WARN,\
 	org.apache.felix.log.storeDebug=false,\
 	org.osgi.service.http.port=8081,\
-	org.osgi.service.log.admin.loglevel=WARN
+	org.osgi.service.log.admin.loglevel=WARN,\
+	logback.configurationFile=/opt/fabric/resources/logback.xml
 
 -runrequires: \
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
@@ -24,7 +25,9 @@
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour',\
-	bnd.identity;version='0.0.4';id='eu.brain.iot.ros.edge.node'
+	bnd.identity;version='0.0.5';id='eu.brain.iot.ros.edge.node',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton.impl',\
+	bnd.identity;id='org.apache.aries.jax.rs.jackson'
 
 
 	

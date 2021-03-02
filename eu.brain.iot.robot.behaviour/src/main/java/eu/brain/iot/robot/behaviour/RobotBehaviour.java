@@ -77,8 +77,8 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 
 public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
-	private int robotID;
-	private String robotIP;
+	private static volatile int robotID;
+	private static volatile String robotIP;
 	private boolean robotReady = false;
 	private static volatile QueryStateValueReturn queryReturn;
 	private static volatile int markerID = 0;
