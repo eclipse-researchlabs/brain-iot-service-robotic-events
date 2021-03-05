@@ -80,7 +80,7 @@ import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 )
 @SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, 
 		GetPickingTable.class, UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
-		filter = "(robotID=*)", author = "LINKS", name = "Warehouse Module: Tables Creator", 
+		filter = "(timestamp=*)", author = "LINKS", name = "Warehouse Module: Tables Creator", 
 		description = "Implements Four Shared  Tables."
 )
 public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
@@ -184,6 +184,9 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		
 		if (event instanceof QueryPickingTable) {
 			QueryPickingTable pickRequest = (QueryPickingTable) event;
+			logger.info("Creator  got from Queryer the QueryPickingTable, robotID= "+pickRequest.robotID);
+			System.out.println("Creator  got from Queryer the QueryPickingTable, robotID= "+pickRequest.robotID);
+			
 			worker.execute(() -> {
 				QueryPickResponse rs = getQueryPickResponse(pickRequest);
 				if (rs != null && rs.pickID!=null) {
@@ -191,6 +194,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					eventBus.deliver(rs);
 				//	logger.info("--> Table Creator got a pickID="+rs.pickID+", pickPoint= " + rs.pickPoint);
 					logger.info("Creator  sent to Queryer QueryPickResponse, robotID= "+rs.robotID+", pickID= " + rs.pickID+", pickPoint="+rs.pickPoint);
+					System.out.println("Creator  sent to Queryer QueryPickResponse, robotID= "+rs.robotID+", pickID= " + rs.pickID+", pickPoint="+rs.pickPoint);
 					
 			/*		PickingPointUpdateNotice notice = new PickingPointUpdateNotice();   // for interaction with SensiNact
 					notice.pickID = rs.pickID;
@@ -201,6 +205,9 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			});
 		} else if (event instanceof QueryStorageTable) {
 			QueryStorageTable storageRequest = (QueryStorageTable) event;
+			logger.info("Creator  got from Queryer the QueryStorageTable, robotID= "+storageRequest.robotID+", markerID=  " + storageRequest.markerID);
+			System.out.println("Creator  got from Queryer the QueryStorageTable, robotID= "+storageRequest.robotID+", markerID=  " + storageRequest.markerID);
+			
 			worker.execute(() -> {
 				QueryStorageResponse resp = getQueryStorageResponse(storageRequest);
 				if (resp != null) {
@@ -213,6 +220,9 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 
 		} else if (event instanceof QueryDockTable) {
 			QueryDockTable dockRequest = (QueryDockTable) event;
+			logger.info("Creator  got from Queryer the QueryDockTable, robotID= "+dockRequest.robotID);
+			System.out.println("Creator  got from Queryer the QueryDockTable, robotID= "+dockRequest.robotID);
+			
 			worker.execute(() -> {
 				QueryDockResponse resp = getQueryDockResponse(dockRequest);
 				if (resp != null) {
@@ -472,6 +482,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			
 			try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM CartTable WHERE cartID=" + markerID);
+			System.out.println("Creator is searching for cart ID = " +  markerID);
 
 				while (rs.next()) {
 					storageID = rs.getString("storageID");

@@ -71,15 +71,16 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, 
 		CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
-		DoorStatusResponse.class, AvailabilityReturn.class},
+		DoorStatusResponse.class, AvailabilityReturn.class, BroadcastACK.class},
 		author = "LINKS", name = "Robot Behavior", 
+		filter = "(timestamp=*)",
 		description = "Implements a Robot Behavior.")
 
 public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
-	private int robotID;
-	private String robotIP;
-	private boolean robotReady = false;
+	private static volatile int robotID;
+	private static volatile String robotIP;
+	private static volatile boolean robotReady = false;
 	private static volatile QueryStateValueReturn queryReturn;
 	private static volatile int markerID = 0;
 	private static volatile int newMarkerCounter = 0;
@@ -90,6 +91,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private static DockingResponse dockingResponse = null;
 	private static CartNoticeResponse cartNoticeResponse = null;
 	private ConfigurationAdmin cm;
+	private static volatile String UUID;
+	private static volatile boolean receivedBroadcast = false;
+	private static volatile boolean broadcastACK = false;
 	
 
 	@ObjectClassDefinition
@@ -117,10 +121,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		
 		logger = (Logger) LoggerFactory.getLogger(RobotBehaviour.class.getSimpleName());
 		
-		String UUID = context.getProperty("org.osgi.framework.uuid");
+		UUID = context.getProperty("org.osgi.framework.uuid");
 		
-		logger.info("Hello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
-		System.out.println("Hello!  I am robotBehavior : " + robotID + ",  UUID = "+UUID);
+		logger.info("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
+		System.out.println("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
 
 		worker = Executors.newFixedThreadPool(10);
 
@@ -140,8 +144,13 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	public void onStart() {
 
+		
 		worker.execute(() -> {
 
+		/*	if(!receivedBroadcast) {
+				
+			}*/
+		//	else {
 			boolean nextIteration = true;
 			int pickCounter = 1;
 			int storageCounter = 1;
@@ -149,7 +158,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 			while (nextIteration) {
 
-				if (robotReady) {
+				if (broadcastACK && robotReady) {
 
 					boolean query = true;
 					String pickPoint = null;
@@ -178,6 +187,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 								stop();
 							}
 							logger.info("-->RB" + robotID + " get new Pick Point: " + pickPoint);
+							System.out.println("-->RB" + robotID + " get new Pick Point: " + pickPoint);
 							break;
 							
 						} else {
@@ -219,6 +229,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 						int newMarkerID = waitMarker();
 						logger.info("-->RB" + robotID + " got new MarkerID = " + newMarkerID);
+						System.out.println("-->RB" + robotID + " got new MarkerID = " + newMarkerID);
 
 						// ---------------------------TODO: No Cart Notice----------THEN Cancel current
 						// mission? how?--how to handle no marker found on topic in ros node.---can't
@@ -408,7 +419,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 				} else { // robotReady = false
 					try {
-						TimeUnit.SECONDS.sleep(2);
+						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e) {
 						logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 					}
@@ -424,12 +435,15 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		}
 
 		);
+		
+	
 
 	}
 	
 	@Modified
     void modified(Map<String, Object> properties) {
-		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+"\n");
+		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+ ", UUID="+UUID+"\n");
+		System.out.println("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+ ", UUID="+UUID+"\n");
 
     }
 
@@ -438,8 +452,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", robotID="+((RobotCommand)event).robotID);
 
 		if (event instanceof RobotReadyBroadcast) {
+			if(!receivedBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
+			logger.info("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
+			System.out.println("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
+
+			if(rbc.UUID.equals(UUID)) {
 			worker.execute(() -> {
+				
 				robotIP = rbc.robotIP;
 				robotID = rbc.robotID;
 
@@ -455,30 +475,62 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					props.put(SmartBehaviourDefinition.PREFIX_ + "filter", // only receive some sepecific events with robotID
 							String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
 					config.update(props); // the modified() method will be called. it will receive only the events with the robotID.
-					logger.info("-->RB " + robotID + " update properties = "+props);
+					logger.info("-->RB " + robotID + " update properties = "+props+ ", UUID="+UUID);
+					System.out.println("-->RB " + robotID + " update properties = "+props+ ", UUID="+UUID);
 					
 				} catch (IOException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 				
-				robotReady = rbc.isReady;
-				logger.info("-->RB " + robotID + " robotReady -- "+robotReady);
+		//		robotReady = rbc.isReady;
 				
+				BroadcastResponse bcr = new BroadcastResponse();
+				bcr.robotID = robotID;
+				bcr.UUID = UUID;
+				eventBus.deliver(bcr);
+				receivedBroadcast = true;
+				
+				robotReady = rbc.isReady;  // then RB start to ask for a pick point
+				logger.info("-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID+ ", UUID="+UUID);
+				System.out.println("-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID+ ", UUID="+UUID);
 			});
+		}
+		}
 
-		} else if (event instanceof NewPickPointResponse) {
+		} else if (event instanceof BroadcastACK) {
+			BroadcastACK ack = (BroadcastACK) event;
+
+			if(!receivedBroadcast) {
+				logger.info("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
+				System.out.println("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
+			} else {
+				logger.info("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... "+ ", UUID="+UUID);
+				System.out.println("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... "+ ", UUID="+UUID);
+			
+				broadcastACK = true;
+			}
+
+		}
+		
+		else if (event instanceof NewPickPointResponse) {
 		//	this.pickResponse = (NewPickPointResponse) event;
 		//	NewPickPointResponse rs = (NewPickPointResponse) event;
 		//	System.out.println("\n--1--"+(NewPickPointResponse) event);
 	
 		//	setPickResponse((NewPickPointResponse) event);
 			RobotBehaviour.pickResponse = (NewPickPointResponse) event;
+			logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint);
+			System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint);
 
 		} else if (event instanceof NewStoragePointResponse) {
 			RobotBehaviour.storageResponse = (NewStoragePointResponse) event;
+			logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint);
+			System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint);
 
 		} else if (event instanceof DockingResponse) {
 			RobotBehaviour.dockingResponse = (DockingResponse) event;
+			logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint);
+			System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint);
 
 		} else if (event instanceof CartNoticeResponse) {
 			RobotBehaviour.cartNoticeResponse = (CartNoticeResponse) event;
@@ -494,6 +546,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			MarkerReturn cvr = (MarkerReturn) event;
 			worker.execute(() -> {
 				logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
+				System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
 				RobotBehaviour.markerID = cvr.markerID;
 				RobotBehaviour.newMarkerCounter += 1;
 			});
@@ -522,6 +575,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		queryReturn = null;
 		eventBus.deliver(writeGoTo);
 		logger.info("-->RB" + robotID + " is sending WriteGoTo: "+ coordinate +" with robotID = "+writeGoTo.robotID);
+		System.out.println("-->RB" + robotID + " is sending WriteGoTo: "+ coordinate +" with robotID = "+writeGoTo.robotID);
 
 		if (waitQueryReturn(writeGoTo.command)) { // always true.
 			CurrentState currentState = queryReturn.currentState;
@@ -529,10 +583,12 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			if (currentState.equals(CurrentState.unknown)) {
 				robotReady = false;
 				logger.info("-->RB" + robotID + " execute GoTo " + targetPoint + " action failed, Robot Behavior stops !!!!");
+				System.out.println("-->RB" + robotID + " execute GoTo " + targetPoint + " action failed, Robot Behavior stops !!!!");
 				// break;
 				return false;
 			} else { // FINISHED
 				logger.info("-->RB " + robotID + " GoTo " + targetPoint + " successfully");
+				System.out.println("-->RB " + robotID + " GoTo " + targetPoint + " successfully");
 			}
 		}
 		return true;
@@ -571,7 +627,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				return true;
 			} else {
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
@@ -586,7 +642,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				return true;
 			} else {
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
@@ -601,7 +657,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				return true;
 			} else {
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
@@ -616,7 +672,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				return true;
 			} else {
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
@@ -626,13 +682,16 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	public int waitMarker() {
 		logger.info("-->RB" + robotID + " is waiting for pose Marker");
+		System.out.println("-->RB" + robotID + " is waiting for pose Marker");
 		while (true) {
 			if (RobotBehaviour.currentMarkerCounter != RobotBehaviour.newMarkerCounter) {
 				RobotBehaviour.currentMarkerCounter = RobotBehaviour.newMarkerCounter;
-				return markerID;
+				logger.info("-->RB" + robotID + " got pose Marker = "+RobotBehaviour.markerID);
+				System.out.println("-->RB" + robotID + " got pose Marker = "+RobotBehaviour.markerID);
+				return RobotBehaviour.markerID;
 			} else {
 				try {
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
