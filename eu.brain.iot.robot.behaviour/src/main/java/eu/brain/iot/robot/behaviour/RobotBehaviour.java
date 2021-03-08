@@ -128,15 +128,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 		worker = Executors.newFixedThreadPool(10);
 
-	/*	Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
-				.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
-
-	//	serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",  // only receive some sepecific events with robotID
-	//			String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
-
-		logger.info("+++++++++ Robot Behaviour filter = " + serviceProps.get(SmartBehaviourDefinition.PREFIX_ + "filter"));
-		reg = context.registerService(SmartBehaviour.class, this, serviceProps); */
-
 		 onStart();
 	}
 
@@ -432,6 +423,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			} else { // when the WriteGoTo action fail with the last_event=abort, robot behavior will exit.
 				logger.info("-->RB " + robotID + "  exit because of failure in robot!!!");
 			}
+			stop();
 		}
 
 		);
@@ -483,12 +475,19 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				}
 				
 		//		robotReady = rbc.isReady;
+				receivedBroadcast = true;
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				} catch (InterruptedException e) {
+					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+					e.printStackTrace();
+				}
 				
 				BroadcastResponse bcr = new BroadcastResponse();
 				bcr.robotID = robotID;
 				bcr.UUID = UUID;
 				eventBus.deliver(bcr);
-				receivedBroadcast = true;
+		//		receivedBroadcast = true;
 				
 				robotReady = rbc.isReady;  // then RB start to ask for a pick point
 				logger.info("-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID+ ", UUID="+UUID);
@@ -500,7 +499,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		} else if (event instanceof BroadcastACK) {
 			BroadcastACK ack = (BroadcastACK) event;
 
-			if(!receivedBroadcast) {
+			if(!receivedBroadcast || ack.robotID!=robotID) {
 				logger.info("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
 				System.out.println("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
 			} else {
@@ -513,24 +512,43 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		}
 		
 		else if (event instanceof NewPickPointResponse) {
-		//	this.pickResponse = (NewPickPointResponse) event;
-		//	NewPickPointResponse rs = (NewPickPointResponse) event;
-		//	System.out.println("\n--1--"+(NewPickPointResponse) event);
-	
-		//	setPickResponse((NewPickPointResponse) event);
-			RobotBehaviour.pickResponse = (NewPickPointResponse) event;
-			logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint);
-			System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint);
+			NewPickPointResponse resp = (NewPickPointResponse) event;
 
+			if(resp.robotID == robotID) {
+				RobotBehaviour.pickResponse = resp;
+			
+				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint +" with robotID="+RobotBehaviour.pickResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint+" with robotID="+RobotBehaviour.pickResponse.robotID);
+			} else {
+				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint +" with robotID="+RobotBehaviour.pickResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint+" with robotID="+RobotBehaviour.pickResponse.robotID+", but is ignored....");
+			}
 		} else if (event instanceof NewStoragePointResponse) {
-			RobotBehaviour.storageResponse = (NewStoragePointResponse) event;
-			logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint);
-			System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint);
-
+			
+			NewStoragePointResponse resp = (NewStoragePointResponse) event;
+			
+			if(resp.robotID == robotID) {
+				RobotBehaviour.storageResponse = resp;
+			
+				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID);
+			} else {
+				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID+", but is ignored....");
+			}
 		} else if (event instanceof DockingResponse) {
-			RobotBehaviour.dockingResponse = (DockingResponse) event;
-			logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint);
-			System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint);
+			
+			DockingResponse resp = (DockingResponse) event;
+			
+			if(resp.robotID == robotID) {
+				RobotBehaviour.dockingResponse = resp;
+				
+				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID);
+			} else {
+				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID+", but is ignored....");
+			}
 
 		} else if (event instanceof CartNoticeResponse) {
 			RobotBehaviour.cartNoticeResponse = (CartNoticeResponse) event;
@@ -538,17 +556,29 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		} else if (event instanceof QueryStateValueReturn) {
 			QueryStateValueReturn qs = (QueryStateValueReturn) event;
 			worker.execute(() -> {
-				logger.info("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState);
-				RobotBehaviour.queryReturn = qs;
+				if(qs.robotID == robotID) {
+				
+					logger.info("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID);
+					System.out.println("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID);
+					RobotBehaviour.queryReturn = qs;
+				} else {
+					logger.info("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID+", but is ignored....");
+					System.out.println("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID+", but is ignored....");
+				}
 			});
 
 		} else if (event instanceof MarkerReturn) {
 			MarkerReturn cvr = (MarkerReturn) event;
 			worker.execute(() -> {
-				logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
-				System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
-				RobotBehaviour.markerID = cvr.markerID;
-				RobotBehaviour.newMarkerCounter += 1;
+				if(cvr.robotID == robotID) {
+					logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
+					System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
+					RobotBehaviour.markerID = cvr.markerID;
+					RobotBehaviour.newMarkerCounter += 1;
+				} else {
+					logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID+" with robotID="+cvr.robotID+", but is ignored....");
+					System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID+" with robotID="+cvr.robotID+", but is ignored....");
+				}
 			});
 
 		} else if (event instanceof DoorStatusResponse) {
