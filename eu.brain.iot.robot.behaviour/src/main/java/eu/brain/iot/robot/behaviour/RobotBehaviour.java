@@ -98,7 +98,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@ObjectClassDefinition
 	public static @interface Config {
-		String logPath() default "/opt/fabric/resources/logback.xml"; // "/opt/fabric/resources/";
+		String logPath() default "/opt/fabric/resources/logback.xml";
 	}
 	
 	private  Logger logger;
@@ -134,18 +134,12 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	
 
 	public void onStart() {
-
 		
 		worker.execute(() -> {
 
-		/*	if(!receivedBroadcast) {
-				
-			}*/
-		//	else {
 			boolean nextIteration = true;
 			int pickCounter = 1;
 			int storageCounter = 1;
-			// worker.execute(() -> {
 
 			while (nextIteration) {
 
@@ -169,7 +163,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 						waitPickResponse();
 
-				//		if (getPickResponse().hasNewPoint) {
 						if (RobotBehaviour.pickResponse.hasNewPoint) {	
 							logger.info("----------- has new Pick Point = true-------------");
 							pickPoint = getPickResponse().pickPoint;
@@ -408,7 +401,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						break; // Tasks are done
 					}
 
-				} else { // robotReady = false
+				} else { // !broadcastACK && robotReady = false
 					try {
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e) {
@@ -441,7 +434,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@Override
 	public void notify(BrainIoTEvent event) {
-		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", robotID="+((RobotCommand)event).robotID);
+		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
 
 		if (event instanceof RobotReadyBroadcast) {
 			if(!receivedBroadcast) {
@@ -652,7 +645,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	public boolean waitPickResponse() {
 		logger.info("-->RB" + robotID + " is waiting PickResponse");
 		while (true) {
-		//	if (getPickResponse() != null) {
 			if (RobotBehaviour.pickResponse != null) {
 				return true;
 			} else {
@@ -723,7 +715,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
-					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+					logger.error("Robot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 			}
 		}

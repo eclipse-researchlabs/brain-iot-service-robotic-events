@@ -147,15 +147,6 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 				logger.info("Table Creator finished to create "+resourcesPath+"tables.mv.db..........");
 				System.out.println("Table Creator finished to create "+resourcesPath+"tables.mv.db..........");
 				
-			/*	Dictionary<String, Object> serviceProps = new Hashtable<>(props.entrySet().stream()
-						.filter(e -> !e.getKey().startsWith(".")).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
-				
-				serviceProps.put(SmartBehaviourDefinition.PREFIX_ + "filter",String.format("(robotID=*)"));
-				
-				serviceProps.put("com.paremus.dosgi.scope", "universal");
-				
-				reg = context.registerService(SmartBehaviour.class, this, serviceProps);*/
-				
 			} catch (ClassNotFoundException e) {
 				logger.error("\nCreator Exception: {}", ExceptionUtils.getStackTrace(e));
 				
@@ -189,7 +180,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			
 			worker.execute(() -> {
 				QueryPickResponse rs = getQueryPickResponse(pickRequest);
-				if (rs != null && rs.pickID!=null) {
+				if (rs != null /*&& rs.pickID!=null*/) {
 					rs.robotID = pickRequest.robotID;
 					eventBus.deliver(rs);
 				//	logger.info("--> Table Creator got a pickID="+rs.pickID+", pickPoint= " + rs.pickPoint);
@@ -236,6 +227,7 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 			
 		} else if (event instanceof UnsignPickingPoint) {  // it's sent when iteration is done or no cart found at picking point
 			UnsignPickingPoint updateRequest = (UnsignPickingPoint) event;
+			logger.info("Creator  got from Queryer the UnsignPickingPoint, robotID= "+updateRequest.robotID+", Picking Point = "+updateRequest.pickPoint);
 			worker.execute(() -> {
 				UnsignPickingPointResponse rs = unsignPickingPoint(updateRequest);
 				if (rs != null) {
@@ -549,8 +541,9 @@ public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 					
 					if(pickPose.getX() == targetPoint.getX() && pickPose.getY() == targetPoint.getY() && pickPose.getZ() == targetPoint.getZ()) {
 						resp.pickID = rs.getString("PPid");
-				//		stmt.executeUpdate(  // TODO 3, to be used in real robot
-				//				"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");
+				/* 		stmt.executeUpdate(  // TODO 3, to be used in real robot
+								"UPDATE PickingTable SET isAssigned='" + false + "' WHERE PPid='" + rs.getString("PPid").trim() + "'");
+				*/		
 						pickPose = null;
 						break;
 					}
