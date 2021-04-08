@@ -331,16 +331,9 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
 		</pluginManagement>
 	</build>
 	<modules>
-		<module>eu.brain.iot.robot.api</module>
-		<module>door.api</module>
-		<module>door.impl</module>
 		<module>eu.brain.iot.single-framework-example</module>
-	    <module>eu.brain.iot.robot.behaviour</module>
-    <module>warehouse.sensinact.api</module>
     <module>eu.brain.iot.robot.tables.creator</module>
-    <module>eu.brain.iot.robot.tables.queryer</module>
-    <module>eu.brain.iot.robot.tables.creator.api</module>
-    <module>eu.brain.iot.robot.tables.creatorConfig</module>
-    <module>warehouse.sensinact.test</module>
+    <module>eu.brain.iot.warehouse.sensinact.api</module>
+    <module>eu.brain.iot.warehouse.sensinact.test</module>
   </modules>
 </project>

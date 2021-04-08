@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>eu.brain.iot.robot.tables.creator</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -271,6 +271,12 @@
                 <artifactId>org.apache.aries.jax.rs.jackson</artifactId>
                 <version>1.0.2</version>
             </dependency>
+            
+            <dependency>
+                <groupId>eu.brain.iot.service.robotic</groupId>
+    			<artifactId>eu.brain.iot.warehouse.sensinact.test</artifactId>
+    			<version>0.0.2-SNAPSHOT</version>
+            </dependency>
 
 	</dependencies>
 
@@ -299,7 +305,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+								<bndrun>robotbehavior-rosEdgeNode-door-queryer-WB-test.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -313,7 +319,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+						<bndrun>robotbehavior-rosEdgeNode-door-queryer-WB-test.bndrun</bndrun>
 					</bndruns>
 					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>

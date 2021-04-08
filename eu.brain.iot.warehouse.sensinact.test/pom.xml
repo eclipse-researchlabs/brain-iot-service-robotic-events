@@ -8,7 +8,7 @@
   </parent>
 
     <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>warehouse.sensinact.test</artifactId>
+    <artifactId>eu.brain.iot.warehouse.sensinact.test</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 
     <description>The eu.brain.iot.warehouse.sensinact DS component - built using OSGi enRoute R7</description>
@@ -92,7 +92,7 @@
 		
         <dependency>
     <groupId>eu.brain.iot.service.robotic</groupId>
-    <artifactId>warehouse.sensinact.api</artifactId>
+    <artifactId>eu.brain.iot.warehouse.sensinact.api</artifactId>
     <version>0.0.2-SNAPSHOT</version>
 </dependency>
 
@@ -114,7 +114,7 @@
 <dependency>
     <groupId>eu.brain.iot.service.robotic</groupId>
     <artifactId>eu.brain.iot.robot.tables.creator</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
 </dependency>
 
      </dependencies>
