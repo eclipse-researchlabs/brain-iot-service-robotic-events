@@ -16,11 +16,13 @@
 	<description>The eu.brain.iot.robot.behaviour DS component - built using OSGi enRoute R7</description>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>osgi-api</artifactId>
 			<type>pom</type>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>enterprise-api</artifactId>
@@ -61,6 +63,14 @@
 			<artifactId>message.integrity.insecure.impl</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.paremus.brain.iot</groupId>
+			<artifactId>eventing.impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		
+		
 		
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
@@ -74,7 +84,7 @@
 			<version>1.0.2</version>
 			<scope>runtime</scope>
 		</dependency>
-
+       
 		<!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.service.configurator -->
 <dependency>
     <groupId>org.osgi</groupId>

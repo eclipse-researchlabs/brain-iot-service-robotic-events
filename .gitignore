@@ -4,3 +4,4 @@ target/
 .project
 generated/
 git.sh
+/.metadata/
