@@ -104,7 +104,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private  Logger logger;
 	
 	private ExecutorService worker;
-//	private ServiceRegistration<?> reg;
 
 	@Reference
 	private EventBus eventBus;
@@ -773,7 +772,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@Deactivate
 	void stop() {
-	//	reg.unregister();
 		worker.shutdown();
 		try {
 			worker.awaitTermination(1, TimeUnit.SECONDS);

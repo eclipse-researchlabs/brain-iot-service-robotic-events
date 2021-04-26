@@ -11,7 +11,7 @@
 
 	<groupId>eu.brain.iot.service.robotic</groupId>
 	<artifactId>eu.brain.iot.robot.behaviour</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 
 	<description>The eu.brain.iot.robot.behaviour DS component - built using OSGi enRoute R7</description>
 
@@ -102,18 +102,18 @@
 </dependency>
 
 
-<!-- -->	<dependency>
+<!-- 	<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>door.api</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
-		</dependency>  
+		</dependency>  -->
 
-<!-- sensinact-door 
+<!--  sensinact-door -->
 <dependency>
     <groupId>org.eclipse.sensinact.brainiot.door</groupId>
     <artifactId>sensinact-door-api</artifactId>
     <version>1.1-SNAPSHOT</version>
-</dependency>  -->
+</dependency>  
 		
 	</dependencies>
 
