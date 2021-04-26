@@ -99,14 +99,11 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private static volatile String UUID;
 	private static volatile boolean receivedBroadcast = false;
 	private static volatile boolean broadcastACK = false;
-<<<<<<< HEAD
 	private static StateMachineMonitoring sm;
-=======
 	private static volatile DoorStatus doorStatus = null;
 	private static volatile OpenDoorResponse openDoorResponse = null;
 	private static volatile CloseDoorResponse closeDoorResponse = null;
-	
->>>>>>> origin/test
+
 
 	@ObjectClassDefinition
 	public static @interface Config {
@@ -138,7 +135,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		logger.info("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
 		System.out.println("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
 		sm = new StateMachineMonitoring("192.168.52.120", 4445);
-		logger.info("--SM1:server host name:"+ sm.getServerHostName() +" port"+sm.getServerPort());
         sm.startMonitorning();
         logger.info("--SM: The monitoring is started, server host name:"+ sm.getServerHostName() +" port"+sm.getServerPort());
         worker = Executors.newFixedThreadPool(10);
@@ -341,15 +337,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							System.out.println("-->RB" + robotID + " is sending cmd to check Door Marker");
 
 							int DoorID = waitMarker();
-<<<<<<< HEAD
 							logger.info("-->RB" + robotID + " got DoorID = " + DoorID);
-							sm.UDPSend("DoorMarker");
+							
 							logger.info("-->SM: send UDP message DoorMarker");
 							//------ ToDo----checking Door status---------
-							
-*/      
-=======
-							logger.info("-->RB" + robotID + " got   Door ID = " + DoorID);
 							System.out.println("-->RB" + robotID + " got   Door ID = " + DoorID);
 							
 							int counter = 2;
@@ -357,6 +348,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							boolean isDoorOpened = false;
 							
 							while(true) {
+								sm.UDPSend("DoorMarker");
+								logger.info("--SM: send UDP message DoorMaker");
 								counter = 2;
 								flag = 0;
 							
@@ -373,16 +366,22 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 								break;  // no status response received
 							} else {
 									if(doorStatus == DoorStatus.CLOSED) {
+										sm.UDPSend("DoorClosed");
+										logger.info("--SM: send UDP message DoorClosed");
 										counter = 2;
 										flag = 0;
 										while(counter>0) {
 											if(commandToOpenDoor()) {  // if  OpenDoorResponse is received and the response is SUCCESS
 												flag = 1;
+												sm.UDPSend("OpenDoorResponseSuccessStorage");
+												logger.info("--SM: send UDP message OpenDoorResponseSuccessStorage");
 												break;
+												
 											}
 										}
 										if(flag == 0) {
 											isDoorOpened = false;
+											sm.UDPSend("OpenDoorResponseFailed");
 											break;  // failed to send open door request 
 										} else {
 											continue; // continue to check the door status
@@ -393,14 +392,18 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 										logger.info("-->RB" + robotID + " found Door is OPENED, continue moving");
 										System.out.println("-->RB" + robotID + " found Door is OPENED, continue moving");
 										isDoorOpened = true;
+										sm.UDPSend("DoorOpenStorage");
+										logger.info("--SM: send UDP message DoorOpenStorage");
 										break;
 									} else if (doorStatus == DoorStatus.CLOSING || doorStatus == DoorStatus.OPENING) {
 										logger.info("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
 										System.out.println("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
+										
 										try {
 											TimeUnit.SECONDS.sleep(3);
 										} catch (InterruptedException e) {
 											logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+											
 										}
 										continue;
 									} else if (doorStatus == DoorStatus.PREVENTED) {
@@ -419,9 +422,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							
 							if(!isDoorOpened) {
 								logger.info("-->RB" + robotID + " found Door can not be OPENED in Storage area, stop moving");
+								
 								break;
 							} else {
->>>>>>> origin/test
 							
 							// --------------------------- Go to Storage Point --------------------------------------
 							logger.info("--------------------------- Go to Storage Point --------------------------------------");
@@ -493,23 +496,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 										logger.info("-->SM: send UDP message GoToDockFailed");
 										break; // execution failed
 									}
-<<<<<<< HEAD
-                                                                        sm.UDPSend("ObstacleOnDockingPath");
-									logger.info("-->SM: send UDP message ObstacleOnDockingPath");
-									/* --------------------------- check Door Marker --------------------------------------
-					/*				logger.info("--------------------------- Check Door Marker --------------------------------------");
-                                    
-                                     
-									CheckMarker checkDoorMarker2 = createCheckMarker(); // CheckMarker
-									eventBus.deliver(checkDoorMarker2);
-									logger.info("-->RB" + robotID + " sending check Door Marker on the way to Docking area");
 
-									int DoorID2 = waitMarker();
-									logger.info("-->RB" + robotID + " got DoorID = " + DoorID2);
-									
-									// ----- TODO Interact with the door -------
-*/                                  
-=======
+                                    sm.UDPSend("ObstacleOnDockingPath");
+									logger.info("-->SM: send UDP message ObstacleOnDockingPath");
+
 									
 									
 									
@@ -518,9 +508,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 									logger.info("--------------------------- Check Door Marker to Docking Area --------------------------------------");
 
 									isDoorOpened = false;
->>>>>>> origin/test
 									
 									while(true) {
+										sm.UDPSend("DoorMarker");
+										logger.info("--SM: send UDP message DoorMarker");
 										counter = 2;
 										flag = 0;
 									
@@ -537,16 +528,22 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 										break;  // no status response received
 									} else {
 											if(doorStatus == DoorStatus.CLOSED) {
+												sm.UDPSend("DoorClosed");
+												logger.info("--SM: send UDP message DoorClosed");
 												counter = 2;
 												flag = 0;
 												while(counter>0) {
 													if(commandToOpenDoor()) {  // if  OpenDoorResponse is received and the response is SUCCESS
 														flag = 1;
+														sm.UDPSend("DoorOpenResponseSuccessDock");
+														logger.info("--SM: send UDP message DoorOpenResponseSuccessDock");
 														break;
 													}
 												}
 												if(flag == 0) {
 													isDoorOpened = false;
+													sm.UDPSend("OpenDoorResponseFailed");
+													logger.info("--SM: send UDP message DoorOpenResponseFailed");
 													break;  // failed to send open door request 
 												} else {
 													continue; // continue to check the door status
@@ -556,6 +553,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 											} else if (doorStatus == DoorStatus.OPENED) {
 												logger.info("-->RB" + robotID + " found Door is OPENED, continue moving");
 												System.out.println("-->RB" + robotID + " found Door is OPENED, continue moving");
+												sm.UDPSend("DoorOpenDock");
+												logger.info("--SM: send UDP message DoorOpenDock");
 												isDoorOpened = true;
 												break;
 											} else if (doorStatus == DoorStatus.CLOSING || doorStatus == DoorStatus.OPENING) {
