@@ -14,6 +14,7 @@
 	<description>The eu.brain.iot.single-framework-example application packaging project - using OSGi enRoute R7</description>
 
 	<dependencies>
+	
 		<dependency>
 			<groupId>org.osgi.enroute</groupId>
 			<artifactId>osgi-api</artifactId>
@@ -29,9 +30,6 @@
 			<artifactId>debug-bundles</artifactId>
 			<type>pom</type>
 		</dependency>
-		<!-- <dependency> <groupId>org.osgi.enroute</groupId> <artifactId>enterprise-api</artifactId> 
-			<type>pom</type> </dependency> -->
-
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>door.impl</artifactId>
@@ -49,8 +47,6 @@
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.converter</artifactId> 
-			<version>1.0.12</version> </dependency> -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.service.configurator</artifactId>
@@ -79,6 +75,7 @@
 			<version>0.0.2-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
+		
 
 
 

@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (C) 2021 LINKS Foundation
  * 
@@ -8,5 +9,5 @@
  * SPDX-License-Identifier: EPL-2.0
  ******************************************************************************/
 @org.osgi.annotation.bundle.Export
-@org.osgi.annotation.versioning.Version("0.0.1")
+@org.osgi.annotation.versioning.Version("1.0.0") //0.0.2
 package eu.brain.iot.warehouse.sensiNact.api;

@@ -17,4 +17,7 @@ public class SensiNactCommand extends BrainIoTEvent {
 	
 	public boolean isSensiNactCMD = SENSINACT_CMD;  // to be used by warehouse backend for filtering the events
 
+//	public static final int SENSINACT_CMD = -1;
+	
+//	public int isSensiNactCMD;
 }

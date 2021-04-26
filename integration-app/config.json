@@ -1,0 +1,11 @@
+{
+	":configurator:resource-version" : 1,
+	":configurator:symbolic-name": "org.eclipse.sensinact.brainiot.warehouse.backend.warehouse-backend-app ",
+	":configurator:version": "1.0-SNAPSHOT",
+
+	
+	
+	"eu.brain.iot.service.robotic.startButton.impl.StartButtonImpl.Config":{
+	   "logPath":"./logback.xml"
+	}
+}

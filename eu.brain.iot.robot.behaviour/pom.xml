@@ -11,7 +11,7 @@
 
 	<groupId>eu.brain.iot.service.robotic</groupId>
 	<artifactId>eu.brain.iot.robot.behaviour</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 
 	<description>The eu.brain.iot.robot.behaviour DS component - built using OSGi enRoute R7</description>
 
@@ -44,11 +44,7 @@
 			<artifactId>eu.brain.iot.robot.api</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>door.api</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
+	
 		<dependency>
 			<groupId>com.paremus.brain.iot</groupId>
 			<artifactId>eventing.api</artifactId>
@@ -108,12 +104,26 @@
     <artifactId>slf4j-api</artifactId>
     <version>1.7.7</version>
 </dependency>
-<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+
 <dependency>
     <groupId>commons-lang</groupId>
     <artifactId>commons-lang</artifactId>
     <version>2.6</version>
 </dependency>
+
+
+<!-- 	<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>door.api</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>  -->
+
+<!--  sensinact-door -->
+<dependency>
+    <groupId>org.eclipse.sensinact.brainiot.door</groupId>
+    <artifactId>sensinact-door-api</artifactId>
+    <version>1.1-SNAPSHOT</version>
+</dependency>  
 		
 	</dependencies>
 

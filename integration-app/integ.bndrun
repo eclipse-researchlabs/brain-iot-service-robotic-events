@@ -1,0 +1,75 @@
+#index: target/index.xml;name="integration-app"
+
+#-standalone: ${index}
+
+
+-runfw: org.eclipse.osgi
+
+-runee: JavaSE-1.8
+
+-resolve.effective: resolve, active
+
+-runproperties: \
+	org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog,\
+	org.eclipse.jetty.LEVEL=WARN,\
+	org.apache.felix.log.storeDebug=false,\
+	org.osgi.service.http.port=8080,\
+	org.osgi.service.log.admin.loglevel=WARN,\
+	configurator.initial=file:./config.json, \
+	logback.configurationFile=file:./logback.xml,\
+	org.osgi.framework.bootdelegation=org.xml.sax,\
+	felix.log.level=4
+
+
+-runrequires: \
+	bnd.identity;id='org.apache.felix.gogo.runtime',\
+	bnd.identity;version='0.0.3';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
+	bnd.identity;version='1.0';id='org.eclipse.sensinact.brainiot.warehouse.backend.warehouse-backend-bridge',\
+	bnd.identity;id='org.apache.felix.configadmin',\
+	bnd.identity;id='org.apache.felix.configurator',\
+	bnd.identity;id='com.paremus.brain.iot.eventing.impl',\
+	bnd.identity;id='fr.cea.brain.iot.sensinact-gateway',\
+	bnd.identity;id='http-tools',\
+	bnd.identity;id='eu.brain.iot.service.robotic.startButton.impl'
+
+
+
+-runbundles: \
+	ch.qos.logback.classic;version='[1.2.3,1.2.4)',\
+	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.9.8,2.9.9)',\
+	com.fasterxml.jackson.core.jackson-core;version='[2.9.8,2.9.9)',\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.9.8,2.9.9)',\
+	com.google.gson;version='[2.8.5,2.8.6)',\
+	com.h2database;version='[1.4.200,1.4.201)',\
+	com.paremus.brain.iot.eventing.api;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator;version='[0.0.3,0.0.4)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator.api;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.warehouse.sensinact.api;version='[0.0.2,0.0.3)',\
+	fr.cea.brain.iot.sensinact-gateway;version='[2.0.0,2.0.1)',\
+	fr.cea.brain.iot.sensinact-gateway-api;version='[2.0.0,2.0.1)',\
+	http-tools;version='[2.0.0,2.0.1)',\
+	org.apache.commons.lang;version='[2.6.0,2.6.1)',\
+	org.apache.felix.configurator;version='[1.0.6,1.0.7)',\
+	org.apache.felix.gogo.runtime;version='[1.0.2,1.0.3)',\
+	org.apache.felix.http.jetty;version='[4.0.6,4.0.7)',\
+	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
+	org.apache.felix.scr;version='[2.1.10,2.1.11)',\
+	org.eclipse.sensinact.brainiot.warehouse.backend.warehouse-backend-api;version='[1.0.0,1.0.1)',\
+	org.eclipse.sensinact.brainiot.warehouse.backend.warehouse-backend-bridge;version='[1.0.0,1.0.1)',\
+	org.osgi.service.component;version='[1.4.0,1.4.1)',\
+	org.osgi.util.function;version='[1.1.0,1.1.1)',\
+	org.osgi.util.promise;version='[1.1.1,1.1.2)',\
+	org.osgi.util.pushstream;version='[1.0.0,1.0.1)',\
+	slf4j.api;version='[1.7.25,1.7.26)',\
+	org.apache.felix.configadmin;version='[1.9.8,1.9.9)',\
+	eu.brain.iot.service.robotic.redeployment.api;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.service.robotic.startButton.api;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.service.robotic.startButton.impl;version='[0.0.1,0.0.2)',\
+	org.apache.aries.javax.jax.rs-api;version='[1.0.1,1.0.2)',\
+	org.apache.aries.jax.rs.whiteboard;version='[1.0.1,1.0.2)',\
+	org.apache.servicemix.specs.annotation-api-1.3;version='[1.3.0,1.3.1)',\
+	org.osgi.service.jaxrs;version='[1.0.0,1.0.1)'

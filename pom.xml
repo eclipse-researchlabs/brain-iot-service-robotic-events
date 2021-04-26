@@ -14,6 +14,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bnd.version>5.1.2</bnd.version>
+		
 	</properties>
 
 	<repositories>
@@ -184,6 +185,8 @@
 				<version>1.0.1</version>
 				<scope>compile</scope>
 			</dependency>
+			
+						
 		</dependencies>
 	</dependencyManagement>
 
@@ -341,5 +344,6 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
     <module>eu.brain.iot.robot.tables.queryer</module>
     <module>eu.brain.iot.robot.tables.creator.api</module>
     <module>eu.brain.iot.robot.tables.creatorConfig</module>
+    <module>integration-app</module>
   </modules>
 </project>

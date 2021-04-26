@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>smartbehavior</artifactId>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
+
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>integration-app</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
+
+    <description>The integration-app application packaging project - using OSGi enRoute R7</description>
+
+    <dependencies>
+		<dependency>
+            <groupId>org.eclipse.sensinact.brainiot.warehouse.backend</groupId>
+			<artifactId>warehouse-backend-bridge</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+			<groupId>org.eclipse.sensinact.brainiot.warehouse.backend</groupId>
+			<artifactId>warehouse-backend-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+  			<artifactId>org.apache.felix.framework</artifactId>
+  			<version>6.0.3</version>
+  			<exclusions>
+  				<exclusion>
+  					<groupId>org.codehaus.mojo</groupId>
+  					<artifactId>animal-sniffer-annotations</artifactId>
+  				</exclusion>
+  			</exclusions>
+		</dependency>
+		<dependency>
+  			<groupId>com.airbus.cybersecurity.brain.iot</groupId>
+			<artifactId>message.integrity.secure.impl</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.66</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.66</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.osgi.enroute</groupId>
+			<artifactId>osgi-api</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi.enroute</groupId>
+			<artifactId>impl-index</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi.enroute</groupId>
+			<artifactId>debug-bundles</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>door.impl</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.10.0</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.8</version>
+		</dependency>
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.9.8</version>
+</dependency>
+
+		
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.service.configurator</artifactId>
+			<version>1.0.0</version>
+
+		</dependency>
+		<dependency>
+			<groupId>com.paremus.brain.iot</groupId>
+			<artifactId>eventing.impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.paremus.brain.iot</groupId>
+			<artifactId>message.integrity.insecure.impl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.tables.creator</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.tables.queryer</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
+
+		<!-- rosjava library used by ROS Edge Node -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>2.0</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- rosjava xmlrpc client -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
+			<version>3.1.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- rosjava message generation -->
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.codec</artifactId>
+			<version>1.3.0</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_bootstrap</groupId>
+			<artifactId>org.ros.rosjava_bootstrap.message_generation</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_core</groupId>
+			<artifactId>org.ros.rosjava_core.rosjava</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_core</groupId>
+			<artifactId>org.ros.rosjava_core.apache_xmlrpc_common</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_core</groupId>
+			<artifactId>org.ros.rosjava_core.apache_xmlrpc_server</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_core</groupId>
+			<artifactId>org.ros.rosjava_core.apache_xmlrpc_client</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/dnsjava/dnsjava -->
+		<dependency>
+			<groupId>org.xbill</groupId>
+			<artifactId>org.xbill.dns.bundle</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.ws.commons/ws-commons-util -->
+		<dependency>
+			<groupId>org.apache.ws.commons</groupId>
+			<artifactId>ws-commons-util</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-pool/commons-pool -->
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20190722</version>
+		</dependency>
+
+
+		<!-- ROS Edge Node bundles -->
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.api</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.msgs</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>be.iminds.iot.ros.api</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>be.iminds.iot.ros.core</artifactId>
+			<version>0.0.4-SNAPSHOT</version>
+
+		</dependency>
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
+			<version>0.0.5-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.eventadmin -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.eventadmin</artifactId>
+			<version>1.4.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.configadmin -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.configadmin</artifactId>
+			<version>1.9.8</version>
+		</dependency>
+<!-- https://mvnrepository.com/artifact/io.netty/netty -->
+<dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty</artifactId>
+    <version>3.5.2.Final</version>
+</dependency>
+
+
+<dependency>
+	<groupId>eu.brain.iot.service.robotic</groupId>
+	<artifactId>startButton.impl</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<scope>runtime</scope>
+</dependency>
+	<dependency>
+		<groupId>org.apache.aries.jax.rs</groupId>
+		<artifactId>org.apache.aries.jax.rs.jackson</artifactId>
+		<version>1.0.2</version>
+	</dependency>
+	<dependency>
+		<groupId>eu.brain.iot.service.robotic</groupId>
+		<artifactId>eu.brain.iot.warehouse.sensinact.api</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</dependency>
+            
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-indexer-maven-plugin</artifactId>
+				<configuration>
+					<includeJar>true</includeJar>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-resolver-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resolve</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<bndruns>
+								<bndrun>integ.bndrun</bndrun>
+							</bndruns>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Define the version of the export plugin we use -->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-export-maven-plugin</artifactId>
+				<version>${bnd.version}</version>
+				<configuration>
+					<bndruns>
+						<bndrun>integ.bndrun</bndrun>
+					</bndruns>
+					<resolve>false</resolve>
+					<failOnChanges>true</failOnChanges>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>export</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<id>execution</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.ros.rosjava_core</groupId>
+							<artifactId>org.ros.rosjava_core.rosjava</artifactId>
+							<version>0.2.2</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.ros.rosjava_core.rosjava-0.2.2.jar</file>
+						</configuration>
+					</execution>
+					<execution>
+						<id>execution2</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.ros.rosjava_bootstrap</groupId>
+							<artifactId>org.ros.rosjava_bootstrap.message_generation</artifactId>
+							<version>0.2.1</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.ros.rosjava_bootstrap.message_generation-0.2.1.jar</file>
+						</configuration>
+					</execution>
+					<execution>
+						<id>execution3</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.xbill</groupId>
+							<artifactId>org.xbill.dns.bundle</artifactId>
+							<version>2.0.8</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.xbill.dns.bundle-2.0.8.jar</file>
+						</configuration>
+					</execution>
+					<execution>
+						<id>execution4</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.ros.rosjava_core</groupId>
+							<artifactId>org.ros.rosjava_core.apache_xmlrpc_client</artifactId>
+							<version>0.2.2</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.ros.rosjava_core.apache_xmlrpc_client-0.2.2.jar</file>
+						</configuration>
+					</execution>
+					<execution>
+						<id>execution5</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.ros.rosjava_core</groupId>
+							<artifactId>org.ros.rosjava_core.apache_xmlrpc_common</artifactId>
+							<version>0.2.2</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.ros.rosjava_core.apache_xmlrpc_common-0.2.2.jar</file>
+						</configuration>
+					</execution>
+					<execution>
+						<id>execution6</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.ros.rosjava_core</groupId>
+							<artifactId>org.ros.rosjava_core.apache_xmlrpc_server</artifactId>
+							<version>0.2.2</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/org.ros.rosjava_core.apache_xmlrpc_server-0.2.2.jar</file>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>execution7</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>org.apache.ws.commons</groupId>
+							<artifactId>ws-commons-util</artifactId>
+							<version>1.0.1</version>
+							<packaging>jar</packaging>
+							<file>${basedir}/libs/ws-commons-util-1.0.1.jar</file>
+						</configuration>
+					</execution>
+
+
+				</executions>
+			</plugin>
+
+
+		</plugins>
+
+	
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-install-plugin</artifactId>
+										<versionRange>[2.5.2,)</versionRange>
+										<goals>
+											<goal>install-file</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>biz.aQute.bnd</groupId>
+										<artifactId>bnd-maven-plugin</artifactId>
+										<versionRange>[5.1.2,)</versionRange>
+										<goals>
+											<goal>bnd-process</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+</project>
+
