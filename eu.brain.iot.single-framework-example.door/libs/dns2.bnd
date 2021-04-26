@@ -1,0 +1,21 @@
+-classpath: org.xbill.dnsjava-2.0.8.jar
+Manifest-Version: 1.0
+Bundle-Description: DNSJava library
+Bundle-ManifestVersion: 2
+Bundle-Name: DNSJava
+Bundle-SymbolicName: org.xbill.dns.bundle
+ver: 2.0.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+-output: ${bsn}-${ver}.jar
+Bundle-Version: ${ver}
+#Import-Package: com.google.gson.annotations;version=${ver}
+#Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
+#Export-Package: *;version=${ver}
+
+Export-Package: about_files;version="2.0.8",org.xbill.DNS;version="2.0.8";uses:="org.xbill.DNS.utils",org.xbill.DNS.spi;version="2.0.8";uses:="sun.net.spi.nameservice",org.xbill.DNS.utils;version="2.0.8",org.xbill.DNS.windows;version="2.0.8"
+ 
+Import-Package: org.xbill.DNS;version="[2.0,3)",org.xbill.DNS.utils;version="[2.0,3)"
+ 
+#DynamicImport-Package: *
+-groupid: org.xbill
+-pom: true

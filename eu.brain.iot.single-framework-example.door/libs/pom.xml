@@ -75,7 +75,12 @@
 			<version>0.0.2-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.eclipse.sensinact.brainiot.door</groupId>
+			<artifactId>sensinact-door</artifactId>
+    		<version>1.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 
 
 
@@ -233,7 +238,7 @@
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.6-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -298,7 +303,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+								<bndrun>int.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -312,7 +317,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+						<bndrun>int.bndrun</bndrun>
 					</bndruns>
 					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>

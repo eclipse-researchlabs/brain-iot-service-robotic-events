@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>smartbehavior</artifactId>
-		<groupId>eu.brain.iot.service.robotic</groupId>
-		<version>0.0.2-SNAPSHOT</version>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>smartbehavior</artifactId>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
 
-	<artifactId>eu.brain.iot.single-framework-example</artifactId>
+    <groupId>eu.brain.iot.service.robotic</groupId>
+    <artifactId>eu.brain.iot.single-framework-example.door</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
-	<description>The eu.brain.iot.single-framework-example application packaging project - using OSGi enRoute R7</description>
+    <description>The eu.brain.iot.single-framework-example.door application packaging project - using OSGi enRoute R7</description>
 
 	<dependencies>
 	
@@ -30,18 +30,7 @@
 			<artifactId>debug-bundles</artifactId>
 			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>door.impl</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -230,12 +219,7 @@
 			<version>0.0.4-SNAPSHOT</version>
 
 		</dependency>
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
+		
 
 
 		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.eventadmin -->
@@ -257,8 +241,28 @@
     <version>3.5.2.Final</version>
 </dependency>
 
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
+			<version>0.0.7-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.sensinact.brainiot.door</groupId>
+			<artifactId>sensinact-door</artifactId>
+    		<version>1.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 
-<dependency>
+		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
     		<artifactId>startButton.impl</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
@@ -298,7 +302,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+								<bndrun>int.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -312,7 +316,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>robotbehavior-rosEdgeNode-door-queryer.bndrun</bndrun>
+						<bndrun>int.bndrun</bndrun>
 					</bndruns>
 					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>
