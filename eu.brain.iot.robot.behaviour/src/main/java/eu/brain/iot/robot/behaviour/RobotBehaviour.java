@@ -104,7 +104,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private  Logger logger;
 	
 	private ExecutorService worker;
-	private ServiceRegistration<?> reg;
 
 	@Reference
 	private EventBus eventBus;
@@ -178,6 +177,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 							if (pickCounter > 0) { // just ask for 2 times
 								logger.info("-->RB" + robotID + " doesn't get any Pick Point, continue to query after 10s");
+								System.out.println("-->RB" + robotID + " doesn't get any Pick Point, continue to query after 10s");
 								// TODO continue to query new pick point
 								try {
 									TimeUnit.SECONDS.sleep(10);
@@ -189,6 +189,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							} else {
 								nextIteration = false;
 								logger.info("-->RB" + robotID + " doesn't get any Pick Point, all carts have been moved, exit! ");
+								System.out.println("-->RB" + robotID + " doesn't get any Pick Point, all carts have been moved, exit! ");
 								break;
 							}
 
@@ -771,7 +772,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@Deactivate
 	void stop() {
-		reg.unregister();
 		worker.shutdown();
 		try {
 			worker.awaitTermination(1, TimeUnit.SECONDS);
