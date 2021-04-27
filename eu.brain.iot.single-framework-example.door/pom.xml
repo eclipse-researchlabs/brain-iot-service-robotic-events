@@ -14,6 +14,50 @@
     <description>The eu.brain.iot.single-framework-example.door application packaging project - using OSGi enRoute R7</description>
 
 	<dependencies>
+	<dependency>
+        	<groupId>org.apache.felix</groupId>
+        	<artifactId>org.apache.felix.http.servlet-api</artifactId>
+        	<version>1.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.felix</groupId>
+        	<artifactId>org.apache.felix.http.servlet-api</artifactId>
+        	<version>1.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+			<groupId>fr.cea.brain.iot</groupId>
+			<artifactId>sensinact-smart-behaviour-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+    	</dependency>
+    	<dependency>
+			<groupId>org.eclipse.sensinact.gateway.sthbnd.http</groupId>
+    		<artifactId>http-device</artifactId>   
+    		<version>2.0-brain-SNAPSHOT</version> 		
+	       <exclusions>
+	       		<exclusion>
+	       			<groupId>org.osgi</groupId>
+	       			<artifactId>osgi.cmpn</artifactId>
+	       		</exclusion>
+	       		<exclusion>
+	       			<groupId>org.osgi</groupId>
+	       			<artifactId>org.osgi.core</artifactId>
+	       		</exclusion>
+	       </exclusions>
+        </dependency>
+    	
+    	
 	
 		<dependency>
 			<groupId>org.osgi.enroute</groupId>
@@ -30,7 +74,18 @@
 			<artifactId>debug-bundles</artifactId>
 			<type>pom</type>
 		</dependency>
-		
+	<!--  	<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>door.impl</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>-->
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
@@ -64,7 +119,12 @@
 			<version>0.0.2-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.eclipse.sensinact.brainiot.door</groupId>
+			<artifactId>sensinact-door</artifactId>
+    		<version>1.1-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 
 
 
@@ -219,7 +279,12 @@
 			<version>0.0.4-SNAPSHOT</version>
 
 		</dependency>
-		
+		<dependency>
+			<groupId>eu.brain.iot.service.robotic</groupId>
+			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
+			<version>0.0.7-SNAPSHOT</version>
+			<scope>runtime</scope>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.eventadmin -->
@@ -241,28 +306,8 @@
     <version>3.5.2.Final</version>
 </dependency>
 
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse.sensinact.brainiot.door</groupId>
-			<artifactId>sensinact-door</artifactId>
-    		<version>1.2-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
 
-		<dependency>
+<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
     		<artifactId>startButton.impl</artifactId>
     		<version>0.0.1-SNAPSHOT</version>

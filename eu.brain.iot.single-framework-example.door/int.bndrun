@@ -20,14 +20,14 @@
 
 -runrequires: \
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
-	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example)',\
+	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.door)',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
 	bnd.identity;version='0.0.3';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour',\
 	bnd.identity;version='0.0.7';id='eu.brain.iot.ros.edge.node',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton.impl',\
 	bnd.identity;id='org.apache.aries.jax.rs.jackson',\
-	bnd.identity;version='1.2.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
+	bnd.identity;version='1.1.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-smart-behaviour-api',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-gateway',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-smart-behaviour-impl'
@@ -50,7 +50,6 @@
 	eu.brain.iot.robot.msgs;version='[0.0.4,0.0.5)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer;version='[0.0.2,0.0.3)',\
-	eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example;version='[0.0.2,0.0.3)',\
 	json;version='[20190722.0.0,20190722.0.1)',\
 	org.apache.commons.io;version='[1.4.0,1.4.1)',\
 	org.apache.commons.lang;version='[2.6.0,2.6.1)',\
@@ -97,11 +96,12 @@
 	fr.cea.brain.iot.sensinact-smart-behaviour-api;version='[1.0.0,1.0.1)',\
 	fr.cea.brain.iot.sensinact-smart-behaviour-impl;version='[1.0.0,1.0.1)',\
 	http-device;version='[2.0.0,2.0.1)',\
-	org.eclipse.sensinact.brainiot.door.sensinact-door;version='[1.2.0,1.2.1)',\
-	org.eclipse.sensinact.brainiot.door.sensinact-door-api;version='[1.1.0,1.1.1)',\
 	org.osgi.service.cm;version='[1.6.0,1.6.1)',\
 	org.osgi.service.component;version='[1.4.0,1.4.1)',\
-	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.3,0.0.4)'
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.3,0.0.4)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.door;version='[0.0.1,0.0.2)',\
+	org.eclipse.sensinact.brainiot.door.sensinact-door;version='[1.1.0,1.1.1)',\
+	org.eclipse.sensinact.brainiot.door.sensinact-door-api;version='[1.2.0,1.2.1)'
 	
 	
 	

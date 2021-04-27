@@ -384,6 +384,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							
 							if(!isDoorOpened) {
 								logger.info("-->RB" + robotID + " found Door can not be OPENED in Storage area, stop moving");
+								System.out.println("-->RB" + robotID + " found Door can not be OPENED in Storage area, stop moving");
 								break;
 							} else {
 							
@@ -664,6 +665,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	@Override
 	public void notify(BrainIoTEvent event) {
 		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
+		System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
 
 		if (event instanceof RobotReadyBroadcast) {
 			if(!receivedBroadcast) {
