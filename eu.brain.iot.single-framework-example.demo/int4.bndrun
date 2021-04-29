@@ -1,0 +1,119 @@
+
+-runfw: org.eclipse.osgi
+
+-runee: JavaSE-1.8
+
+-resolve.effective: resolve, active
+
+-runproperties: \
+	org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog,\
+	org.eclipse.jetty.LEVEL=WARN,\
+	org.apache.felix.log.storeDebug=false,\
+	org.osgi.service.http.port=8080,\
+	org.osgi.service.log.admin.loglevel=WARN,\
+	logback.configurationFile=/opt/fabric/resources/logback.xml,\
+	ID1=1,\
+	name1=rb1_base_a,\
+	IP1=192.168.2.202,\
+	ID2=2,\
+	name2=rb1_base_b,\
+	IP2=192.168.2.202,\
+	ID3=3,\
+	name3=rb1_base_c,\
+	IP3=192.168.2.202,\
+	ID4=4,\
+	name4=turtlebot-D,\
+	IP4=192.168.52.104,\
+	ID5=5,\
+	name5=turtlebot-E,\
+	IP5=192.168.52.105
+
+-runrequires: \
+	bnd.identity;id='org.apache.felix.gogo.runtime',\
+	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.demo)',\
+	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
+	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
+	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour2',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node1',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node2',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node3',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node4',\
+	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton-demo',\
+	bnd.identity;id='org.apache.aries.jax.rs.jackson'
+
+
+	
+-runbundles: \
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.10.0,2.10.1)',\
+	com.fasterxml.jackson.core.jackson-core;version='[2.10.0,2.10.1)',\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.10.0,2.10.1)',\
+	com.google.guava;version='[12.0.0,12.0.1)',\
+	com.h2database;version='[1.4.200,1.4.201)',\
+	com.paremus.brain.iot.eventing.api;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
+	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
+	com.springsource.org.apache.commons.codec;version='[1.3.0,1.3.1)',\
+	com.springsource.org.apache.commons.httpclient;version='[3.1.0,3.1.1)',\
+	com.springsource.org.apache.commons.logging;version='[1.1.1,1.1.2)',\
+	eu.brain.iot.robot.msgs;version='[0.0.4,0.0.5)',\
+	eu.brain.iot.service.robotic.door.api;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.door.impl;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer;version='[0.0.2,0.0.3)',\
+	json;version='[20190722.0.0,20190722.0.1)',\
+	org.apache.commons.io;version='[1.4.0,1.4.1)',\
+	org.apache.commons.lang;version='[2.6.0,2.6.1)',\
+	org.apache.commons.net;version='[2.0.0,2.0.1)',\
+	org.apache.commons.pool;version='[1.6.0,1.6.1)',\
+	org.apache.felix.configadmin;version='[1.9.8,1.9.9)',\
+	org.apache.felix.configurator;version='[1.0.6,1.0.7)',\
+	org.apache.felix.gogo.runtime;version='[1.0.2,1.0.3)',\
+	org.apache.felix.scr;version='[2.1.10,2.1.11)',\
+	org.jboss.netty;version='[3.5.2,3.5.3)',\
+	org.osgi.util.function;version='[1.1.0,1.1.1)',\
+	org.osgi.util.promise;version='[1.1.0,1.1.1)',\
+	org.osgi.util.pushstream;version='[1.0.0,1.0.1)',\
+	org.ros.rosjava_bootstrap.message_generation;version='[0.2.1,0.2.2)',\
+	org.ros.rosjava_core.apache_xmlrpc_client;version='[0.2.2,0.2.3)',\
+	org.ros.rosjava_core.apache_xmlrpc_common;version='[0.2.2,0.2.3)',\
+	org.ros.rosjava_core.apache_xmlrpc_server;version='[0.2.2,0.2.3)',\
+	org.ros.rosjava_core.rosjava;version='[0.2.2,0.2.3)',\
+	ws-commons-util;version='[1.0.1,1.0.2)',\
+	com.google.gson;version='[2.8.5,2.8.6)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator.api;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.warehouse.sensinact.api;version='[0.0.2,0.0.3)',\
+	com.fasterxml.jackson.jaxrs.jackson-jaxrs-base;version='[2.9.6,2.9.7)',\
+	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider;version='[2.9.6,2.9.7)',\
+	com.fasterxml.jackson.module.jackson-module-jaxb-annotations;version='[2.9.6,2.9.7)',\
+	eu.brain.iot.service.robotic.redeployment.api;version='[0.0.1,0.0.2)',\
+	org.apache.aries.javax.jax.rs-api;version='[1.0.1,1.0.2)',\
+	org.apache.aries.jax.rs.jackson;version='[1.0.2,1.0.3)',\
+	org.apache.aries.jax.rs.whiteboard;version='[1.0.1,1.0.2)',\
+	org.apache.felix.http.jetty;version='[4.0.6,4.0.7)',\
+	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
+	org.apache.servicemix.specs.annotation-api-1.3;version='[1.3.0,1.3.1)',\
+	org.osgi.service.jaxrs;version='[1.0.0,1.0.1)',\
+	ch.qos.logback.classic;version='[1.1.2,1.1.3)',\
+	ch.qos.logback.core;version='[1.1.2,1.1.3)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour2;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.demo;version='[0.0.1,0.0.2)',\
+	slf4j.api;version='[1.7.7,1.7.8)',\
+	be.iminds.iot.ros.core;version='[0.0.5,0.0.6)',\
+	eu.brain.iot.service.robotic.startButton.api;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.service.robotic.startButton.impl;version='[0.0.2,0.0.3)',\
+	eu.brain.iot.ros.edge.node.common;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.ros.edge.node1;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.ros.edge.node2;version='[0.0.1,0.0.2)',\
+	eu.brain.iot.ros.edge.node3;version='[0.0.1,0.0.2)'
+	
+	
+	
+	
+	
+	
+	
+	
+	

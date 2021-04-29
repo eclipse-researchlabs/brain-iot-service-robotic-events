@@ -1,0 +1,25 @@
+-classpath: apache_xmlrpc_client-0.2.2.jar
+Manifest-Version: 1.0
+Bundle-Description: apache_xmlrpc_client
+Bundle-ManifestVersion: 2
+Bundle-Name: apache_xmlrpc_client
+Bundle-SymbolicName: org.ros.rosjava_core.apache_xmlrpc_client
+ver: 0.2.2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+-output: ${bsn}-${ver}.jar
+Bundle-Version: ${ver}
+#Import-Package: com.google.gson.annotations;version=${ver}
+#Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
+#Export-Package: *;version=${ver}
+
+Export-Package: org.apache.xmlrpc.client;version="0.2.2";uses:="javax.net.ssl,org.apache.commons.httpclient,org.apache.commons.httpclient.methods,org.apache.xmlrpc,org.apache.xmlrpc.common,org.apache.xmlrpc.serializer,org.xml.sax",org.apache.xmlrpc.client.util;version="0.2.2";uses:="org.apache.xmlrpc.client,org.apache.xmlrpc.common"
+ 
+Import-Package: javax.net,javax.net.ssl,org.apache.commons.httpclient;version="[3.1,4)",org.apache.commons.httpclient.auth;version="[3.1,4)",org.apache.commons.httpclient.methods;version="[3.1,4)",org.apache.commons.httpclient.params;version="[3.1,4)",org.apache.xmlrpc;version="[0.2,1)",org.apache.xmlrpc.common;version="[0.2,1)",org.apache.xmlrpc.parser;version="[0.2,1)",org.apache.xmlrpc.serializer;version="[0.2,1)",org.apache.xmlrpc.util;version="[0.2,1)",org.xml.sax
+ 
+#DynamicImport-Package: *
+-groupid: org.ros.rosjava_core
+#-artifactid: message_generation
+-pom: true
+#-includeresource: META-INF/maven/org.ros.rosjava_core/org.ros.rosjava_core.apache_xmlrpc_client/pom.xml=${.}/pom.xml
+
+#-buildpath: org.ros.rosjava_core.apache_xmlrpc_common;version=0.2.2

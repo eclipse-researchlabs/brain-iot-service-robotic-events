@@ -778,8 +778,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+			e.printStackTrace();
 		}
 		logger.info("------------  Robot Behavior "+ robotID+" is deactivated----------------");
+		System.out.println("------------  Robot Behavior "+ robotID+" is deactivated----------------");
 	}
 
 }

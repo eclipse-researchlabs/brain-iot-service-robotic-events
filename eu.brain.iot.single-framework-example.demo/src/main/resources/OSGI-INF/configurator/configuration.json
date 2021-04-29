@@ -1,0 +1,20 @@
+{
+   ":configurator:resource-version" : 1,
+    ":configurator:symbolic-name" : "eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.demo.config",
+    ":configurator:version" : "0.0.1-SNAPSHOT",
+    
+   "eu.brain.iot.example.robot.Door": {
+    	"host": "192.168.2.202", 
+        "port": "8080",
+        "id": "ExampleDoor",
+        "path": "/door1/door_controller/command"
+     },
+    
+
+    
+    
+    "eu.brain.iot.robot.tables.creator.TablesCreator": {
+          
+    }
+    
+}

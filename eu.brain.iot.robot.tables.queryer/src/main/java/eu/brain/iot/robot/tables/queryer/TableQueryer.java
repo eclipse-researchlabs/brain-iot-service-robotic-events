@@ -161,7 +161,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				query.robotIP = new Integer(dockRequest.robotID).toString();
 				query.robotID = dockRequest.robotID;
 
-				logger.info("Queryer  sent to Creator QueryDockTable, robotIP= " + query.robotIP+ ", robotID= "+query.robotID);
+				logger.info("Queryer  sent to Creator QueryDockTable" + ", robotID= "+query.robotID);
 				eventBus.deliver(query);
 
 			});
@@ -173,7 +173,7 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				update.robotID = cartMovedNotice.robotID;
 				update.pickPoint = cartMovedNotice.pickPoint;
 
-				logger.info("Queryer  sent to Creator UnsignPickingPoint " + update);
+				logger.info("\nQueryer  sent to Creator UnsignPickingPoint " + update);
 				eventBus.deliver(update);
 			});
 
@@ -207,8 +207,8 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 		
 		else if (event instanceof QueryPickResponse) {
 			QueryPickResponse resp = (QueryPickResponse) event;
-			logger.info("Queryer GOT from creator the QueryPickResponse, pickID= "+resp.pickID+ ", robotID="+resp.robotID);
-			System.out.println("Queryer GOT from creator the QueryPickResponse, pickID= "+resp.pickID+ ", robotID="+resp.robotID);
+			logger.info("\nQueryer GOT from creator the QueryPickResponse, pickID= "+resp.pickID+ ", robotID="+resp.robotID);
+			System.out.println("\nQueryer GOT from creator the QueryPickResponse, pickID= "+resp.pickID+ ", robotID="+resp.robotID);
 			
 			worker.execute(() -> {
 				NewPickPointResponse rs = new NewPickPointResponse();
@@ -217,11 +217,11 @@ public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO mus
 				if (resp.pickPoint != null) {
 					rs.hasNewPoint = true;
 					rs.pickPoint = resp.pickPoint;
-					System.out.println("Queryer sent to RB "+rs.robotID+ " NewPickPointResponse, (pickID= "+resp.pickID +"), hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
-					logger.info("Queryer sent to RB "+rs.robotID+ " NewPickPointResponse, (pickID= "+resp.pickID +"), hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
+					System.out.println("\nQueryer sent to RB "+rs.robotID+ " NewPickPointResponse, (pickID= "+resp.pickID +"), hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
+					logger.info("\nQueryer sent to RB "+rs.robotID+ " NewPickPointResponse, (pickID= "+resp.pickID +"), hasNewPoint= "+rs.hasNewPoint+", pickPoint= "+rs.pickPoint);
 				} else {
-					logger.info("Queryer doesn't get available picking point, sent to RB "+rs.robotID+ " empty value");
-					System.out.println("Queryer doesn't get available picking point, sent to RB "+rs.robotID+ " empty value");
+					logger.info("\nQueryer doesn't get available picking point, sent to RB "+rs.robotID+ " empty value");
+					System.out.println("\nQueryer doesn't get available picking point, sent to RB "+rs.robotID+ " empty value");
 				}
 				eventBus.deliver(rs);
 			});

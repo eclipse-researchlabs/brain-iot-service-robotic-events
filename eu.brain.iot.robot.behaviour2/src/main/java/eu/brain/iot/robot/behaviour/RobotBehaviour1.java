@@ -23,13 +23,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.eclipse.sensinact.gateway.brainiot.door.api.CloseDoorResponse;
-import org.eclipse.sensinact.gateway.brainiot.door.api.CommandDoorStatus;
-import org.eclipse.sensinact.gateway.brainiot.door.api.DoorStatus;
-import org.eclipse.sensinact.gateway.brainiot.door.api.DoorStatusRequest;
-import org.eclipse.sensinact.gateway.brainiot.door.api.DoorStatusResponse;
-import org.eclipse.sensinact.gateway.brainiot.door.api.OpenDoorRequest;
-import org.eclipse.sensinact.gateway.brainiot.door.api.OpenDoorResponse;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -49,6 +42,8 @@ import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import eu.brain.iot.service.robotic.door.api.DoorStatusResponse;
+import eu.brain.iot.service.robotic.door.api.DoorStatusRequest.State;
 import eu.brain.iot.eventing.annotation.SmartBehaviourDefinition;
 import eu.brain.iot.eventing.api.BrainIoTEvent;
 import eu.brain.iot.eventing.api.EventBus;
@@ -69,22 +64,23 @@ import eu.brain.iot.warehouse.events.NoCartNotice;
 
 @Component(
 		immediate=true,
-		configurationPid = "eu.brain.iot.example.robot.RobotBehavior", 
+		configurationPid = "eu.brain.iot.example.robot.RobotBehavior.Ros1", 
 		configurationPolicy = ConfigurationPolicy.OPTIONAL,
 		scope=ServiceScope.SINGLETON,
 		service = {SmartBehaviour.class})
 
 @SmartBehaviourDefinition(consumed = { NewPickPointResponse.class, NewStoragePointResponse.class, DockingResponse.class, 
 		CartNoticeResponse.class, MarkerReturn.class, QueryStateValueReturn.class, RobotReadyBroadcast.class,
-		DoorStatusResponse.class, OpenDoorResponse.class, CloseDoorResponse.class, AvailabilityReturn.class, BroadcastACK.class},
+		DoorStatusResponse.class, AvailabilityReturn.class, BroadcastACK.class},
 		author = "LINKS", name = "Robot Behavior", 
-		filter = "(timestamp=*)",
+		filter = "(|(robotID=1)(robotID=-1))",  // "(|(robotID=1)(robotID=-1))"   "(timestamp=*)"
 		description = "Implements a Robot Behavior.")
 
-public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
+public class RobotBehaviour1 implements SmartBehaviour<BrainIoTEvent> {
 
-	private static volatile int robotID;
-	private static volatile String robotIP;
+	private static volatile int robotID =1;
+	private static volatile String configName;
+	
 	private static volatile boolean robotReady = false;
 	private static volatile QueryStateValueReturn queryReturn;
 	private static volatile int markerID = 0;
@@ -99,10 +95,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private static volatile String UUID;
 	private static volatile boolean receivedBroadcast = false;
 	private static volatile boolean broadcastACK = false;
-	private static volatile DoorStatus doorStatus = null;
-	private static volatile OpenDoorResponse openDoorResponse = null;
-	private static volatile CloseDoorResponse closeDoorResponse = null;
-	
+//	private static volatile String robotName;
 
 	@ObjectClassDefinition
 	public static @interface Config {
@@ -112,7 +105,6 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private  Logger logger;
 	
 	private ExecutorService worker;
-//	private ServiceRegistration<?> reg;
 
 	@Reference
 	private EventBus eventBus;
@@ -123,16 +115,31 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
     }
 
 	@Activate
-	void activate(BundleContext context, Config config, Map<String, Object> props) {
+	void activate(BundleContext context, Config config, Map<String, Object> properties) {
 		
 		System.setProperty("logback.configurationFile", config.logPath());
 		
-		logger = (Logger) LoggerFactory.getLogger(RobotBehaviour.class.getSimpleName());
+		logger = (Logger) LoggerFactory.getLogger(RobotBehaviour1.class.getSimpleName());
 		
 		UUID = context.getProperty("org.osgi.framework.uuid");
+
+	//	this.robotID = Integer.parseInt(context.getProperty("ID1"));
 		
-		logger.info("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
-		System.out.println("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
+	/*		if (!properties.isEmpty()) {
+				for (Entry<String, Object> entry : properties.entrySet()) {
+					String key = entry.getKey();
+					if (key.equals("robotId")) {
+						this.robotID = Integer.parseInt((String) entry.getValue());
+					}/* else if (key.equals("robotName")) {
+						this.robotName = (String) entry.getValue();
+					}* else if (key.equals("configName")) {
+						this.configName = (String) entry.getValue();
+					}
+				}
+			}*/
+		
+		logger.info("\n Hello!  I am Robot Behavior : " + robotID);
+		System.out.println("\n Hello!  I am Robot Behavior : " + robotID);
 
 		worker = Executors.newFixedThreadPool(10);
 
@@ -158,24 +165,30 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					pickCounter = 1;
 					storageCounter = 1;
 					
-					logger.info("--------------------------- Start New Iteration --------------------------------------");
+					logger.info("---------------------------RB-"+robotID+" Start New Iteration --------------------------------------");
+					System.out.println("---------------------------RB-"+robotID+" Start New Iteration --------------------------------------");
 					
 					// --------------------------- Query Pick point --------------------------------------
-					logger.info("--------------------------- Query Pick point --------------------------------------");
+					logger.info("--------------------------- RB-"+robotID+" Query Pick point --------------------------------------");
+					System.out.println("--------------------------- RB-"+robotID+" Query Pick point --------------------------------------");
+					
 					while (query) {
 
 						NewPickPointRequest pickRequest = new NewPickPointRequest();
 						pickRequest.robotID = this.robotID;
-						RobotBehaviour.pickResponse = null;
+						RobotBehaviour1.pickResponse = null;
 						eventBus.deliver(pickRequest);
 
 						waitPickResponse();
 
-						if (RobotBehaviour.pickResponse.hasNewPoint) {	
-							logger.info("----------- has new Pick Point = true-------------");
+						if (RobotBehaviour1.pickResponse.hasNewPoint) {	
+							logger.info("-----------RB-"+robotID+" has new Pick Point = true-------------");
+							System.out.println("-----------RB-"+robotID+" has new Pick Point = true-------------");
+							
 							pickPoint = getPickResponse().pickPoint;
 							if(pickPoint == null) {
-								logger.info("-->no pick point, RB exit!");
+								logger.info("-->empty, no pick point, RB exit!");
+								System.out.println("-->empty, no pick point, RB exit!");
 								stop();
 							}
 							logger.info("-->RB" + robotID + " get new Pick Point: " + pickPoint);
@@ -186,6 +199,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 							if (pickCounter > 0) { // just ask for 2 times
 								logger.info("-->RB" + robotID + " doesn't get any Pick Point, continue to query after 10s");
+								System.out.println("-->RB" + robotID + " doesn't get any Pick Point, continue to query after 10s");
 								// TODO continue to query new pick point
 								try {
 									TimeUnit.SECONDS.sleep(10);
@@ -197,6 +211,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							} else {
 								nextIteration = false;
 								logger.info("-->RB" + robotID + " doesn't get any Pick Point, all carts have been moved, exit! ");
+								System.out.println("-->RB" + robotID + " doesn't get any Pick Point, all carts have been moved, exit! ");
 								break;
 							}
 
@@ -206,14 +221,16 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					if (nextIteration) { // it means a new pick point is found, the break is not because no pick point is found
 						
 						// --------------------------- Go to Picking point --------------------------------------
-						logger.info("--------------------------- Go to Picking point --------------------------------------");
+						logger.info("---------------------------RB-"+robotID+" Go to Picking point --------------------------------------");
+						System.out.println("---------------------------RB-"+robotID+" Go to Picking point --------------------------------------");
 
 						if (!executeGoTo(pickPoint, "Picking point")) {
 							break; // execution failed
 						}
 						
 						// --------------------------- check Cart Marker --------------------------------------
-						logger.info("--------------------------- check Cart Marker --------------------------------------");
+						logger.info("---------------------------RB-"+robotID+" check Cart Marker --------------------------------------");
+						System.out.println("---------------------------RB-"+robotID+" check Cart Marker --------------------------------------");
 
 						CheckMarker checkMarker = createCheckMarker(); // CheckMarker
 						eventBus.deliver(checkMarker);
@@ -239,7 +256,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						// ---------------------------TODO: Cancel current action after detecting  Anomaly--------------------------------------
 
 						// --------------------------- Pick Cart --------------------------------------
-						logger.info("--------------------------- Pick Cart --------------------------------------");
+						logger.info("---------------------------RB-"+robotID+" Pick Cart --------------------------------------");
+						System.out.println("---------------------------RB-"+robotID+" Pick Cart --------------------------------------");
 						
 						PickCart pickCart = createPickCart(newMarkerID); // PickCart
 						queryReturn = null;
@@ -260,23 +278,27 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						
 
 						// --------------------------- Query Storage point --------------------------------------
-						logger.info("--------------------------- Query Storage point --------------------------------------");
+						logger.info("---------------------------RB-"+robotID+" Query Storage point --------------------------------------");
+						System.out.println("---------------------------RB-"+robotID+" Query Storage point --------------------------------------");
+						
 						while (query) {
 
 							NewStoragePointRequest storageRequest = new NewStoragePointRequest();
 							storageRequest.robotID = this.robotID;
 							storageRequest.markerID = markerID;
-							RobotBehaviour.storageResponse = null;
+							RobotBehaviour1.storageResponse = null;
 							eventBus.deliver(storageRequest);
 
 							waitStorageResponse();
 
-							if (RobotBehaviour.storageResponse.hasNewPoint) {
-								logger.info("-----------has new Storage Point-------------");
+							if (RobotBehaviour1.storageResponse.hasNewPoint) {
+								logger.info("-----------RB-"+robotID+"has new Storage Point-------------");
+								System.out.println("-----------RB-"+robotID+"has new Storage Point-------------");
 								break;
 							} else {
 								if (storageCounter > 0) { // just ask for 2 times
 									logger.info("-->RB" + robotID + " doesn't get any Storage Point, continue to query after 10s");
+									System.out.println("-->RB" + robotID + " doesn't get any Storage Point, continue to query after 10s");
 									try {
 										TimeUnit.SECONDS.sleep(10);
 									} catch (InterruptedException e) {
@@ -294,109 +316,40 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						if (nextIteration) {
 
 							// --------------------------- Go to Storage AUX -------------------------------------
-							logger.info("--------------------------- Go to Storage AUX --------------------------------------");
+							logger.info("---------------------------RB-"+robotID+" Go to Storage AUX --------------------------------------");
+							System.out.println("---------------------------RB-"+robotID+" Go to Storage AUX --------------------------------------");
 							
-							if (!executeGoTo(RobotBehaviour.storageResponse.storageAuxliaryPoint, "storage AUX")) {
+							if (!executeGoTo(RobotBehaviour1.storageResponse.storageAuxliaryPoint, "storage AUX")) {
 								break; // execution failed
 							}
 							try {
-								TimeUnit.SECONDS.sleep(3);
+								TimeUnit.SECONDS.sleep(4);
 							} catch (InterruptedException e) {
 								logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 							}
 							
 							// --------------------------- check Door Marker  --------------------------------------
-					/*	*/	logger.info("--------------------------- Check Door Marker --------------------------------------");
+					/*		logger.info("--------------------------- Check Door Marker --------------------------------------");
 							
 							CheckMarker checkDoorMarker = createCheckMarker(); // CheckMarker
 							eventBus.deliver(checkDoorMarker);
 							logger.info("-->RB" + robotID + " is sending cmd to check Door Marker");
-							System.out.println("-->RB" + robotID + " is sending cmd to check Door Marker");
 
 							int DoorID = waitMarker();
-							logger.info("-->RB" + robotID + " got   Door ID = " + DoorID);
-							System.out.println("-->RB" + robotID + " got   Door ID = " + DoorID);
-							
-							int counter = 2;
-							int flag = 0;
-							boolean isDoorOpened = false;
-							
-							while(true) {
-								counter = 2;
-								flag = 0;
-							
-							while(counter>0) {
-								if(checkDoorStatus()) {  // check for max 2 times ==>  6s
-									flag = 1;
-									break;
-								} else {
-									counter --;
-								}
-							}
-							if(flag == 0) {
-								isDoorOpened = false;
-								break;  // no status response received
-							} else {
-									if(doorStatus == DoorStatus.CLOSED) {
-										counter = 2;
-										flag = 0;
-										while(counter>0) {
-											if(commandToOpenDoor()) {  // if  OpenDoorResponse is received and the response is SUCCESS
-												flag = 1;
-												break;
-											}
-										}
-										if(flag == 0) {
-											isDoorOpened = false;
-											break;  // failed to send open door request 
-										} else {
-											continue; // continue to check the door status
-										}
-										
-										
-									} else if (doorStatus == DoorStatus.OPENED) {
-										logger.info("-->RB" + robotID + " found Door is OPENED, continue moving");
-										System.out.println("-->RB" + robotID + " found Door is OPENED, continue moving");
-										isDoorOpened = true;
-										break;
-									} else if (doorStatus == DoorStatus.CLOSING || doorStatus == DoorStatus.OPENING) {
-										logger.info("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-										System.out.println("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-										try {
-											TimeUnit.SECONDS.sleep(3);
-										} catch (InterruptedException e) {
-											logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-										}
-										continue;
-									} else if (doorStatus == DoorStatus.PREVENTED) {
-										logger.info("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-										System.out.println("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-										try {
-											TimeUnit.SECONDS.sleep(3);
-										} catch (InterruptedException e) {
-											logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-										}
-										continue;
-									}
-								}
-							
-							}
-							
-							if(!isDoorOpened) {
-								logger.info("-->RB" + robotID + " found Door can not be OPENED in Storage area, stop moving");
-								System.out.println("-->RB" + robotID + " found Door can not be OPENED in Storage area, stop moving");
-								break;
-							} else {
+							logger.info("-->RB" + robotID + " got DoorID = " + DoorID);
+*/
 							
 							// --------------------------- Go to Storage Point --------------------------------------
-							logger.info("--------------------------- Go to Storage Point --------------------------------------");
+							logger.info("---------------------------RB-"+robotID+" Go to Storage Point --------------------------------------");
+							System.out.println("---------------------------RB-"+robotID+" Go to Storage Point --------------------------------------");
 							
-							if (!executeGoTo(RobotBehaviour.storageResponse.storagePoint, "storage Point")) {
+							if (!executeGoTo(RobotBehaviour1.storageResponse.storagePoint, "storage Point")) {
 								break; // execution failed
 							}
 
 							// --------------------------- Place Cart --------------------------------------
 							logger.info("--------------------------- Place Cart --------------------------------------");
+							System.out.println("--------------------------- Place Cart --------------------------------------");
 							
 							PlaceCart placeCart = createPlaceCart(); // PickCart
 							queryReturn = null;
@@ -409,6 +362,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 								if (currentState.equals(CurrentState.unknown)) {
 									robotReady = false;
 									logger.info("-->RB" + robotID + " execute PickCart action failed, Robot Behavior stops !!!!");
+									System.out.println("-->RB" + robotID + " execute PickCart action failed, Robot Behavior stops !!!!");
 									break;
 								} else { // FINISHED
 									logger.info("-->RB " + robotID + " Place Cart successfully");
@@ -416,7 +370,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							}
 
 							// --------------------------- Cart Moved Notice --------------------------------------
-							logger.info("--------------------------- Cart Moved Notice --------------------------------------");
+							logger.info("---------------------------RB-"+robotID+" Cart Moved Notice --------------------------------------");
+							System.out.println("---------------------------RB-"+robotID+" Cart Moved Notice --------------------------------------");
 							
 							CartMovedNotice cartMovedNotice = createCartMovedNotice();
 							cartNoticeResponse = null;
@@ -428,7 +383,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 						//	logger.info("-->RB" + robotID + " got CartNoticeResponse");
 
 							// --------------------------- Docking Request--------------------------------------
-							logger.info("--------------------------- Docking Request --------------------------------------");
+							logger.info("---------------------------RB-"+robotID+" Docking Request --------------------------------------");
+							System.out.println("---------------------------RB-"+robotID+" Docking Request --------------------------------------");
 							
 							DockingRequest dockingRequest = createDockingRequest();
 							dockingResponse = null;
@@ -439,103 +395,41 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 								if (dockingResponse.hasNewPoint) {
 
 									// --------------------------- Go to Docking AUX -------------------------------------
-									logger.info("--------------------------- Go to Docking AUX --------------------------------------");
-
+									logger.info("---------------------------RB-"+robotID+" Go to Docking AUX --------------------------------------");
+									System.out.println("---------------------------RB-"+robotID+" Go to Docking AUX --------------------------------------");
+									
 									
 									if (!executeGoTo(dockingResponse.dockAuxliaryPoint, "docking AUX")) {
 										break; // execution failed
 									}
-									
-									
-									
-									
-									// --------------------------- check Door Marker to Docking Area --------------------------------------
-									logger.info("--------------------------- Check Door Marker to Docking Area --------------------------------------");
+									// --------------------------- check Door Marker --------------------------------------
+					/*				logger.info("--------------------------- Check Door Marker --------------------------------------");
 
-									isDoorOpened = false;
 									
-									while(true) {
-										counter = 2;
-										flag = 0;
-									
-									while(counter>0) {
-										if(checkDoorStatus()) {  // check for max 2 times
-											flag = 1;
-											break;
-										} else {
-											counter --;
-										}
-									}
-									if(flag == 0) {
-										isDoorOpened = false;
-										break;  // no status response received
-									} else {
-											if(doorStatus == DoorStatus.CLOSED) {
-												counter = 2;
-												flag = 0;
-												while(counter>0) {
-													if(commandToOpenDoor()) {  // if  OpenDoorResponse is received and the response is SUCCESS
-														flag = 1;
-														break;
-													}
-												}
-												if(flag == 0) {
-													isDoorOpened = false;
-													break;  // failed to send open door request 
-												} else {
-													continue; // continue to check the door status
-												}
-												
-												
-											} else if (doorStatus == DoorStatus.OPENED) {
-												logger.info("-->RB" + robotID + " found Door is OPENED, continue moving");
-												System.out.println("-->RB" + robotID + " found Door is OPENED, continue moving");
-												isDoorOpened = true;
-												break;
-											} else if (doorStatus == DoorStatus.CLOSING || doorStatus == DoorStatus.OPENING) {
-												logger.info("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-												System.out.println("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-												try {
-													TimeUnit.SECONDS.sleep(3);
-												} catch (InterruptedException e) {
-													logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-												}
-												continue;
-											} else if (doorStatus == DoorStatus.PREVENTED) {
-												logger.info("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-												System.out.println("-->RB" + robotID + " found Door is" + doorStatus + ", waiting");
-												try {
-													TimeUnit.SECONDS.sleep(3);
-												} catch (InterruptedException e) {
-													logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-												}
-												continue;
-											}
-										}
-									
-									}
+									CheckMarker checkDoorMarker2 = createCheckMarker(); // CheckMarker
+									eventBus.deliver(checkDoorMarker2);
+									logger.info("-->RB" + robotID + " sending check Door Marker on the way to Docking area");
 
-									if(!isDoorOpened) {
-										logger.info("-->RB" + robotID + " found Door can not be OPENED in Docking area, stop moving");
-										break;
-									} else {
+									int DoorID2 = waitMarker();
+									logger.info("-->RB" + robotID + " got DoorID = " + DoorID2);
+*/
+									
 									// --------------------------- Go to Docking Point --------------------------------------
-									logger.info("--------------------------- Go to Docking Point --------------------------------------");
+									logger.info("---------------------------RB-"+robotID+" Go to Docking Point --------------------------------------");
+									System.out.println("---------------------------RB-"+robotID+" Go to Docking Point --------------------------------------");
 
 									if (!executeGoTo(dockingResponse.dockingPoint, "dock Point")) {
 										break; // execution failed
 									} else {
-										logger.info("--------------------------- End of the Iteration --------------------------------------");
+										logger.info("---------------------------RB-"+robotID+" End of the Iteration --------------------------------------");
+										System.out.println("---------------------------RB-"+robotID+" End of the Iteration --------------------------------------");
 									}
-									
-								  }   // end of if(isDoorOpened)
 								} else {
 									logger.info("-->RB" + robotID + " exit because NO Docking point found ");
 									nextIteration = false;
 									break;
 								}
 							}
-						 }  // end of if(isDoorOpened)
 						} // end of if(nextIteration), new storage point is found
 						else { // nextIteration = false
 							break; // no storage are found for this cart
@@ -558,8 +452,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 			if (nextIteration == false) { // only when normal exit(no pick, no storage after querying for a long time)
 				logger.info("-->Tasks are done. Robot Behavior " + robotID + " exit !!!");
+				System.out.println("-->Tasks are done. Robot Behavior " + robotID + " exit !!!");
 			} else { // when the WriteGoTo action fail with the last_event=abort, robot behavior will exit.
 				logger.info("-->RB " + robotID + "  exit because of failure in robot!!!");
+				System.out.println("-->RB " + robotID + "  exit because of failure in robot!!!");
 			}
 			stop();
 		}
@@ -570,122 +466,61 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	}
 	
-	
-	public boolean commandToOpenDoor() {
-		RobotBehaviour.openDoorResponse = null;
-		OpenDoorRequest open = new OpenDoorRequest();
-		open.robotID = robotID;
-		eventBus.deliver(open);
-		logger.info("-->RB" + robotID + " found Door is CLOSED, is sending OpenDoorRequest");
-		System.out.println("-->RB" + robotID + " found Door is CLOSED, is sending OpenDoorRequest");
-		
-		if(!waitOpenDoorResponse()) {
-			logger.info("-->RB" + robotID + " didn't receive the OpenDoorResponse in 3s");
-			System.out.println("-->RB" + robotID + " didn't receive the OpenDoorResponse in 3s");
-			return false;
-		} else {
-			logger.info("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response);
-			System.out.println("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response);
-			if(openDoorResponse.response == CommandDoorStatus.FAILURE) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	public boolean checkDoorStatus() {
-			doorStatus = null;
-			
-			DoorStatusRequest dsr = new DoorStatusRequest();
-			dsr.robotID = robotID;
-			eventBus.deliver(dsr);
-			logger.info("-->RB" + robotID + " is asking for Door Status");
-			System.out.println("-->RB" + robotID + " is asking for Door Status");
-			
-			if(!waitDoorStatusResponse()) {
-				logger.info("-->RB" + robotID + " didn't receive the DoorStatusResponse in 5s");
-				System.out.println("-->RB" + robotID + " didn't receive the DoorStatusResponse in 5s");
-				return false;
-			}
-			return true;
-	}
-	
-	public boolean waitDoorStatusResponse() {
-		logger.info("-->RB" + robotID + " is waiting DoorStatusResponse");
-		System.out.println("-->RB" + robotID + " is waiting DoorStatusResponse");
-		int counter = 10;
-		while (counter>0) {
-	//		RobotBehaviour.doorStatus = DoorStatus.CLOSED; // todo1
-			
-			
-			if (RobotBehaviour.doorStatus != null) {
-				return true;
-			} else {
-				try {
-					logger.info("-->RB" + robotID + " is waiting for 1s");
-					System.out.println("-->RB" + robotID + " is waiting for 1s");
-					TimeUnit.SECONDS.sleep(1);
-				} catch (InterruptedException e) {
-					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-				}
-				counter --;
-			}
-		}
-		return false;
-	}
-	
-	public boolean waitOpenDoorResponse() {
-		logger.info("-->RB" + robotID + " is waiting OpenDoorResponse");
-		int counter = 3;
-		while (counter>0) {
-	//		RobotBehaviour.openDoorResponse.response = CommandDoorStatus.SUCCESS; // todo2
-			
-			if (RobotBehaviour.openDoorResponse != null) {
-				return true;
-			} else {
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				} catch (InterruptedException e) {
-					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-				}
-				counter --;
-			}
-		}
-		return false;
-	}
-	
-	
 	@Modified
     void modified(Map<String, Object> properties) {
-		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+ ", UUID="+UUID+"\n");
-		System.out.println("\n\n --> RB " + robotID + "  has osgi service properties :" + properties+ ", UUID="+UUID+"\n");
+		logger.info("\n\n --> RB " + robotID + "  has osgi service properties :" + properties);
+		System.out.println("\n\n --> RB " + robotID + "  has osgi service properties :" + properties);
 
     }
 
 	@Override
 	public void notify(BrainIoTEvent event) {
-		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
-		System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
+		logger.info("\n-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
+		System.out.println("\n-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
 
-		if (event instanceof RobotReadyBroadcast) {
+	/*	if(event instanceof StartDTO) {
+
+			logger.info("-->RB "+ robotID+" received StartDTO event................");
+			System.out.println("-->RB "+ robotID+" received StartDTO event................");
+			
+			worker.execute(() -> {
+				Bundle adminBundle = FrameworkUtil.getBundle(RobotBehaviour1.class);
+				String location = adminBundle.getLocation();
+			
+			Configuration config;
+			try {
+				config = cm.getConfiguration("eu.brain.iot.example.robot.RobotBehavior.Ros1", location);
+
+				Hashtable<String, Object> props = new Hashtable<>();
+				props.put(SmartBehaviourDefinition.PREFIX_ + "filter", // only receive some sepecific events with robotID
+						String.format("(|(robotID=%s)(robotID=%s))", robotID, RobotCommand.ALL_ROBOTS));
+				config.update(props); // the modified() method will be called. it will receive only the events with the robotID.
+				logger.info("-->RB " + robotID + " update properties = "+props+"\n");
+				System.out.println("-->RB " + robotID + " update properties = "+props+"\n");
+				
+				TimeUnit.SECONDS.sleep(1);
+				
+			} catch (Exception e) {
+				logger.error("RobotBehavior-1 OSGI Service Exception: {}", ExceptionUtils.getStackTrace(e));
+			}
+			});	
+			
+		}
+		
+		else */ if (event instanceof RobotReadyBroadcast) {
 			if(!receivedBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
-			logger.info("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
-			System.out.println("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
-
-			if(rbc.UUID.equals(UUID)) {
+		
+			if(rbc.robotID==robotID) {
+				
 			worker.execute(() -> {
 				
-				robotIP = rbc.robotIP;
-				robotID = rbc.robotID;
-
-				
-				Bundle adminBundle = FrameworkUtil.getBundle(RobotBehaviour.class);
+		/*		Bundle adminBundle = FrameworkUtil.getBundle(RobotBehaviour1.class);
 				String location = adminBundle.getLocation();
 				
 				Configuration config;
 				try {
-					config = cm.getConfiguration("eu.brain.iot.example.robot.RobotBehavior", location);
+					config = cm.getConfiguration("eu.brain.iot.example.robot.RobotBehavior.Ros1", location);
 
 					Hashtable<String, Object> props = new Hashtable<>();
 					props.put(SmartBehaviourDefinition.PREFIX_ + "filter", // only receive some sepecific events with robotID
@@ -696,7 +531,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					
 				} catch (IOException e) {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-				}
+				}*/
 				
 		//		robotReady = rbc.isReady;
 				receivedBroadcast = true;
@@ -711,11 +546,10 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				bcr.robotID = robotID;
 				bcr.UUID = UUID;
 				eventBus.deliver(bcr);
-		//		receivedBroadcast = true;
 				
 				robotReady = rbc.isReady;  // then RB start to ask for a pick point
-				logger.info("-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID+ ", UUID="+UUID);
-				System.out.println("-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID+ ", UUID="+UUID);
+				logger.info("\n-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID);
+				System.out.println("\n-->RB " + robotID + " got robot "+robotID+" is Ready -- "+robotReady+", sent BroadcastResponse to robot="+robotID);
 			});
 		}
 		}
@@ -727,8 +561,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				logger.info("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
 				System.out.println("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", but to be ignored.......... ");
 			} else {
-				logger.info("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... "+ ", UUID="+UUID);
-				System.out.println("-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... "+ ", UUID="+UUID);
+				logger.info("\n-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... ");
+				System.out.println("\n-->RB " + robotID + " got broadcastACK with robotID="+ack.robotID+", start moving.......... ");
 			
 				broadcastACK = true;
 			}
@@ -739,43 +573,43 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			NewPickPointResponse resp = (NewPickPointResponse) event;
 
 			if(resp.robotID == robotID) {
-				RobotBehaviour.pickResponse = resp;
+				RobotBehaviour1.pickResponse = resp;
 			
-				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint +" with robotID="+RobotBehaviour.pickResponse.robotID);
-				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint+" with robotID="+RobotBehaviour.pickResponse.robotID);
+				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour1.pickResponse.pickPoint +" with robotID="+RobotBehaviour1.pickResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour1.pickResponse.pickPoint+" with robotID="+RobotBehaviour1.pickResponse.robotID);
 			} else {
-				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint +" with robotID="+RobotBehaviour.pickResponse.robotID+", but is ignored....");
-				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour.pickResponse.pickPoint+" with robotID="+RobotBehaviour.pickResponse.robotID+", but is ignored....");
+				logger.info("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour1.pickResponse.pickPoint +" with robotID="+RobotBehaviour1.pickResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new Pick Point: " + RobotBehaviour1.pickResponse.pickPoint+" with robotID="+RobotBehaviour1.pickResponse.robotID+", but is ignored....");
 			}
 		} else if (event instanceof NewStoragePointResponse) {
 			
 			NewStoragePointResponse resp = (NewStoragePointResponse) event;
 			
 			if(resp.robotID == robotID) {
-				RobotBehaviour.storageResponse = resp;
+				RobotBehaviour1.storageResponse = resp;
 			
-				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID);
-				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID);
+				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour1.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour1.storageResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour1.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour1.storageResponse.robotID);
 			} else {
-				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID+", but is ignored....");
-				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour.storageResponse.robotID+", but is ignored....");
+				logger.info("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour1.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour1.storageResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new storageResponse AUX: " + RobotBehaviour1.storageResponse.storageAuxliaryPoint +" with robotID="+RobotBehaviour1.storageResponse.robotID+", but is ignored....");
 			}
 		} else if (event instanceof DockingResponse) {
 			
 			DockingResponse resp = (DockingResponse) event;
 			
 			if(resp.robotID == robotID) {
-				RobotBehaviour.dockingResponse = resp;
+				RobotBehaviour1.dockingResponse = resp;
 				
-				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID);
-				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID);
+				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour1.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour1.dockingResponse.robotID);
+				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour1.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour1.dockingResponse.robotID);
 			} else {
-				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID+", but is ignored....");
-				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour.dockingResponse.robotID+", but is ignored....");
+				logger.info("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour1.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour1.dockingResponse.robotID+", but is ignored....");
+				System.out.println("-->RB" + robotID + " get new dockingResponse AUX: " + RobotBehaviour1.dockingResponse.dockAuxliaryPoint+" with robotID="+RobotBehaviour1.dockingResponse.robotID+", but is ignored....");
 			}
 
 		} else if (event instanceof CartNoticeResponse) {
-			RobotBehaviour.cartNoticeResponse = (CartNoticeResponse) event;
+			RobotBehaviour1.cartNoticeResponse = (CartNoticeResponse) event;
 
 		} else if (event instanceof QueryStateValueReturn) {
 			QueryStateValueReturn qs = (QueryStateValueReturn) event;
@@ -784,7 +618,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				
 					logger.info("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID);
 					System.out.println("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID);
-					RobotBehaviour.queryReturn = qs;
+					RobotBehaviour1.queryReturn = qs;
 				} else {
 					logger.info("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID+", but is ignored....");
 					System.out.println("-->RB" + robotID + " receive QueryStateValueReturn = " + qs.currentState +" with robotID="+qs.robotID+", but is ignored....");
@@ -797,8 +631,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				if(cvr.robotID == robotID) {
 					logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
 					System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID);
-					RobotBehaviour.markerID = cvr.markerID;
-					RobotBehaviour.newMarkerCounter += 1;
+					RobotBehaviour1.markerID = cvr.markerID;
+					RobotBehaviour1.newMarkerCounter += 1;
 				} else {
 					logger.info("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID+" with robotID="+cvr.robotID+", but is ignored....");
 					System.out.println("-->RB" + robotID + " receive Check Marker return, marker ID = " + cvr.markerID+" with robotID="+cvr.robotID+", but is ignored....");
@@ -806,22 +640,12 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			});
 
 		} else if (event instanceof DoorStatusResponse) {
-			DoorStatusResponse response = (DoorStatusResponse) event;
 			worker.execute(() -> {
-				
-				System.out.println("-->    RB" + robotID + " receive DoorStatusResponse = " + response.status);
-				doorStatus = response.status;
-			});
-		} else if (event instanceof OpenDoorResponse) {
-			RobotBehaviour.openDoorResponse = (OpenDoorResponse) event;
-			worker.execute(() -> {
-				
-				System.out.println("-->    RB" + robotID + " receive openDoorResponse = " + openDoorResponse.response);
-			});
-		} else if (event instanceof CloseDoorResponse) {
-			RobotBehaviour.closeDoorResponse = (CloseDoorResponse) event;
-			worker.execute(() -> {
-				System.out.println("-->    RB" + robotID + " receive closeDoorResponse = " + closeDoorResponse.response);
+				DoorStatusResponse response = (DoorStatusResponse) event;
+				if (response.currentState == State.OPEN) {
+					isDoorOpen = true;
+					logger.info("-->RB" + robotID + " door is opened successfully!!!!");
+				}
 			});
 		}
 
@@ -886,7 +710,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	public boolean waitPickResponse() {
 		logger.info("-->RB" + robotID + " is waiting PickResponse");
 		while (true) {
-			if (RobotBehaviour.pickResponse != null) {
+			if (RobotBehaviour1.pickResponse != null) {
 				return true;
 			} else {
 				try {
@@ -901,7 +725,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	public boolean waitStorageResponse() {
 		logger.info("-->RB" + robotID + " is waiting storageResponse");
 		while (true) {
-			if (RobotBehaviour.storageResponse != null) {
+			if (RobotBehaviour1.storageResponse != null) {
 				return true;
 			} else {
 				try {
@@ -942,36 +766,16 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			}
 		}
 	}
-	
-	
-	
-	public boolean waitCloseDoorResponse() {
-		logger.info("-->RB" + robotID + " is waiting CloseDoorResponse");
-		int counter = 3;
-		while (counter>0) {
-			if (RobotBehaviour.closeDoorResponse != null) {
-				return true;
-			} else {
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				} catch (InterruptedException e) {
-					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
-				}
-				counter --;
-			}
-		}
-		return false;
-	}
 
 	public int waitMarker() {
 		logger.info("-->RB" + robotID + " is waiting for pose Marker");
 		System.out.println("-->RB" + robotID + " is waiting for pose Marker");
 		while (true) {
-			if (RobotBehaviour.currentMarkerCounter != RobotBehaviour.newMarkerCounter) {
-				RobotBehaviour.currentMarkerCounter = RobotBehaviour.newMarkerCounter;
-				logger.info("-->RB" + robotID + " got pose Marker = "+RobotBehaviour.markerID);
-				System.out.println("-->RB" + robotID + " got pose Marker = "+RobotBehaviour.markerID);
-				return RobotBehaviour.markerID;
+			if (RobotBehaviour1.currentMarkerCounter != RobotBehaviour1.newMarkerCounter) {
+				RobotBehaviour1.currentMarkerCounter = RobotBehaviour1.newMarkerCounter;
+				logger.info("-->RB" + robotID + " got pose Marker = "+RobotBehaviour1.markerID);
+				System.out.println("-->RB" + robotID + " got pose Marker = "+RobotBehaviour1.markerID);
+				return RobotBehaviour1.markerID;
 			} else {
 				try {
 					TimeUnit.SECONDS.sleep(1);
@@ -1026,24 +830,21 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 	private DockingRequest createDockingRequest() {
 		DockingRequest dockingRequest = new DockingRequest();
 		dockingRequest.robotID=robotID;
-		dockingRequest.robotIP = robotIP;
 		return dockingRequest;
 	}
-	
-
 
 	@Deactivate
 	void stop() {
-//		reg.unregister();
 		worker.shutdown();
 		try {
 			worker.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+			e.printStackTrace();
 		}
-		logger.info("------------  Robot Behavior "+ robotID+" is deactivated----------------");
-		System.out.println("------------  Robot Behavior "+ robotID+" is deactivated----------------");
+		logger.info("\n------------  Robot Behavior "+ robotID+" is deactivated----------------\n");
+		System.out.println("\n------------  Robot Behavior "+ robotID+" is deactivated----------------\n");
 	}
 
 }
