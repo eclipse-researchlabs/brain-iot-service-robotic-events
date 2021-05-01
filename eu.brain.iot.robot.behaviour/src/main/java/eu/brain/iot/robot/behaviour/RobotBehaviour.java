@@ -584,9 +584,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			System.out.println("-->RB" + robotID + " didn't receive the OpenDoorResponse in 3s");
 			return false;
 		} else {
-			logger.info("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response);
-			System.out.println("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response);
-			if(openDoorResponse.response == CommandDoorStatus.FAILURE) {
+			
+			if(openDoorResponse.response == CommandDoorStatus.SUCCESS) {
+				logger.info("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response+", continue to query....");
+				System.out.println("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response+", continue to query....");
+				
+			} else { // CommandDoorStatus.FAILURE
+				logger.info("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response+", failed to send open door request....");
+				System.out.println("-->RB" + robotID + " received the OpenDoorResponse = "+openDoorResponse.response+", failed to send open door request....");
 				return false;
 			}
 		}
@@ -664,9 +669,14 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 
 	@Override
 	public void notify(BrainIoTEvent event) {
-		logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
-		System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
-
+		if (event instanceof RobotCommand) {
+			logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
+			System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+((RobotCommand)event).robotID);
+		}/* else {
+			logger.info("-->RB " + robotID + " received an Door event: "+event.getClass().getSimpleName());
+			System.out.println("-->RB " + robotID + " received an Door event: "+event.getClass().getSimpleName());
+		}*/
+		
 		if (event instanceof RobotReadyBroadcast) {
 			if(!receivedBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
@@ -698,7 +708,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 					logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
 				}
 				
-		//		robotReady = rbc.isReady;
+	
 				receivedBroadcast = true;
 				try {
 					TimeUnit.SECONDS.sleep(1);
@@ -814,10 +824,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 			});
 		} else if (event instanceof OpenDoorResponse) {
 			RobotBehaviour.openDoorResponse = (OpenDoorResponse) event;
-			worker.execute(() -> {
-				
-				System.out.println("-->    RB" + robotID + " receive openDoorResponse = " + openDoorResponse.response);
-			});
+
 		} else if (event instanceof CloseDoorResponse) {
 			RobotBehaviour.closeDoorResponse = (CloseDoorResponse) event;
 			worker.execute(() -> {
