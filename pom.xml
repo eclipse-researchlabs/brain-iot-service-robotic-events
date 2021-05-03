@@ -346,5 +346,8 @@ Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
     <module>eu.brain.iot.single-framework-example.door</module>
     <module>eu.brain.iot.robot.behaviour2</module>
     <module>eu.brain.iot.single-framework-example.demo</module>
+    <module>eu.brain.iot.robot.test</module>
+    <module>sensinact-door</module>
+    <module>eu.brain.iot.ros.edge.node</module>
   </modules>
 </project>

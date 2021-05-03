@@ -80,8 +80,8 @@ import eu.brain.iot.warehouse.sensiNact.api.UpdateStoragePoint;
 )
 @SmartBehaviourDefinition(consumed = {QueryPickingTable.class, QueryStorageTable.class, QueryDockTable.class, UnsignPickingPoint.class, 
 		GetPickingTable.class, UpdateCartStorage.class, UpdateDockPoint.class, UpdatePickPoint.class, UpdateStoragePoint.class}, 
-		filter = "(timestamp=*)", author = "LINKS", name = "Warehouse Module: Tables Creator", 
-		description = "Implements Four Shared  Tables."
+		filter = "(timestamp=*)", author = "LINKS", name = "DataBase", 
+		description = "Implements Warehouse Database Component."
 )
 public class TablesCreatorImpl implements SmartBehaviour<BrainIoTEvent> {
 		//Define the connection of database 

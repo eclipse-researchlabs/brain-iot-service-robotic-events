@@ -67,8 +67,8 @@ import eu.brain.iot.robot.tables.creator.api.UnsignPickingPoint;
 		consumed = { NewPickPointRequest.class, NewStoragePointRequest.class, NoCartNotice.class,
 		CartMovedNotice.class, DockingRequest.class, QueryPickResponse.class, QueryStorageResponse.class, 
 		QueryDockResponse.class, PickingTableValues.class, UnsignPickingPointResponse.class }, 
-		filter = "(timestamp=*)", author = "LINKS", name = "Warehouse Module: Tables Queryer", 
-		description = "Implements the Tables Queryer.")
+		filter = "(timestamp=*)", author = "LINKS", name = "Warehouse-Backend", 
+		description = "Implements the Warehouse Backend Component")
 
 public class TableQueryer implements SmartBehaviour<BrainIoTEvent> { // TODO must able to cache multiple requests
 
