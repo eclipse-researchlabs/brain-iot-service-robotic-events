@@ -27,8 +27,7 @@
 	bnd.identity;version='0.0.7';id='eu.brain.iot.ros.edge.node',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton.impl',\
 	bnd.identity;id='org.apache.aries.jax.rs.jackson',\
-	bnd.identity;version='1.1.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
-	bnd.identity;id='fr.cea.brain.iot.sensinact-smart-behaviour-api',\
+	bnd.identity;version='1.2.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-gateway',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-smart-behaviour-impl'
 
@@ -98,10 +97,10 @@
 	org.osgi.service.component;version='[1.4.0,1.4.1)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.3,0.0.4)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.door;version='[0.0.1,0.0.2)',\
-	org.eclipse.sensinact.brainiot.door.sensinact-door;version='[1.1.0,1.1.1)',\
 	org.eclipse.sensinact.brainiot.door.sensinact-door-api;version='[1.1.0,1.1.1)',\
 	be.iminds.iot.ros.core;version='[0.0.4,0.0.5)',\
-	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)'
+	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
+	org.eclipse.sensinact.brainiot.door.sensinact-door;version='[1.2.0,1.2.1)'
 	
 	
 	

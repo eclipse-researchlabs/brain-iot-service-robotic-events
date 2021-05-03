@@ -326,7 +326,7 @@
 						<phase>package</phase>
 						<configuration>
 							<bndruns>
-								<bndrun>int1.bndrun</bndrun>
+								<bndrun>int3.bndrun</bndrun>
 							</bndruns>
 						</configuration>
 					</execution>
@@ -340,7 +340,7 @@
 				<version>${bnd.version}</version>
 				<configuration>
 					<bndruns>
-						<bndrun>int1.bndrun</bndrun>
+						<bndrun>int3.bndrun</bndrun>
 					</bndruns>
 					<resolve>false</resolve>
 					<failOnChanges>true</failOnChanges>
