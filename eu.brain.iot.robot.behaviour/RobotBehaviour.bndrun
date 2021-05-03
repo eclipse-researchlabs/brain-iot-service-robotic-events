@@ -4,7 +4,7 @@
  
 -resolve.effective: active
 
--runrequires: bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour'
+-runrequires: bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour-demo'
 	
 	
 
@@ -17,7 +17,6 @@
 	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.api;version='[0.0.2,0.0.3)',\
-	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.3,0.0.4)',\
 	org.apache.commons.lang;version='[2.6.0,2.6.1)',\
 	org.apache.felix.configadmin;version='[1.9.8,1.9.9)',\
 	org.apache.felix.scr;version='[2.1.10,2.1.11)',\
@@ -25,7 +24,8 @@
 	org.osgi.util.function;version='[1.1.0,1.1.1)',\
 	org.osgi.util.promise;version='[1.1.0,1.1.1)',\
 	org.osgi.util.pushstream;version='[1.0.0,1.0.1)',\
-	slf4j.api;version='[1.7.7,1.7.8)'
+	slf4j.api;version='[1.7.7,1.7.8)',\
+	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour-demo;version='[0.0.3,0.0.4)'
 	com.paremus.brain.iot.eventing.impl;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.api;version='[0.0.1,0.0.2)',\
 	com.paremus.brain.iot.message.integrity.insecure.impl;version='[0.0.1,0.0.2)',\
@@ -56,3 +56,4 @@
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.2,0.0.3)'
 
 >>>>>>> origin/test
+-standalone: 

@@ -38,8 +38,8 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
-			<artifactId>eu.brain.iot.robot.behaviour</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<artifactId>eu.brain.iot.robot.behaviour-demo</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -269,8 +269,159 @@
                 <artifactId>org.apache.aries.jax.rs.jackson</artifactId>
                 <version>1.0.2</version>
             </dependency>
-            
-
+    
+<!-- dependencies for the sensiNact Door Edge Node -->
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.12.1</version>
+</dependency>
+ 
+ <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.12.2</version>
+</dependency>
+ 
+ 
+<dependency>
+           
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.servlet-api</artifactId>
+            <version>1.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.servlet-api</artifactId>
+            <version>1.1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+       
+        <dependency>
+            <groupId>fr.cea.brain.iot</groupId>
+            <artifactId>sensinact-smart-behaviour-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sensinact.gateway.sthbnd.http</groupId>
+            <artifactId>http-device</artifactId>  
+            <version>2.0-brain-SNAPSHOT</version>        
+           <exclusions>
+                   <exclusion>
+                       <groupId>org.osgi</groupId>
+                       <artifactId>osgi.cmpn</artifactId>
+                   </exclusion>
+                   <exclusion>
+                       <groupId>org.osgi</groupId>
+                       <artifactId>org.osgi.core</artifactId>
+                   </exclusion>
+           </exclusions>
+        </dependency>
+        
+        
+     <dependency>
+            <groupId>fr.cea.brain.iot</groupId>
+            <artifactId>sensinact-smart-behaviour-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+      
+  <dependency>
+            <groupId>fr.cea.brain.iot</groupId>
+            <artifactId>sensinact-gateway-api</artifactId>
+            <version>2.0-brain-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.cea.brain.iot</groupId>
+            <artifactId>sensinact-gateway</artifactId>
+            <version>2.0-brain-SNAPSHOT</version>
+            <exclusions>
+                   <exclusion>
+                       <groupId>org.osgi</groupId>
+                       <artifactId>osgi.cmpn</artifactId>
+                   </exclusion>
+                   <exclusion>
+                       <groupId>org.osgi</groupId>
+                       <artifactId>org.osgi.core</artifactId>
+                   </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-datastore-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>mock-signature-validator</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-security-none</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-core</artifactId>
+                </exclusion>
+                  <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>sensinact-generic</artifactId>
+                </exclusion>       
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway.nthbnd</groupId>
+                    <artifactId>sensinact-northbound-access</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway.protocol</groupId>
+                    <artifactId>http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway.nthbnd</groupId>
+                    <artifactId>rest-access</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>application-manager</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.sensinact.gateway</groupId>
+                    <artifactId>basic-plugin</artifactId>
+                </exclusion>
+           </exclusions>
+        </dependency>     
+        
+      
+       <dependency>
+            <groupId>org.eclipse.sensinact.brainiot.door</groupId>
+            <artifactId>sensinact-door</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>  
+      <dependency>
+            <groupId>fr.cea.brain.iot</groupId>
+            <artifactId>sensinact-smart-behaviour-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 
 	<build>
