@@ -232,7 +232,7 @@
 		<dependency>
 			<groupId>eu.brain.iot.service.robotic</groupId>
 			<artifactId>eu.brain.iot.ros.edge.node</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.6-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -423,6 +423,13 @@
             <groupId>fr.cea.brain.iot</groupId>
             <artifactId>sensinact-smart-behaviour-api</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
+       <dependency>
+            <groupId>eu.brain.iot.service.robotic</groupId>
+            <artifactId>door.impl</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+            <scope>runtime</scope>
         </dependency>
 	</dependencies>
 
