@@ -134,7 +134,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		
 		logger.info("\n Hello!  I am Robot Behavior for the demo : " + robotID + ",  UUID = "+UUID);
 		System.out.println("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
-		// sm = new StateMachineMonitoring("192.168.2.167", 4445);
+		//sm = new StateMachineMonitoring("192.168.2.167", 4445);
 		sm = new StateMachineMonitoring("192.168.52.120", 4445);
 
         sm.startMonitorning();
@@ -350,20 +350,20 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							sm.UDPSend("DoorMarker");
 							logger.info("--SM: send UDP message DoorMaker");
 							logger.info("--RB: Robot is checking the door status");
-						    int check=3;
-						    while(check>0) {
-						     logger.info("--RB: checking...");
-						     check--;
-						    }
+                                                  
+						     logger.info("--RB: checking Door staus...");
+						    try{
+                                                     TimeUnit.SECONDS.sleep(5);
 						    logger.info("--RB: Robot found the door is closed ");
 						    logger.info("--RB: send door open request");
 						    sm.UDPSend("DoorClosed");
 							logger.info("--SM: send UDP message DoorClosed");
-							check=20;
-							while(check>0) {
+							
 								     logger.info("--RB: waiting for door open...");
-								     check--;
-						  		    }
+								   
+						  		 
+                                                       
+                                                        TimeUnit.SECONDS.sleep(20);
 							sm.UDPSend("OpenDoorResponseSuccessStorage");
 							logger.info("--SM: send UDP message OpenDoorResponseSuccessStorage");
 							logger.info("-->RB" + robotID + " found Door is OPENED, continue moving");
@@ -371,6 +371,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							isDoorOpened = true;
 							sm.UDPSend("DoorOpenStorage");
 							logger.info("--SM: send UDP message DoorOpenStorage");
+                                                       } catch (InterruptedException e) {
+								logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+							}
 						   
 							/*
 							while(true) {
@@ -526,11 +529,24 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 									
 									 sm.UDPSend("ObstacleOnDockingPath");
 									 logger.info("-->SM: send UDP message ObstacleOnDockingPath");
-									
-									// --------------------------- check Door Marker to Docking Area --------------------------------------
-									logger.info("--------------------------- Check Door Marker to Docking Area --------------------------------------");
 
-									isDoorOpened = true;
+									// --------------------------- check Door Marker to Docking Area --------------------------------------
+						
+                                        		logger.info("--------------------------- Check Door Marker to Docking Area --------------------------------------");
+                                                        try {
+                                                      sm.UDPSend("DoorMarker");
+						    logger.info("--SM: send UDP message DoorMarker");
+                                            
+						      logger.info("--RB: checking...");
+						   TimeUnit.SECONDS.sleep(5);
+						    logger.info("--RB: Robot found the door is open");
+						    sm.UDPSend("DoorOpenDock");
+							logger.info("--SM: send UDP message DoorOpenDock");
+						        isDoorOpened = true;
+                                                     } catch (InterruptedException e) {
+								logger.error("\nRobot Behavior Exception: {}", ExceptionUtils.getStackTrace(e));
+							}
+
 									/*	isDoorOpened = false;
 									
 

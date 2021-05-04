@@ -25,7 +25,6 @@
 	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example',\
 	bnd.identity;id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour.demo',\
-	bnd.identity;id='eu.brain.iot.service.robotic.door.impl',\
 	bnd.identity;id='eu.brain.iot.ros.edge.node'
 	
 -runbundles: \
@@ -86,7 +85,5 @@
 	org.ros.rosjava_core.rosjava;version='[0.2.2,0.2.3)',\
 	slf4j.api;version='[1.7.25,1.7.26)',\
 	ws-commons-util;version='[1.0.1,1.0.2)',\
-	eu.brain.iot.service.robotic.door.api;version='[0.0.2,0.0.3)',\
-	eu.brain.iot.service.robotic.door.impl;version='[0.0.2,0.0.3)',\
 	eu.brain.iot.ros.edge.node;version='[0.0.6,0.0.7)',\
 	org.ros.rosjava_bootstrap.message_generation;version='[0.2.1,0.2.2)'
