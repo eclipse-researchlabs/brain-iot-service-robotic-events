@@ -10,9 +10,8 @@
 	</parent>
 
 	<groupId>eu.brain.iot.service.robotic</groupId>
-	<artifactId>eu.brain.iot.robot.behaviour</artifactId>
+	<artifactId>eu.brain.iot.robot.behaviour.demo</artifactId>
 	<version>0.0.3-SNAPSHOT</version> 
-
 	<description>The eu.brain.iot.robot.behaviour DS component - built using OSGi enRoute R7</description>
 
 	<dependencies>
