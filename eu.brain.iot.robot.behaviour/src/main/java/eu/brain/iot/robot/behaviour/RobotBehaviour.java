@@ -134,8 +134,9 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		
 		logger.info("\n Hello!  I am Robot Behavior for the demo : " + robotID + ",  UUID = "+UUID);
 		System.out.println("\n Hello!  I am Robot Behavior : " + robotID + ",  UUID = "+UUID);
-		 sm = new StateMachineMonitoring("localhost", 4445);
-		//sm = new StateMachineMonitoring("192.168.52.120", 4445);
+		// sm = new StateMachineMonitoring("192.168.2.167", 4445);
+		sm = new StateMachineMonitoring("192.168.52.120", 4445);
+
         sm.startMonitorning();
         logger.info("--SM: The monitoring is started, server host name:"+ sm.getServerHostName() +" port"+sm.getServerPort());
 
@@ -371,9 +372,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 							sm.UDPSend("DoorOpenStorage");
 							logger.info("--SM: send UDP message DoorOpenStorage");
 						   
-							
-						
-							/* while(true) {
+							/*
+							while(true) {
 								sm.UDPSend("DoorMarker");
 								logger.info("--SM: send UDP message DoorMaker");
 								counter = 2;
@@ -533,6 +533,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 									isDoorOpened = true;
 									/*	isDoorOpened = false;
 									
+
 							    	while(true) {
 										sm.UDPSend("DoorMarker");
 										logger.info("--SM: send UDP message DoorMarker");
@@ -765,20 +766,18 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 		if (event instanceof RobotCommand) {
 			logger.info("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+event);
 			System.out.println("-->RB " + robotID + " received an event: "+event.getClass().getSimpleName()+ ", with robotID="+event);
-			sm.UDPSend("RobotReadyBroadcast");
-	        logger.info("-->SM: send UDP message RobotReadyBroadcast");
 		
-		}else {
+		}/* else {
 			logger.info("-->RB " + robotID + " received an Door event: "+event.getClass().getSimpleName());
 			System.out.println("-->RB " + robotID + " received an Door event: "+event.getClass().getSimpleName());
-		}
+		}*/
 		
 		if (event instanceof RobotReadyBroadcast) {
 			if(!receivedBroadcast) {
 			RobotReadyBroadcast rbc = (RobotReadyBroadcast) event;
 			logger.info("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
 			System.out.println("-->RB " + robotID + " received an RobotReadyBroadcast event with robotID="+rbc.robotID+ " and UUID="+rbc.UUID+ "==>  RB.UUID="+UUID);
-
+                       
 			if(rbc.UUID.equals(UUID)) {
 			worker.execute(() -> {
 				
@@ -806,6 +805,8 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				
 	
 				receivedBroadcast = true;
+                                sm.UDPSend("RobotReadyBroadcast");
+	                       logger.info("-->SM: send UDP message RobotReadyBroadcast");
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
@@ -839,6 +840,7 @@ public class RobotBehaviour implements SmartBehaviour<BrainIoTEvent> {
 				broadcastACK = true;
 				sm.UDPSend("BroadcastACK");
 		        logger.info("-->SM: send UDP message BroadcastACK");
+
 			}
 
 		}

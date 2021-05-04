@@ -1,0 +1,17 @@
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::RobotReadyBroadcast
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::BroadcastACK
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::NewPickupPointResponse
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::GoToPickPointSuccess
+// no cart notice is not implemented
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::CartMarker
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::PickCartSuccess
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::NewStoragePointResponse
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::ObstacleOnStoragePath
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::GoToStorageSuccess 
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::PlaceCartSuccess
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::CartNoticeResponse
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::DockingResponse
+TRANSITION|ServiceRobotics::Robot::Robot::RobotStateMachine::Region1::GoToDockSuccess
+
+//To do Door
+

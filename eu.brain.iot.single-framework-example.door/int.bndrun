@@ -95,13 +95,11 @@
 	fr.cea.brain.iot.sensinact-smart-behaviour-api;version='[1.0.0,1.0.1)',\
 	fr.cea.brain.iot.sensinact-smart-behaviour-impl;version='[1.0.0,1.0.1)',\
 	http-device;version='[2.0.0,2.0.1)',\
-	org.osgi.service.cm;version='[1.6.0,1.6.1)',\
-	org.osgi.service.component;version='[1.4.0,1.4.1)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour;version='[0.0.3,0.0.4)',\
 	eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.door;version='[0.0.1,0.0.2)',\
 	org.eclipse.sensinact.brainiot.door.sensinact-door;version='[1.1.0,1.1.1)',\
-	be.iminds.iot.ros.core;version='[0.0.5,0.0.6)',\
-	org.eclipse.sensinact.brainiot.door.sensinact-door-api;version='[1.1.0,1.1.1)'
+	org.eclipse.sensinact.brainiot.door.sensinact-door-api;version='[1.1.0,1.1.1)',\
+	be.iminds.iot.ros.core;version='[0.0.4,0.0.5)'
 	
 	
 	
