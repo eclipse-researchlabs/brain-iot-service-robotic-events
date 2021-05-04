@@ -14,19 +14,19 @@
 	logback.configurationFile=/opt/fabric/resources/logback.xml,\
 	positionFrequency=2,\
 	ID1=1,\
-	name1=rb1_base_a,\
-	IP1=192.168.2.202,\
+	name1=turtlebot_1,\
+	IP1=192.168.52.101,\
 	ID2=2,\
-	name2=rb1_base_b,\
-	IP2=192.168.2.202,\
+	name2=turtlebot_2,\
+	IP2=192.168.52.102,\
 	ID3=3,\
-	name3=rb1_base_c,\
-	IP3=192.168.2.202,\
+	name3=turtlebot_3,\
+	IP3=192.168.52.103,\
 	ID4=4,\
-	name4=turtlebot-D,\
+	name4=turtlebot_4,\
 	IP4=192.168.52.104,\
 	ID5=5,\
-	name5=turtlebot-E,\
+	name5=turtlebot_5,\
 	IP5=192.168.52.105
 
 -runrequires: \
@@ -34,13 +34,12 @@
 	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.demo)',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
-	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour2',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node1',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton-demo',\
 	bnd.identity;id='org.apache.aries.jax.rs.jackson'
 
-
+#	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
 	
 -runbundles: \
 	com.fasterxml.jackson.core.jackson-annotations;version='[2.10.0,2.10.1)',\

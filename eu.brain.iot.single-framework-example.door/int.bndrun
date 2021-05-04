@@ -27,7 +27,7 @@
 	bnd.identity;version='0.0.7';id='eu.brain.iot.ros.edge.node',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.startButton.impl',\
 	bnd.identity;id='org.apache.aries.jax.rs.jackson',\
-	bnd.identity;version='1.2.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
+	bnd.identity;version='1.1.0';id='org.eclipse.sensinact.brainiot.door.sensinact-door',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-gateway',\
 	bnd.identity;id='fr.cea.brain.iot.sensinact-smart-behaviour-impl'
 
