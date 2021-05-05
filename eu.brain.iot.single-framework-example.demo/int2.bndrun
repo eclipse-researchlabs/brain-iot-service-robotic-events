@@ -11,7 +11,7 @@
 	org.apache.felix.log.storeDebug=false,\
 	org.osgi.service.http.port=8080,\
 	org.osgi.service.log.admin.loglevel=WARN,\
-	logback.configurationFile=/opt/fabric/resources/logback.xml,\
+	logback.configurationFile=file:./logback.xml,\
 	positionFrequency=2,\
 	ID1=1,\
 	name1=turtlebot_1,\

@@ -11,7 +11,7 @@
 	org.apache.felix.log.storeDebug=false,\
 	org.osgi.service.http.port=8080,\
 	org.osgi.service.log.admin.loglevel=WARN,\
-	logback.configurationFile=/opt/fabric/resources/logback.xml,\
+	logback.configurationFile=file:./logback.xml,\
 	positionFrequency=2,\
 	ID1=1,\
 	name1=turtlebot_1,\
@@ -34,7 +34,6 @@
 	osgi.identity;filter:='(osgi.identity=eu.brain.iot.service.robotic.eu.brain.iot.single-framework-example.demo)',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.creator',\
 	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.tables.queryer',\
-	bnd.identity;version='0.0.2';id='eu.brain.iot.service.robotic.door.impl',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.service.robotic.eu.brain.iot.robot.behaviour2',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node1',\
 	bnd.identity;version='0.0.1';id='eu.brain.iot.ros.edge.node2',\

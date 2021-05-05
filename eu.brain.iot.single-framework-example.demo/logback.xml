@@ -1,0 +1,51 @@
+<configuration>   
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">   
+    <file>/home/rui/resources/out.log</file>   
+   
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">   
+      <fileNamePattern>/home/rui/resources/out.%i.log.zip</fileNamePattern>   
+      <minIndex>1</minIndex>   
+      <maxIndex>3</maxIndex>   
+    </rollingPolicy>   
+   
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">   
+      <maxFileSize>70kB</maxFileSize>   
+    </triggeringPolicy>   
+    <encoder>   
+      <pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</pattern>
+    </encoder>   
+  </appender>   
+
+
+	<!-- console append    <pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</pattern>          -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%.15thread] %-5level %logger{36}:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- log all Bundle events -->
+    <logger name="Events.Bundle" level="TRACE"/>
+
+    <!-- log DEBUG from any log API using a logger name starting with `fr.cea` -->
+    <logger name="fr.cea" level="DEBUG"/>
+
+
+  <root level="DEBUG">   
+    <appender-ref ref="FILE" />   
+  </root>   
+</configuration>
+
+<!-- 
+
+ID1=1,\
+	name1=rb1_base_a,\
+	IP1=192.168.2.202,\
+	ID2=2,\
+	name2=rb1_base_b,\
+	IP2=192.168.2.202,\
+	ID3=3,\
+	name3=rb1_base_c,\
+	IP3=192.168.2.202,\
+
+ -->
